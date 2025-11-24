@@ -1,0 +1,119 @@
+@if (!loading && !error) {
+<div class="print-container">
+  <div class="header">
+    <div class="brand">
+      <div class="logo-section">
+        @if (companyLogoUrl) {
+        <img [src]="companyLogoUrl" alt="logo">
+        }
+      </div>
+      <div class="title">{{ companyName }}</div>
+    </div>
+  </div>
+
+  <div class="sheet" id="resume-to-print">
+    <table class="table outer">
+      <tr>
+        <th class="headline" colspan="6">{{ data?.var_rheadline || 'Resume' }}</th>
+      </tr>
+
+      <tr class="section-row"><th colspan="6">Personal Details :</th></tr>
+      <tr>
+        <td class="label">Name :</td><td class="value" colspan="2">{{ data?.var_fname }} {{ data?.var_lname }}</td>
+        <td class="label">Email id:</td><td class="value" colspan="2">{{ data?.var_email }}</td>
+      </tr>
+      <tr>
+        <td class="label">Contact No:</td><td class="value" colspan="5">{{ data?.var_contactno }}</td>
+      </tr>
+      <tr>
+        <td class="label">Father's Name :</td><td class="value" colspan="5">{{ data?.var_father_name }}</td>
+      </tr>
+      <tr>
+        <td class="label">Date of Birth :</td><td class="value">{{ data?.date_dob }}</td>
+        <td class="label">Sex :</td><td class="value">{{ data?.int_gender }}</td>
+        <td class="label">Marital Status :</td><td class="value">{{ data?.int_married }}</td>
+      </tr>
+      <tr>
+        <td class="label">Religion :</td><td class="value">{{ data?.int_religon }}</td>
+        <td class="label">Place of Birth :</td><td class="value" colspan="3">{{ data?.var_place_birth }}</td>
+      </tr>
+
+      <tr>
+        <td class="label">Passport No. :</td><td class="value">{{ data?.passport_no }}</td>
+        <td class="label">Date of Issue :</td><td class="value">{{ data?.date_issue }}</td>
+        <td class="label">Place of issue :</td><td class="value">{{ data?.issue_place }}</td>
+      </tr>
+      <tr>
+        <td class="label">Expiry Date :</td><td class="value" colspan="5">{{ data?.date_exp }}</td>
+      </tr>
+
+      <tr>
+        <td class="label">Country :</td><td class="value">{{ data?.int_country }}</td>
+        <td class="label">City :</td><td class="value" colspan="3">{{ data?.int_state }} {{ data?.var_city }}</td>
+      </tr>
+      <tr>
+        <td class="label">Parent Category :</td><td class="value">{{ data?.int_cat_id }}</td>
+        <td class="label">Sub Category :</td><td class="value" colspan="3">{{ data?.int_sub_cat_id }}</td>
+      </tr>
+      <tr>
+        <td class="label">Specialization :</td><td class="value" colspan="5">{{ data?.int_subspeci_id }}</td>
+      </tr>
+      <tr>
+        <td class="label">Postal Address :</td><td class="value" colspan="5">{{ data?.var_paddress }}</td>
+      </tr>
+
+      <tr class="section-row"><th colspan="6">Educational Details :</th></tr>
+      <tr>
+        <th class="center" style="width: 10%">No.</th>
+        <th colspan="4">Degree / Diploma</th>
+        <th style="width: 18%">Year of Passing</th>
+      </tr>
+      @for (r of educationRows; track $index) {
+      <tr>
+        <td class="center">{{ $index + 1 }} .</td>
+        <td class="value" colspan="4">{{ r.degree }}</td>
+        <td class="value center">{{ r.year }}</td>
+      </tr>
+      }
+
+      <tr>
+        <td class="label">Working Experience :</td>
+        <td class="value" colspan="5">{{ data?.int_exp_year }} Year&nbsp;&nbsp;{{ data?.int_exp_month }} Months</td>
+      </tr>
+      <tr>
+        <td class="label">Keywords :</td>
+        <td class="value" colspan="5">{{ data?.keywords || data?.skills || data?.tags }}</td>
+      </tr>
+      <tr>
+        <td class="label">Languages Known :</td><td class="value">{{ data?.languages }}</td>
+        <td class="label">Date :</td><td class="value">{{ createdDateDisplay }}</td>
+        <td class="label">Place :</td><td class="value"></td>
+      </tr>
+
+      <tr>
+        <td class="office-row" colspan="6">FOR OFFICE USE ONLY</td>
+      </tr>
+      <tr>
+        <td class="remarks-cell" colspan="6">
+          <div class="remarks-title">Remarks:</div>
+          <div class="signature">Signature</div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- <div class="actions no-print">
+    <button class="btn btn-primary" (click)="onPrint()">Print Resume</button>
+  </div> -->
+</div>
+
+}
+@if (loading) {
+<!-- Spinner handled globally; keep minimal fallback hidden for a11y -->
+<div class="state" style="position:absolute; left:-9999px;">Loading</div>
+}
+@if (!loading && error) {
+<div class="state error">{{ error }}</div>
+}
+
+

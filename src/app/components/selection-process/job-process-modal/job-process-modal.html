@@ -1,0 +1,251 @@
+<!-- Modal -->
+<div class="modal fade" #jobProcessModal tabindex="-1" aria-hidden="true">
+  <div
+    class="modal-dialog modal-lg modal-dialog-centered"
+    [ngClass]="{ 'modal-fullscreen': isMaximized }"
+  >
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div
+        class="modal-header py-2 px-3 d-flex justify-content-between align-items-center"
+      >
+        <h5 class="modal-title fw-bold">
+          Job Process — {{ jobseekerName }} [{{ jobseekerId }}]
+        </h5>
+        <div class="d-flex align-items-center gap-2">
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            (click)="toggleMaximize()"
+            [attr.aria-pressed]="isMaximized"
+            title="{{ isMaximized ? 'Restore' : 'Maximize' }}"
+          >
+            <i
+              class="fas"
+              [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"
+            ></i>
+          </button>
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="parentComponent.openAllRemarks(jobseekerId, candidateId, projectId, jobseekerName)"
+          >
+            <i class="fas fa-eye me-1"></i> View All Remarks
+          </button>
+          <button type="button" class="btn-close" (click)="close()"></button>
+        </div>
+      </div>
+
+      <div class="modal-body py-2 px-3">
+        <!-- ========== CURRENT STATUS (separate form) ========== -->
+        <div class="p-2 border rounded shadow-sm mb-4">
+          <h6 class="fw-bold mb-3 heading-border">Current Status</h6>
+
+          <form
+            [formGroup]="currentForm"
+            (ngSubmit)="saveCurrentStatus()"
+            class="row g-2 align-items-center"
+          >
+            <div class="col-md-4 col-sm-6">
+              <select
+                class="form-select form-select-sm"
+                formControlName="currentStatus"
+              >
+                <option value="">--Current Status *--</option>
+                @for (status of currentStatusArr; track status.id) {
+                <option [value]="status.id">{{ status.name }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-2 col-sm-6">
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                formControlName="currentDate"
+              />
+            </div>
+
+            <div class="col-md-4 col-sm-12">
+              <textarea
+                class="form-control form-control-sm"
+                placeholder="Remark Details"
+                rows="1"
+                formControlName="currentRemark"
+              ></textarea>
+            </div>
+
+            <div class="col-md-2 col-sm-12 text-end">
+              <button type="submit" class="btn btn-secondary btn-sm w-100">
+                <i class="fas fa-check me-1"></i> Submit
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- ========== VISA INFO & POSTING DETAILS (processForm) ========== -->
+        <div [formGroup]="processForm" class="row g-3">
+          <!-- VISA INFO -->
+          <div class="col-lg-6">
+            <div class="p-2 border rounded shadow-sm mb-3">
+              <h6 class="fw-bold mb-3 heading-border">Visa Info</h6>
+
+              <div class="row g-2 align-items-center">
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Visa Issued</label>
+                </div>
+                <div class="col-7 d-flex gap-3">
+                  @for (visa of visaIssuedArr; track visa.id) {
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      [value]="visa.id"
+                      formControlName="visaIssued"
+                    />
+                    <label class="form-check-label">{{ visa.name }}</label>
+                  </div>
+                  }
+                </div>
+
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Visa No.</label>
+                </div>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    placeholder="Enter Visa No."
+                    formControlName="visaNumber"
+                  />
+                </div>
+
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Visa Date</label>
+                </div>
+                <div class="col-7">
+                  <input
+                    type="date"
+                    formControlName="visaDate"
+                    class="form-control form-control-sm"
+                  />
+                </div>
+
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Submission City</label>
+                </div>
+                <div class="col-7">
+                  <select
+                    class="form-select form-select-sm"
+                    formControlName="submissionCity"
+                  >
+                    <option value="">--Select City--</option>
+                    @for (city of visaSubCityArr; track city.id) {
+                    <option [value]="city.id">{{ city.name }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end mt-2">
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  (click)="SaveProcess(1)"
+                >
+                  <i class="fas fa-check me-1"></i> Save Visa Info
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- POSTING DETAILS -->
+          <div class="col-lg-6">
+            <div class="p-2 border rounded shadow-sm mb-3">
+              <h6 class="fw-bold mb-3 heading-border">Posting Details</h6>
+
+              <div class="row g-2 align-items-center">
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Selected As</label>
+                </div>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    placeholder="Enter Selected As"
+                    formControlName="selectedAs"
+                  />
+                </div>
+
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Place of Posting</label>
+                </div>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    placeholder="Enter Place of Posting"
+                    formControlName="placeOfPosting"
+                  />
+                </div>
+
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Position</label>
+                </div>
+                <div class="col-7 d-flex gap-2 flex-wrap">
+                  @for (p of postingPosition; track p.id) {
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      formControlName="position"
+                      [value]="p.id"
+                      id="pos-{{p.id}}"
+                    />
+                    <label class="form-check-label" for="pos-{{p.id}}"
+                      >{{ p.name }}</label
+                    >
+                  </div>
+                  }
+                </div>
+
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Position No</label>
+                </div>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    formControlName="positionNo"
+                  />
+                </div>
+
+                <div class="col-5">
+                  <label class="form-label fw-semibold">Grade</label>
+                </div>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    placeholder="Enter Grade"
+                    formControlName="grade"
+                  />
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-end mt-2">
+                <button
+                  type="button"
+                  class="btn btn-success btn-sm"
+                  (click)="SaveProcess(2)"
+                >
+                  <i class="fas fa-check me-1"></i> Submit Posting Info
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end row -->
+      </div>
+    </div>
+  </div>
+</div>

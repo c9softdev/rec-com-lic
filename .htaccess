@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /apk/rec/
+
+# Allow existing files
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Angular SPA fallback
+RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+Header set Cache-Control "no-cache, no-store, must-revalidate"
+</IfModule>

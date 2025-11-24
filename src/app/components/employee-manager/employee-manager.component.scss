@@ -1,0 +1,25 @@
+@import '../../../assets/css/commonstyles.css';
+
+.assign-menu-tree {
+  ul {
+    padding-left: 0;
+    margin-bottom: 10px;
+    li {
+      margin-bottom: 2px;
+      label {
+        gap: 4px!important;
+        align-items: center;
+        display: flex;
+      }
+      ul {
+        margin-left: 18px;
+      }
+    }
+  }
+}
+.access-options-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: -50px;
+}

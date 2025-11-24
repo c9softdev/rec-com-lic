@@ -1,0 +1,52 @@
+<!-- <div class="pagination-section sticky-table-footer"> -->
+  <div class="d-flex justify-content-between align-items-center flex-wrap">
+    <span class="mr-3">
+      Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalRecords) }} of {{ totalRecords }} entries
+    </span>
+    <div class="info-text d-flex align-items-center mb-2 mb-md-0">
+      <span class="mr-2">Jump to</span>
+      <input type="number"
+             class="form-control form-control-sm"
+             style="width: 60px;"
+             [min]="1"
+             [max]="totalPages"
+             [(ngModel)]="jumpToPage"
+             (keyup.enter)="onJumpToPage()"
+             (blur)="onJumpToPage()">
+      <span class="ml-2">of {{ totalPages }} pages</span>
+    </div>
+    <nav aria-label="Page navigation" class="mb-0">
+      <ul class="pagination mb-0">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" href="javascript:void(0)" (click)="onPageChange(1)" aria-label="First" title="First Page">
+            <i class="fas fa-angle-double-left"></i>
+          </a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage - 1)" aria-label="Previous" title="Previous Page">
+            <i class="fas fa-angle-left"></i>
+          </a>
+        </li>
+        <li class="page-item" *ngFor="let page of paginationRange"
+            [class.active]="page === currentPage"
+            [class.disabled]="page === -1">
+          <a class="page-link" href="javascript:void(0)"
+             (click)="page !== -1 && onPageChange(page)"
+             [title]="page === -1 ? '' : 'Page ' + page">
+            {{ page === -1 ? '...' : page }}
+          </a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)" aria-label="Next" title="Next Page">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link" href="javascript:void(0)" (click)="onPageChange(totalPages)" aria-label="Last" title="Last Page">
+            <i class="fas fa-angle-double-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+<!-- </div> -->

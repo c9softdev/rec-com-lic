@@ -1,0 +1,82 @@
+<div class="content">
+  <div class="page-inner">
+    <!-- Add/Edit Form Section -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">Master Setting</h4>
+          </div>
+          @if (userId === '1' && userType == '1')
+          {
+          <div class="card-body">
+            <form [formGroup]="pageForm">
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="email_from" (blur)="checkInput($event.target)"
+                      formControlName="email_from" />
+                    <label for="email_from">Email From</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="email_to" (blur)="checkInput($event.target)"
+                      formControlName="email_to" />
+                    <label for="email_to">Email To</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="var_version" (blur)="checkInput($event.target)"
+                      formControlName="var_version" />
+                    <label for="var_version">Version</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="site_name" (blur)="checkInput($event.target)"
+                      formControlName="site_name" />
+                    <label for="site_name">Application Name</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="var_logo_url" (blur)="checkInput($event.target)"
+                      formControlName="var_logo_url" />
+                    <label for="var_logo_url">Logo</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="var_logo_client" (blur)="checkInput($event.target)"
+                      formControlName="var_logo_client" />
+                    <label for="var_logo_client">Client Logo</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group d-flex align-items-center" style="margin-top: 1rem; gap: 24px"></div>
+              <div class="form-group mt-3">
+                <button type="button" class="btn btn-outline-primary btn-round mr-2" (click)="onUpdateRecord()">
+                  <i class="fas fa-save mr-1"></i> Update
+                </button>
+              </div>
+            </form>
+          </div>
+          } @else {
+          <div style="text-align: center;height: 200px;vertical-align: middle;margin-top: 150px;">
+            <p>🚫 No Access</p>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

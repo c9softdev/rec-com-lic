@@ -1,0 +1,151 @@
+@import '../../../assets/css/commonstyles.css';
+
+.candidate-header {
+    background-color: #e3f2fd; /* Light blue background */
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.candidate-header .fa-user {
+    font-size: 18px;
+    color: #4a4a4a;
+    margin-right: 0.5rem;
+}
+
+.candidate-header .header-icons i {
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 1rem;
+}
+.candidate-cards .card {
+    border: 1px solid #a5abb0!important; /* Primary border */
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* Row labels styling with bottom border and padding */
+.candidate-cards .card .row > div {
+    border-bottom: 1px solid #dee2e6; /* 1px bottom border */
+    padding: 0.5rem 1rem; /* Added horizontal padding for length */
+}
+
+/* Header icons styling */
+.candidate-cards .card .fa-user {
+    font-size: 18px;
+    color: #4a4a4a;
+    margin-right: 0.5rem;
+}
+
+.candidate-cards .card .header-icons i {
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+/* Buttons styling */
+.candidate-cards .btn-round {
+    min-height: 42px; /* Equal height buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Icon spacing inside buttons */
+.candidate-cards .btn i {
+    margin-right: 5px;
+}
+.btn-round {
+    min-height: 42px; /* equal height for all buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px!important;
+}
+.btn-round i {
+    margin-right: 5px!important;
+}
+
+
+
+.project-card {
+  border: 1px solid #acb4bf;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+/* Toolbar styling */
+.project-toolbar {
+  background-color: #e3f2fd;
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  border-bottom: 1px solid #0d6efd;
+}
+
+.project-toolbar .btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* Header row */
+.project-header {
+  background-color: #0d6efd;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Table-like div structure */
+.project-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-table-header,
+.project-table-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 1.5fr 1.5fr;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0.5rem 1rem;
+}
+
+.project-table-header {
+  background-color: #e9ecef;
+  font-weight: 600;
+}
+
+.project-table-row:hover {
+  background-color: #f1f1f1;
+}
+#allRemarkModal {
+  z-index: 1065 !important;
+}
+
+.modal-backdrop.show:nth-of-type(2) {
+  z-index: 1064 !important;
+}
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: inherit;   /* keeps normal text color */
+}
+
+.link-button:focus {
+  outline: none;
+}

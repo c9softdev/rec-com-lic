@@ -1,0 +1,80 @@
+<div class="modal fade" #emigrationModal tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" [ngClass]="{ 'modal-fullscreen': isMaximized }">
+    <div class="modal-content">
+      <div class="modal-header modal-head text-white">
+        <h5 class="modal-title">
+          Emigration Process — {{ jobseekerName }} [{{ jobseekerId }}]
+        </h5>
+        <div class="d-flex align-items-center ms-auto gap-2">
+          <button type="button" class="btn btn-sm btn-outline-light" (click)="toggleMaximize()" [attr.aria-pressed]="isMaximized" title="{{ isMaximized ? 'Restore' : 'Maximize' }}">
+            <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
+          </button>
+          <button type="button" class="btn-close btn-close-white" (click)="close()"></button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="emigrationForm" (ngSubmit)="submitEmigration()">
+
+          <!-- Row: E-Contract & Emigration Status -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="eContract" class="form-label">E-Contract</label>
+              <select class="form-select form-select-sm" id="eContract" formControlName="econtract">
+                <option value="">Choose Contract</option>
+                <option value="1">Signed</option>
+                <option value="2">Pending</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="emigrationStatus" class="form-label">Emigration Status</label>
+              <select class="form-select form-select-sm" id="emigrationStatus" formControlName="emigration">
+                <option value="">Choose Status</option>
+                <option value="1">Completed</option>
+                <option value="2">Pending</option>
+                <option value="3">Rejected</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row: Upload Document + Download -->
+          <div class="row g-3 mt-3 align-items-end">
+            <div class="col-md-6">
+              <label for="uploadDocument" class="form-label">Upload Document</label>
+              <div class="input-group input-group-sm">
+                <input type="file" class="form-control form-control-sm" id="uploadDocument"
+                  (change)="onFileChange($event)" />
+                <button type="button" class="btn btn-outline-primary btn-sm" title="Upload" (click)="uploadDocument()">
+                  <i class="fas fa-arrow-up me-1"></i> Upload
+                </button>
+                <button type="button" class="btn btn-outline-success btn-sm" title="Download" (click)="downloadFile()"
+                  *ngIf="hasEmigrationDocument">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+              <div class="form-text small" *ngIf="uploadedFileName">Selected: {{ uploadedFileName }}</div>
+            </div>
+            <div class="col-md-6">
+              <label for="emigrationRemark" class="form-label">Remark</label>
+              <textarea class="form-control form-control-sm" id="emigrationRemark" rows="2" placeholder="Enter remarks"
+                formControlName="emgRemark"></textarea>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-save me-2"></i> Submit
+            </button>
+            <button type="button" class="btn btn-outline-primary btn-sm"
+              (click)="parentComponent.openAllRemarks(jobseekerId, candidateId, projectId, jobseekerName)">
+              <i class="fas fa-comments me-2"></i> View All Remarks
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

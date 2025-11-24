@@ -1,0 +1,14 @@
+<div class="error-page-container">
+  <div class="error-card">
+    <img [src]="illustration" alt="Error" class="error-illustration" />
+    <h1>{{ title }}</h1>
+    <p>{{ description }}</p>
+    <div class="actions">
+      <button *ngIf="showBackToLogin" type="button" class="btn btn-outline-dark" (click)="goToLogin()">Go to Login</button>
+      <button type="button" class="btn btn-outline-primary" (click)="tryRecover()">
+        <span *ngIf="checking" class="spinner-border spinner-border-sm me-2"></span>
+        {{ checking ? 'Checking...' : 'Reload' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,243 @@
+<div class="content">
+  <div class="panel-header bg-primary-gradient">
+    <div class="page-inner py-5 mt--3">
+      <div
+        class="d-flex align-items-left align-items-md-center flex-column flex-md-row"
+      >
+        <div>
+          <h2 class="text-white fw-bold mb-0">Dashboard</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-inner mt--5">
+    <div class="container-fluid py-3">
+      <!-- KPI Cards -->
+      <div class="row g-3">
+        @for (k of kpis; track k.label) {
+        <div class="col-12 col-sm-6 col-lg-3">
+          <div class="kpi-card">
+            <div class="kpi-icon">
+              <i class="fa-solid {{ k.icon }}"></i>
+            </div>
+            <div class="kpi-content">
+              <div class="kpi-label">{{ k.label }}</div>
+              <div class="kpi-value">
+                {{ k.value === null ? "—" : (k.value | number : "1.0-0") }}
+              </div>
+              <div class="kpi-meter">
+                <span
+                  class="meter-fill"
+                  [ngClass]="k.meterClass"
+                  [style.width.%]="k.meterPct"
+                >
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      <!-- Quick Links -->
+      <div class="row g-3 mt-1">
+        <div class="col-lg-12">
+          <div class="card shadow-sm border-0 rounded-3 employee-cv-card">
+            <div
+              class="card-header bg-white border-0 pb-0 d-flex justify-content-between align-items-center"
+            >
+              <div class="card-title h6 mb-0">
+                <i class="fa-solid fa-users me-2 text-secondary"></i
+                >Employee-wise CV
+                </div>
+            </div>
+
+            <div class="card-body pt-3">
+              <div class="quick-links d-flex flex-wrap gap-2">
+                @if (totalCVsByEmployees.length > 0) { @for (a of
+                totalCVsByEmployees; track a.EmployeeId) { @if ((userId === '1'
+                && userType === '1') || (userId == a.EmployeeId)) {
+                <a
+                  (click)="
+                    a.totalCv > 0 && applySearch('sempl', a.EmployeeId, '', '')
+                  "
+                  class="employee-link active"
+                >
+                  <i class="fa-solid fa-bar-chart me-1"></i>
+                  {{ a.EmployeeName }}
+                  <span class="badge bg-light text-theme-primary ms-1">{{
+                    a.totalCv || 0
+                  }}</span>
+                </a>
+                } @else if (userId !== '1' && userType == '3') {
+                <span class="employee-link disabled">
+                  <i class="fa-solid fa-bar-chart me-1"></i>
+                  {{ a.EmployeeName }}
+                  <span class="badge bg-secondary text-light ms-1">{{
+                    a.totalCv || 0
+                  }}</span>
+                </span>
+                } @else {
+                <span class="employee-link text-muted">
+                  <i class="fa-solid fa-bar-chart me-1"></i> --
+                </span>
+                } } } @else {
+                <span class="text-muted small">No records found.</span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Content Row: Activity + CSS-only Bar Chart -->
+      <div class="row g-3 mt-1 align-items-stretch">
+        <div class="col-12 col-lg-12">
+          <div class="card simple-card">
+            <div class="card-header bg-white border-0 pb-0">
+              <div class="card-title h6 mb-0">
+                <i class="fa-solid fa-layer-group me-2 text-secondary"></i>Category-wise
+              </div>
+              
+            </div>
+            <div class="card-body pt-3">
+              <div class="quick-links d-flex flex-wrap gap-2">
+                @if (totalCvByCategory.length > 0) { @for (a of
+                totalCvByCategory; track a.CategoryKey) { @if (userId === '1' &&
+                userType === '1') {
+                <a
+                  (click)="
+                    a.totalCv > 0 &&
+                      applySearch('sparCat', a.CategoryKey, '', '')
+                  "
+                  class="employee-link active"
+                >
+                  <i class="fa-solid fa-layer-group me-1"></i>
+                  {{ a.CategoryTitle }}
+                  <span class="badge bg-light text-theme-primary ms-1">{{
+                    a.totalCv || 0
+                  }}</span>
+                </a>
+                } @else {
+                <span class="employee-link disabled">
+                  <i class="fa-solid fa-layer-group me-1"></i>
+                  {{ a.CategoryTitle }}
+                  <span class="badge bg-secondary text-light ms-1">{{
+                    a.totalCv || 0
+                  }}</span>
+                </span>
+                } } } @else {
+                <span class="text-muted small">No records found.</span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg-12">
+          <div class="card simple-card">
+            <div class="card-header bg-white border-0 pb-0">
+              <div class="card-title h6 mb-0">
+                <i class="fa-solid fa-comments me-2 text-secondary"></i>Remark-wise
+              </div>
+            </div>
+            <div class="card-body pt-3">
+              <div class="quick-links d-flex flex-wrap gap-2">
+                @if (miniBarData.length > 0) { @for (g of miniBarData; track
+                g.IntvRmkKey) { @if (userId === '1' && userType === '1') {
+                <a
+                  (click)="
+                    g.totalCv > 0 &&
+                      applySearch('sfinalremark', g.IntvRmkKey, '', '')
+                  "
+                  class="employee-link active"
+                >
+                  <i class="fa-solid fa-comments me-1"></i>
+                  {{ g.IntvRmkTitle }}
+                  <span class="badge bg-light text-theme-primary ms-1">{{
+                    g.totalCv || 0
+                  }}</span>
+                </a>
+                } @else {
+                <span class="employee-link disabled">
+                  <i class="fa-solid fa-comments me-1"></i>
+                  {{ g.IntvRmkTitle }}
+                  <span class="badge bg-secondary text-light ms-1">{{
+                    g.totalCv || 0
+                  }}</span>
+                </span>
+                } } } @else {
+                <span class="text-muted small">No records found.</span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports Accordion -->
+      <div class="row g-3 mt-1 reports-row">
+        <div class="col-12">
+          @if (userId === '1' && userType === '1') {
+          <div class="card simple-card reports-card">
+            <div
+              class="card-header bg-white d-flex justify-content-between align-items-center"
+            >
+              <div class="card-title h6 mb-0">
+                <i class="fa-solid fa-chart-column me-2 text-secondary"></i>Reports
+              </div>
+              <button
+                class="btn btn-outline-primary btn-sm"
+                (click)="showReports = !showReports"
+              >
+                <i
+                  class="fa"
+                  [ngClass]="showReports ? 'fa-chevron-up' : 'fa-chevron-down'"
+                ></i>
+                {{ showReports ? "Hide" : "Show" }}
+              </button>
+            </div>
+            <div class="card-body pt-3" *ngIf="showReports">
+  <div class="report-list">
+    @for (r of reports; track r.task_name) {
+      <div class="report-item border rounded p-3 mb-3 shadow-sm bg-light">
+        <div class="r-header d-flex justify-content-between align-items-center mb-2">
+          <div class="title fw-normal text-dark">
+            <i class="fa-solid fa-file-lines me-2 text-secondary"></i>
+            {{ r.task_name }}
+          </div>
+          <span class="text-muted small">
+            <i class="fa-solid fa-calendar-day me-1"></i>Date: {{ r.dtm_date }}
+          </span>
+        </div>
+
+        <div class="r-grid d-flex flex-wrap gap-2">
+          @for (s of r.intvShedArr; track s.IntvRmkTitle) {
+            <a
+              (click)="s.totalCv > 0 && applySearch('sfinalremark', s.IntvRmkKey, 'sprojrct', r.recordId)"
+              class="r-stat text-decoration-none d-flex align-items-center border rounded-pill px-3 py-2 bg-white"
+            >
+              <i class="fa-solid fa-chart-simple me-2 text-theme-primary"></i>
+              <span class="fw-normal text-dark">{{ s.IntvRmkTitle }}</span>
+              <span
+                class="badge ms-2"
+                [ngClass]="{
+                  'bg-success text-light': s.IntvRmkTitle === 'Deployed',
+                  'bg-info text-dark': s.IntvRmkTitle !== 'Deployed'
+                }"
+              >
+                {{ s.totalCv || 0 }}
+              </span>
+            </a>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

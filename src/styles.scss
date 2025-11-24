@@ -1,0 +1,343 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Quill Editor Styles */
+@import 'quill/dist/quill.snow.css';
+
+/* Theme Variables - Centralized color management */
+:root {
+  /* Theme Colors */
+  --primary-color: #5C0632;
+  --primary-color-rgb: 92, 6, 50; /* RGB values for rgba() functions */
+  --primary-color-dark: #4a0528;
+  --primary-color-light: #7c084a;
+  --text-on-primary: #FFFFFF;
+  --background-color: #FFFFFF;
+  --text-color: #333333; /* Default text color */
+  --border-color: #ebedf2;
+  --secondary-color: #214982!important; /* Secondary color for buttons, links, etc. */
+  --toastr-success: #31CE36;
+  --toastr-error: #F25961;
+  --toastr-warning: #f78a06; /* Orange for warning */
+}
+
+/* Utility classes for theme colors */
+.bg-primary-theme { background-color: var(--primary-color); }
+.text-primary-theme { color: var(--primary-color); }
+.border-primary-theme { border-color: var(--primary-color); }
+.bg-primary-dark-theme { background-color: var(--primary-color-dark); }
+.bg-primary-light-theme { background-color: var(--primary-color-light); }
+.text-on-primary-theme { color: var(--text-on-primary); }
+
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import 'assets/css/atlantis.min.css';
+@import 'assets/css/demo.css';
+// @import 'assets/css/fonts.min.css';
+
+
+/* Font Awesome font path overrides */
+$fa-font-path: "assets/webfonts" !default;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* overflow: hidden; // Prevent outer scroll */
+}
+
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-panel {
+  flex: 1 0 auto;
+  overflow-y: auto; // Only main content scrolls
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer {
+  flex-shrink: 0;
+  width: 100%;
+  background: var(--background-color);
+  text-align: right;
+  padding: 8px 24px;
+  font-size: 13px;
+  border-top: 1px solid var(--border-color);
+  position: relative;
+  z-index: 2;
+}
+
+/* Theme color utility classes */
+.bg-primary-theme {
+  background-color: var(--primary-color) !important;
+}
+
+.text-primary-theme {
+  color: var(--primary-color) !important;
+}
+
+.border-primary-theme {
+  border-color: var(--primary-color) !important;
+}
+
+.btn-primary-theme {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+.btn-primary-theme:hover, .btn-primary-theme:focus, .btn-primary-theme:active {
+  background-color: var(--primary-color-dark) !important;
+  border-color: var(--primary-color-dark) !important;
+}
+
+/* Bootstrap button overrides */
+.btn-outline-primary {
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .show > .btn-outline-primary.dropdown-toggle {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: var(--primary-color-dark) !important;
+  border-color: var(--primary-color-dark) !important;
+}
+
+/* Secondary button overrides */
+.btn-outline-secondary {
+  color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+}
+
+.btn-outline-secondary:hover, .btn-outline-secondary:focus, .btn-outline-secondary:active, .btn-outline-secondary.active, .show > .btn-outline-secondary.dropdown-toggle {
+  background-color: var(--secondary-color) !important;
+  border-color: var(--secondary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+/* Form controls */
+.form-control:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25) !important;
+}
+
+/* Custom checkboxes and radios */
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.custom-control-input:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25) !important;
+}
+
+/* Badges */
+.badge-primary {
+  background-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+.badge-secondary {
+  background-color: var(--secondary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+/* Alerts */
+.alert-primary {
+  background-color: rgba(var(--primary-color-rgb), 0.15) !important;
+  border-color: rgba(var(--primary-color-rgb), 0.3) !important;
+  color: var(--primary-color-dark) !important;
+}
+
+/* Progress bars */
+.progress-bar {
+  background-color: var(--primary-color) !important;
+}
+
+/* Nav tabs */
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link {
+  color: var(--primary-color) !important;
+  border-color: var(--border-color) var(--border-color) var(--background-color) !important;
+}
+
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus {
+  border-color: rgba(var(--primary-color-rgb), 0.1) !important;
+}
+
+/* Nav pills */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  background-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+/* List groups */
+.list-group-item.active {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+/* Cards */
+.card-header {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.card-footer {
+  border-top: 1px solid var(--border-color) !important;
+}
+
+/* Dropdowns */
+.dropdown-item.active,
+.dropdown-item:active {
+  background-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+/* Pagination */
+.page-link {
+  color: var(--primary-color) !important;
+}
+
+.page-item.active .page-link {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+/* Tables */
+.table-primary,
+.table-primary > th,
+.table-primary > td {
+  background-color: rgba(var(--primary-color-rgb), 0.1) !important;
+}
+
+.table-hover .table-primary:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.2) !important;
+}
+
+.table-hover .table-primary:hover > td,
+.table-hover .table-primary:hover > th {
+  background-color: rgba(var(--primary-color-rgb), 0.2) !important;
+}
+
+/* Modals */
+.modal-header {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color) !important;
+}
+
+/* Tooltips */
+.tooltip-inner {
+  background-color: var(--primary-color) !important;
+  color: var(--text-on-primary) !important;
+}
+
+.bs-tooltip-top .arrow::before,
+.bs-tooltip-auto[x-placement^="top"] .arrow::before {
+  border-top-color: var(--primary-color) !important;
+}
+
+.bs-tooltip-right .arrow::before,
+.bs-tooltip-auto[x-placement^="right"] .arrow::before {
+  border-right-color: var(--primary-color) !important;
+}
+
+.bs-tooltip-bottom .arrow::before,
+.bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+  border-bottom-color: var(--primary-color) !important;
+}
+
+.bs-tooltip-left .arrow::before,
+.bs-tooltip-auto[x-placement^="left"] .arrow::before {
+  border-left-color: var(--primary-color) !important;
+}
+
+/* Popovers */
+.popover-header {
+  background-color: rgba(var(--primary-color-rgb), 0.05) !important;
+  border-bottom: 1px solid rgba(var(--primary-color-rgb), 0.1) !important;
+}
+
+/* Input groups */
+.input-group-text {
+  border-color: var(--border-color) !important;
+}
+
+/* Switch (custom) */
+.custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+  background-color: var(--text-on-primary) !important;
+}
+
+.custom-switch .custom-control-input:checked ~ .custom-control-label::before {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+/* Range sliders */
+.custom-range::-webkit-slider-thumb {
+  background-color: var(--primary-color) !important;
+}
+
+.custom-range::-moz-range-thumb {
+  background-color: var(--primary-color) !important;
+}
+
+.custom-range::-ms-thumb {
+  background-color: var(--primary-color) !important;
+}
+
+.custom-range:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25) !important;
+}
+
+.custom-range:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25) !important;
+}
+
+.custom-range:focus::-ms-thumb {
+  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25) !important;
+}
+
+/* SweetAlert2 custom gap between buttons */
+.swal2-custom-gap .swal2-actions .btn {
+  margin: 0 0.5rem;
+}
+
+/* Ensure SweetAlert is always above modals */
+.swal2-container {
+  z-index: 20000 !important;
+}
+
+/* Themed SweetAlert backdrop to match login screen */
+.swal2-container.swal2-login-bg {
+  background: url('assets/img/login-background.svg') no-repeat center center !important;
+  background-size: cover !important;
+}
+
+/* License error popup styling */
+.license-error-popup {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+// @import 'app/common-utilities.scss';

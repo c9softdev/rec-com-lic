@@ -1,0 +1,96 @@
+<div class="modal fade" #visaProcessModal id="visaProcessModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" [ngClass]="{ 'modal-fullscreen': isMaximized }">
+    <div class="modal-content">
+      <div class="modal-header modal-head text-white">
+        <h5 class="modal-title">
+          Visa Process — {{ jobseekerName }} [{{ jobseekerId }}]
+          <!-- - {{ candidateId }}] {{ projectId }} -->
+        </h5>
+        <div class="d-flex align-items-center ms-auto gap-2">
+          <button type="button" class="btn btn-sm btn-outline-light" (click)="toggleMaximize()" [attr.aria-pressed]="isMaximized" title="{{ isMaximized ? 'Restore' : 'Maximize' }}">
+            <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'" ></i>
+          </button>
+          <button type="button" class="btn-close btn-close-white" (click)="close()"></button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="visaForm" (ngSubmit)="submitVisaForm()">
+
+          <!-- Row with Mofa No and Visa Stamped Date -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="mofaNo" class="form-label">Mofa No</label>
+              <input type="text" class="form-control form-control-sm" id="mofaNo" formControlName="mofaNo"
+                placeholder="Enter Mofa Number" />
+            </div>
+
+            <div class="col-md-6">
+              <label for="visaStampedDate" class="form-label">Visa Stamped Date</label>
+              <input type="date" class="form-control form-control-sm" id="visaStampedDate"
+                formControlName="visaStampedDate" />
+            </div>
+          </div>
+
+          <!-- Medical Dropdown & Calendar -->
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <label for="medicalStatus" class="form-label">Medical</label>
+              <select class="form-select form-select-sm" id="medicalStatus" formControlName="medicalStatus">
+                <option value="">Choose Status</option>
+                <option *ngFor="let m of medicalArr" [value]="m.id">{{ m.name }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="medicalDate" class="form-label">Medical Date</label>
+              <input type="date" class="form-control form-control-sm" id="medicalDate" formControlName="medicalDate" />
+            </div>
+          </div>
+
+          <!-- Upload/Download Visa + Remark (side by side) -->
+          <div class="row g-3 mt-3">
+            <div class="col-md-6">
+              <label class="form-label">Upload Visa Document</label>
+              <div class="input-group input-group-sm">
+                <input type="file" class="form-control" id="visaFile" (change)="onVisaFileSelected($event)" />
+                <button class="btn btn-outline-primary btn-sm px-2" type="button" title="Upload Visa Document"
+                  (click)="uploadVisaDocument()">
+                  <i class="fas fa-arrow-up me-1"></i> Upload
+                </button>
+                <button *ngIf="hasVisaDocument" class="btn btn-outline-success btn-sm px-2" type="button"
+                  title="Download Visa Document" (click)="downloadVisaFile()">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+              @if (selectedVisaFile) {
+              <div class="form-text text-success small mt-1">
+                <i class="fas fa-file me-1"></i> {{ selectedVisaFile.name }}
+              </div>
+              }
+            </div>
+
+            <div class="col-md-6">
+              <label for="visaRemark" class="form-label">Remark</label>
+              <textarea class="form-control form-control-sm" id="visaRemark" formControlName="medRemark" rows="2"
+                placeholder="Enter remarks"></textarea>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-save me-2"></i> Submit
+            </button>
+
+            <button type="button" class="btn btn-outline-primary btn-sm"
+              (click)="parentComponent.openAllRemarks(jobseekerId, candidateId, projectId, jobseekerName)">
+              <i class="fas fa-comments me-2"></i> View All Remarks
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

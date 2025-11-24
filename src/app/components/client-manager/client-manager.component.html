@@ -1,0 +1,371 @@
+<div class="content">
+    <div class="page-inner">
+        <!-- Search Section -->
+        <div class="row" *ngIf="listRecdFlg">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="sticky-top-section" [ngClass]="{'search-hidden': !showSearchSection}">
+                        <!-- Search Section with Toggle Button -->
+                        <div class="card-body position-relative" *ngIf="showSearchSection">
+                            <button class="toggle-search-btn-minimal" (click)="toggleSearchSection()" type="button"
+                                data-bs-toggle="tooltip" title="Hide search">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                                <div class="row align-items-center">
+                                    <div class="col-md-4 col-lg-4">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="sname" formControlName="sname"
+                                                (blur)="checkInput($event.target)">
+                                            <label for="sname">Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="semail" formControlName="semail"
+                                                (blur)="checkInput($event.target)">
+                                            <label for="semail">Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4 d-flex align-items-end">
+                                        <div class="form-group w-100">
+                                            <button class="btn btn-outline-primary btn-round mr-2" type="submit">
+                                                <i class="fas fa-search mr-1"></i>Search
+                                            </button>
+                                            <button class="btn btn-outline-dark btn-round" type="button"
+                                                (click)="onClearSearch()">
+                                                <i class="fas fa-times mr-1"></i>Clear
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Show Search Button (when hidden) -->
+                        <button *ngIf="!showSearchSection" class="toggle-search-btn-minimal show-btn"
+                            (click)="toggleSearchSection()" type="button" data-bs-toggle="tooltip" title="Show search">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+
+                        <!-- Main Card Header with Title and Action Buttons -->
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h4 class="card-title mb-0">Client List
+                                    <span class="ml-2"
+                                        style="font-size: 14px; font-weight: normal; color: var(--primary-color);">
+                                        ({{ (totalRecords | number:'1.0-0') === '0' ? '0 record' : totalRecords + '
+                                        records' }})
+                                    </span>
+                                </h4>
+                                <div class="action-buttons">
+                                    <button class="btn btn-outline-primary btn-round mr-2" (click)="onShowAddForm()">
+                                        <i class="fas fa-plus mr-1"></i>Add Client
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-round mr-2"
+                                        (click)="onChangeOrderClick()"
+                                        [disabled]="objectKeys(orderChanges).length === 0">
+                                        <i class="fas fa-list-ol mr-1"></i>Change Order
+                                        <!-- {{ objectKeys(orderChanges).length > 0 ? ' (' + objectKeys(orderChanges).length+ ')' : '' }} -->
+                                        {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
+                                    </button>
+                                    <button class="btn btn-outline-dark btn-round mr-2"
+                                        (click)="onDisplayPortalClick()">
+                                        <i class="fas fa-eye mr-1"></i>Display in Portal
+                                        {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
+                                    </button>
+                                    <button class="btn btn-outline-info btn-round mr-2"
+                                        (click)="onChangeVisibilityClick()">
+                                        <i class="fas fa-eye mr-1"></i>Change visibility
+                                        {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
+                                    </button>
+                                    @if ((deleteOption != '' && deleteOption == '1') || (userId === '1' && userType == '1')) {
+                                    <button class="btn btn-outline-danger btn-round" (click)="onDeleteClick()">
+                                        <i class="fas fa-trash mr-1"></i>Delete
+                                        {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
+                                    </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table Section -->
+                    <div class="table-section">
+                        <div class="table-responsive" [ngClass]="{'table-full-height': !showSearchSection}">
+                            <table class="table  table-hover mb-0">
+                                <thead class="thead-light sticky-table-header">
+                                    <tr>
+                                        <th class="text-center" style="width: 2%;">
+                                            <input type="checkbox" class="custom-checkbox-modern"
+                                                [checked]="selectedItems.size === clients.length"
+                                                (change)="onSelectAll($event)">
+                                        </th>
+                                        <th style="width: 5%;">S.NO.</th>
+                                        <th>CLIENT NAME</th>
+                                        <th class="text-center" style="width: 15%;">LOGO</th>
+                                        <th style="width: 20%;">WEBSITE</th>
+                                        <th class="text-center" style="width: 10%;">DATE</th>
+                                        <th class="text-center" style="width: 5%;">ORDER</th>
+                                        <th class="text-center" style="width: 5%;">STATUS</th>
+                                        <th class="text-center" style="width: 5%;">PORTAL</th>
+                                        @if ((editresumechk != '' && editresumechk == '1') || (userId === '1' && userType == '1')) {
+                                        <th class="text-center" style="width: 5%;">EDIT</th>
+                                        }
+                                        <th class="text-center" style="width: 5%;">VIEW</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of clients; let i = index">
+                                        <td class="text-center">
+                                            <input type="checkbox" class="custom-checkbox-modern"
+                                                [checked]="selectedItems.has(item.id)"
+                                                (change)="onItemSelect(item.id, $event)">
+                                        </td>
+                                        <td style="text-align: center;">{{ item.sno }}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td class="text-center">
+                                            <img *ngIf="item.img_url" [src]="item.img_url" alt="Client Logo"
+                                                style="max-height: 70px;" />
+                                        </td>
+                                        <td>{{ item.websites }}</td>
+                                        <td class="text-center">{{ item.cdate }}</td>
+                                        <td class="text-center">
+                                            <input #orderInput type="number" class="form-control form-control-sm"
+                                                [value]="orderChanges[item.id] !== undefined ? orderChanges[item.id] : item.order"
+                                                (input)="onOrderInputChange(item.id, orderInput.value)" min="1"
+                                                [max]="totalRecords">
+                                        </td>
+                                        <td class="text-center">
+                                            <span *ngIf="item.status === '1'">
+                                                <i class="fas fa-check-circle text-success status-icon"></i>
+                                            </span>
+                                            <span *ngIf="item.status !== '1'">
+                                                <i class="fas fa-times-circle text-danger status-icon"></i>
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span *ngIf="item.portal === '1'">
+                                                <i class="fas fa-check-circle text-success status-icon"></i>
+                                            </span>
+                                            <span *ngIf="item.portal !== '1'">
+                                                <i class="fas fa-times-circle text-danger status-icon"></i>
+                                            </span>
+                                        </td>
+                                        @if ((editresumechk != '' && editresumechk == '1') || (userId === '1' && userType == '1')) {
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-icon btn-link" title="Edit Record"
+                                                (click)="onEditClick(item)">
+                                                <i class="fa fa-edit status-icon"></i>
+                                            </button>
+                                        </td>
+                                        }
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-icon" title="View Record"
+                                                (click)="onViewClick(item)">
+                                                <i class="fa fa-eye status-icon" style="color: darkcyan;"></i>
+                                            </button>
+                                    </tr>
+                                    <tr *ngIf="clients.length === 0" class="table-no-data-row">
+                                        <td colspan="11" class="table-no-data-cell">
+                                            <div class="no-data-center-container">
+                                                <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                                {{ noDataMessage || 'No clients found.' }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination Section (Sticky Footer) -->
+                        <!-- <div class="pagination-section sticky-table-footer"> -->
+                        <app-pagination class="pagination-section sticky-table-footer" [currentPage]="currentPage"
+                            [pageSize]="pageSize" [totalRecords]="Number(totalRecords)" [totalPages]="totalPages"
+                            [jumpToPage]="jumpToPage" (pageChange)="onPageChange($event)"
+                            (jumpToPageChange)="onJumpToPage($event)">
+                        </app-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add/Edit Form Section -->
+        <div class="row" *ngIf="addRecdFlg">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">{{ isEditMode ? 'Edit' : 'Add' }} Client
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="ClientsForm">
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="clname"
+                                            (blur)="checkInput($event.target)" formControlName="clname">
+                                        <label for="clname">Client Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="clemail"
+                                            (blur)="checkInput($event.target)" formControlName="clemail">
+                                        <label for="clemail">Client Email</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="clwebsite"
+                                            (blur)="checkInput($event.target)" formControlName="clwebsite">
+                                        <label for="clwebsite">Client Website</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="cldesc"
+                                            (blur)="checkInput($event.target)" formControlName="cldesc">
+                                        <label for="cldesc">Client Description</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-lg-6">
+                                    <label for="clientLogo" class="form-label upload-label">Logo</label>
+                                    <div class="input-group file-input-group">
+                                        <input #fileInput type="file" id="clientLogo" style="display:none" (change)="onFileSelected($event)" accept="image/*">
+
+                                        <div class="form-control file-display" role="button" (click)="fileInput.click()">
+                                            <span class="file-name" *ngIf="selectedFileName">{{ selectedFileName }}</span>
+                                            <span class="file-placeholder" *ngIf="!selectedFileName && !previewUrl"><i class="fas fa-info-circle"></i>
+                                                <small class="muted">Please upload an image &lt;= 500 KB</small>
+                                            </span>
+                                        </div>
+
+                                        <div class="file-actions d-flex align-items-center">
+                                            <!-- Remove button is always present but invisible when not active to keep layout stable -->
+                                            <button type="button"
+                                                class="btn btn-outline-danger btn-sm mr-2"
+                                                (click)="clearFile(fileInput)"
+                                                title="Remove"
+                                                [style.visibility]="(selectedFileName || previewUrl) ? 'visible' : 'hidden'"
+                                                [disabled]="!(selectedFileName || previewUrl)"
+                                                [style.minWidth.px]="36">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" (click)="fileInput.click()"><i class="fas fa-folder-open"></i> Choose</button>
+                                        </div>
+                                    </div>
+
+                                        <div class="mt-2">
+                                        <small class="text-primary" *ngIf="!fileError && !previewUrl">Allowed: .png, .jpg, .jpeg, .gif, .webp — Max 500 KB</small>
+                                        <div *ngIf="fileError" class="mt-1">
+                                            <small class="text-danger d-block">{{ fileError }}</small>
+                                        </div>
+
+                                        <div *ngIf="previewUrl" class="preview-card mt-2">
+                                            <img [src]="previewUrl" alt="Preview" style="max-width:160px; max-height:120px; object-fit:contain;" />
+                                            <!-- <div class="preview-caption">Preview</div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label style="margin-top: 1rem; display: flex; align-items: center;">
+                                            <input class="custom-checkbox-modern" type="checkbox" value=""
+                                                id="publishCheckbox" formControlName="publish">
+                                            <span>Publish</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-lg-2">
+                                    <div class="form-group">
+                                        <label style="margin-top: 1rem; display: flex; align-items: center;">
+                                            <input class="custom-checkbox-modern" type="checkbox" value=""
+                                                id="frontCheckbox" formControlName="front">
+                                            <span>Front</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <button type="submit" class="btn btn-outline-primary btn-round mr-2"
+                                    (click)="isEditMode ? onUpdateRecord() : onSaveNewRecord()"
+                                    [disabled]="isSaving">
+                                    <i *ngIf="!isSaving" class="fas fa-save mr-1"></i>
+                                    <i *ngIf="isSaving" class="fas fa-spinner fa-spin mr-1"></i>
+                                    {{ isEditMode ? (isSaving ? 'Updating...' : 'Update') : (isSaving ? 'Saving...' : 'Save') }}
+                                </button>
+                                <button type="button" class="btn btn-outline-info btn-round mr-2"
+                                    (click)="onCancelClick()">
+                                    <i class="fas fa-times mr-1"></i>Cancel
+                                </button>
+                                <button type="reset" class="btn btn-outline-dark btn-round" (click)="onClearClick()">
+                                    <i class="fas fa-eraser mr-1"></i>Clear
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Client Modal -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="viewModalOpen" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-sm modal-dialog-centered" [ngClass]="{ 'modal-fullscreen': isMaximized }">
+    <div class="modal-content">
+      <div class="modal-header modal-head text-white" style="background: var(--primary-color);">
+        <h5 class="modal-title mb-0 fw-semibold">
+          Client Details
+        </h5>
+        <div class="d-flex align-items-center ms-auto gap-2">
+          <button type="button" class="btn btn-sm btn-outline-light" (click)="toggleMaximize()" [attr.aria-label]="isMaximized ? 'Restore' : 'Maximize'">
+            <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
+          </button>
+          <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeViewModal()"></button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="viewClient">
+          <div class="row g-3 align-items-center">
+            <div class="col-md-8">
+              <div class="mb-2">
+                <label class="form-label fw-bold">Name:</label>
+                <span>{{ viewClient.clientName }}</span>
+              </div>
+              <div class="mb-2">
+                <label class="form-label fw-bold">Website:</label>
+                <span>
+                  <a *ngIf="viewClient.website" [href]="viewClient.website" target="_blank">{{ viewClient.website }}</a>
+                  <span *ngIf="!viewClient.website">-</span>
+                </span>
+              </div>
+              <div class="mb-2">
+                <label class="form-label fw-bold">Description:</label>
+                <span>{{ viewClient.description }}</span>
+              </div>
+            </div>
+            <div class="col-md-4 text-end">
+              <div *ngIf="viewClient.logo">
+                <img [src]="viewClient.logo" alt="Client Logo" class="img-fluid rounded shadow-sm border" style="max-width: 140px; max-height: 100px;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End View Client Modal -->
+
+<!-- Save spinner overlay (component-local) -->
+<div class="global-spinner-overlay" *ngIf="isSaving" [attr.aria-hidden]="!isSaving" role="status" aria-live="polite">
+  <div class="global-spinner-card" role="alert" aria-label="Saving, please wait">
+    <div class="lds-ring" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-text">Saving…</div>
+  </div>
+</div>

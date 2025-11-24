@@ -1,0 +1,79 @@
+<div class="input-group position-relative">
+  <div class="searchable-dropdown">
+    <input type="text" class="form-control active" [id]="uniqueId" [placeholder]="placeholder" [attr.data-always-active]="alwaysActive ? 'true' : null"
+      [value]="inputDisplayValue" [readonly]="!showDropdown && selectedItems.length > 0" (input)="onInput($event)"
+      (focus)="onFocus()" (blur)="onBlur()" autocomplete="off">
+    <label [for]="uniqueId" [class.active]="alwaysActive || (selectedItems.length > 0 && !showDropdown)">{{ label }}</label>
+
+    <!-- Selected Items Badge -->
+    <div class="selected-cities-badge" *ngIf="selectedItems.length > 0 && !showDropdown"
+      (mousedown)="toggleSelectedDropdown($event)">
+      <!-- <i class="fas fa-tags"></i> -->
+       <i class="fa-solid fa-check-double"></i>
+      <span class="badge-count">{{ selectedItems.length }}</span>
+    </div>
+
+    <!-- Mini-dropdown for selected items -->
+    <div class="selected-cities-mini-dropdown" *ngIf="showSelectedDropdown">
+      <div class="mini-dropdown-header">Selected Items</div>
+      <div class="mini-dropdown-list">
+        <div class="mini-dropdown-item" *ngFor="let item of selectedItems; let i = index">
+          <span>{{ item.name }}</span>
+          <button type="button" class="remove-btn" (mousedown)="removeItem(i)">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Dropdown Results -->
+    <div class="dropdown-results" *ngIf="showDropdown" [style.max-height]="maxHeight">
+      <!-- Selected Items Section -->
+      <div class="selected-section" *ngIf="selectedItems.length > 0">
+        <div class="selected-list">
+          <div class="selected-item" *ngFor="let item of selectedItems; let i = index">
+            <span>{{ item.name }}</span>
+            <button type="button" class="remove-btn" (mousedown)="removeItem(i)">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="divider"></div>
+      </div>
+
+      <!-- Available Items Section -->
+      <div class="available-section">
+        <!-- Grouped Options -->
+        <ng-container *ngIf="grouped; else simpleOptions">
+          <div class="group" *ngFor="let group of groupedOptions">
+            <div class="group-header">{{ group.groupName }}</div>
+            <div class="group-items">
+              <div class="item" *ngFor="let option of group.options" (mousedown)="onDropdownItemClick(option, $event)"
+                [class.selected]="isSelected(option.id)">
+                <i class="fas fa-check" *ngIf="isSelected(option.id)"></i>
+                {{ option.name }}
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Simple Options -->
+        <ng-template #simpleOptions>
+          <div class="group-items">
+            <div class="item" *ngFor="let option of filteredOptions" (mousedown)="onDropdownItemClick(option, $event)"
+              [class.selected]="isSelected(option.id)">
+              <i class="fas fa-check" *ngIf="isSelected(option.id)"></i>
+              {{ option.name }}
+            </div>
+          </div>
+        </ng-template>
+      </div>
+
+      <!-- No Results -->
+      <div class="no-results" *ngIf="filteredOptions.length === 0 && searchTerm">
+        <i class="fas fa-search"></i>
+        <span>No items found for "{{ searchTerm }}"</span>
+      </div>
+    </div>
+  </div>
+</div>

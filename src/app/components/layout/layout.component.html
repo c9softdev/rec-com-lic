@@ -1,0 +1,167 @@
+<div class="wrapper">
+
+  <div class="overlay" [class.show]="sidebarOpen" (click)="closeSidebar()"></div>
+  <div class="main-header">
+    <div class="header-inner">
+      <!-- Left: Hamburger always visible, side logo only if expanded -->
+      <div class="header-left d-flex align-items-center">
+        <!-- Collapsed: Hamburger left, logo right -->
+        <ng-container *ngIf="isSidebarCollapsed; else expandedHeader">
+          <button
+            class="hamburger"
+            [class.active]="isHamburgerActive"
+            [attr.aria-expanded]="sidebarOpen"
+            aria-controls="sidebar"
+            [attr.aria-label]="isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE"
+            [title]="isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE"
+            type="button"
+            (click)="toggleSidebar()">
+            <span class="hamburger-icon" *ngIf="!isHamburgerActive">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <i class="fas fa-angles-left collapse-icon" *ngIf="isHamburgerActive"></i>
+          </button>
+          <a routerLink="/dashboard" class="logo d-flex align-items-center ms-2">
+            <img *ngIf="config && config.var_logo_client" [src]="config.var_logo_client" class="logo-side" alt="Logo" />
+            <img *ngIf="!configLoading && (!config || !config.var_logo_client)" src="/assets/img/c9client-logo.png" class="logo-side" alt="Default Logo" />
+          </a>
+        </ng-container>
+        <!-- Expanded: Logo left, hamburger right -->
+        <ng-template #expandedHeader>
+          <a routerLink="/dashboard" class="logo d-flex align-items-center ms-2 me-2">
+            <img *ngIf="config && config.var_logo_client" [src]="config.var_logo_client" class="logo-side" alt="Logo" />
+            <img *ngIf="!configLoading && (!config || !config.var_logo_client)" src="/assets/img/c9client-logo.png" class="logo-side" alt="Default Logo" />
+          </a>
+          <button
+            class="hamburger"
+            [class.active]="isHamburgerActive"
+            [attr.aria-expanded]="sidebarOpen"
+            aria-controls="sidebar"
+            [attr.aria-label]="isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE"
+            [title]="isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE"
+            type="button"
+            (click)="toggleSidebar()">
+            <span class="hamburger-icon" *ngIf="!isHamburgerActive">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <i class="fas fa-angles-left collapse-icon" *ngIf="isHamburgerActive"></i>
+          </button>
+        </ng-template>
+      </div>
+      <!-- Center: main client/company logo always centered -->
+      <div class="center-logo d-flex justify-content-center align-items-center">
+        <img *ngIf="config && config.var_logo_url" [src]="config.var_logo_url" alt="Main Logo" class="main-logo" />
+        <img *ngIf="!configLoading && (!config || !config.var_logo_url)" src="/assets/img/logo.jpg" alt="Main Logo" class="main-logo" />
+      </div>
+      <!-- Right: Topbar/account actions -->
+      <div class="header-right">
+        <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
+          <div class="d-flex align-items-center">
+            <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+              <li class="nav-item toggle-nav-search hidden-caret">
+                <a class="nav-link" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
+                  <i class="fa fa-search"></i>
+                </a>
+              </li>
+              <li class="nav-item dropdown hidden-caret" #profileDropdownRef>
+                <a class="dropdown-toggle profile-pic" href="#" (click)="toggleProfileDropdown($event)">
+                  <div class="avatar-sm">
+                    <img [src]="(config?.app_root_url || '') + '/assets/img/employe.jpg'" alt="..." class="avatar-img rounded-circle">
+                  </div>
+                </a>
+                <ul class="dropdown-menu dropdown-user animated fadeIn" [class.show]="isProfileDropdownOpen">
+                  <div class="dropdown-user-scroll">
+                    <li>
+                      <div class="user-box">
+                        <div class="avatar-lg">
+                          <img [src]="(config?.app_root_url) + 'assets/img/employe.jpg'" alt="Profile Image" class="avatar-img rounded">
+                        </div>
+                        <div class="u-text">
+                          <h4>{{currentUser?.username || 'User'}}</h4>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item disabled" tabindex="-1" aria-disabled="true" style="pointer-events:none;opacity:0.6;">My Profile</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" routerLink="/change-password" (click)="closeProfileDropdown()">Change Password</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" (click)="logout(); closeProfileDropdown()">Logout</a>
+                    </li>
+                  </div>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar sidebar-style-2" [class.collapsed]="isSidebarCollapsed" [attr.aria-hidden]="!sidebarOpen">
+    <div class="sidebar-wrapper">
+      <div class="sidebar-content">
+        <ul class="nav nav-primary">
+          <li *ngIf="menuLoading" class="nav-item"><span>Loading menu...</span></li>
+          <li *ngIf="menuError" class="nav-item text-danger"><span>{{ menuError }}</span></li>
+          <ng-container *ngIf="!menuLoading && !menuError">
+            <ng-container *ngFor="let menu of menuList">
+              <li class="nav-item" [class.expanded]="expandedMenuId === menu.id">
+                <a href="javascript:void(0)" 
+                   (click)="onMenuItemClick(menu, $event)"
+                   [title]="getMenuItemTitle(menu)"
+                   [attr.aria-expanded]="expandedMenuId === menu.id"
+                   [attr.aria-label]="menu.submenuArr?.length ? (expandedMenuId === menu.id ? SUBMENU_COLLAPSE_TITLE : SUBMENU_EXPAND_TITLE) + ' ' + menu.title : menu.title">
+                  <span [innerHTML]="getSafeIcon(menu.icon)" aria-hidden="true"></span>
+                  <p>{{ menu.title }}</p>
+                  <span *ngIf="menu.submenuArr && menu.submenuArr.length" 
+                        class="arrow"
+                        [class.expanded]="expandedMenuId === menu.id"
+                        aria-hidden="true">&#9660;</span>
+                </a>
+                <ul class="submenu" *ngIf="menu.submenuArr && menu.submenuArr.length && expandedMenuId === menu.id">
+                  <ng-container *ngFor="let sub of menu.submenuArr">
+                    <li [class.expanded]="sub.expanded">
+                      <a href="javascript:void(0)" (click)="onMenuItemClick(sub, $event)">
+                        {{ sub.title }}
+                        <span *ngIf="sub.submenuArr2 && sub.submenuArr2.length" class="arrow sub-arrow"
+                          [class.expanded]="sub.expanded">&#9658;</span>
+                      </a>
+                      <ul class="sub-submenu" *ngIf="sub.submenuArr2 && sub.submenuArr2.length && sub.expanded">
+                        <li *ngFor="let sub2 of sub.submenuArr2">
+                          <a href="javascript:void(0)" (click)="onMenuItemClick(sub2, $event)">{{ sub2.title }}</a>
+                        </li>
+                      </ul>
+                    </li>
+                  </ng-container>
+                </ul>
+              </li>
+            </ng-container>
+          </ng-container>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-panel" [class.expanded]="isSidebarCollapsed">
+    <router-outlet></router-outlet>
+  </div>
+
+  <footer class="footer">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="footer-version text-muted small" *ngIf="globalSettings?.var_version">
+        {{ globalSettings?.var_version }}
+      </div>
+      <div class="copyright ml-auto">
+        {{currentYear || ''}},
+        <span *ngIf="globalSettings?.footer_txt">{{globalSettings?.footer_txt}}</span>
+        <span *ngIf="!globalSettings?.footer_txt">Powered by</span>
+      </div>
+    </div>
+  </footer>
+</div>

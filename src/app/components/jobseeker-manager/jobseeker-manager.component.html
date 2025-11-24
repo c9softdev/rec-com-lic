@@ -1,0 +1,1302 @@
+<div class="content">
+  <div class="page-inner">
+    <div class="row" *ngIf="listRecdFlg">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="sticky-top-section" [ngClass]="{ 'search-hidden': !showSearchSection }">
+            <!-- Search Section with Toggle Button -->
+            <div class="card-body position-relative" *ngIf="showSearchSection">
+              <button class="toggle-search-btn-minimal" (click)="toggleSearchSection()" type="button"
+                data-bs-toggle="tooltip" title="Hide search">
+                <i class="fas fa-chevron-up"></i>
+              </button>
+              <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                <div class="row align-items-center">
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="sparCat" formControlName="sparCat"
+                        (change)="onParentCategoryChange()" (blur)="checkInput($event.target)">
+                        <option *ngFor="let cat of parentCategories" [value]="cat.id">
+                          {{ cat.name }}
+                        </option>
+                      </select>
+                      <label for="sparCat">Parent Category</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3 active">
+                    <app-multi-select-dropdown [options]="subCategoryOptions" label="Sub Category" id="fsssubCat"
+                      formControlName="fsssubCat" [placeholder]="'Search Sub Category'" [alwaysActive]="true"
+                      (selectionChange)="onSubCategoryChange()">
+                    </app-multi-select-dropdown>
+                  </div>
+                  <div class="col-md-3 col-lg-3 active">
+                    <app-multi-select-dropdown [options]="specializationOptions" label="Specialization"
+                    id="fssplCat" formControlName="fssplCat" [placeholder]="'Search Specialization'" [alwaysActive]="true">
+                    </app-multi-select-dropdown>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="sjobid" formControlName="sjobid"
+                        (blur)="checkInput($event.target)" />
+                      <label for="sjobid">Jobseeker Id.</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row align-items-center">
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="susrName" formControlName="susrName"
+                        (blur)="checkInput($event.target)" />
+                      <label for="susrName">Name</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="email" class="form-control" id="semail" formControlName="semail"
+                        (blur)="checkInput($event.target)" />
+                      <label for="semail">Email</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="date" class="form-control active" id="sfdate" formControlName="sfdate"
+                        (blur)="checkInput($event.target)" />
+                      <label for="sfdate">Register From</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="date" class="form-control active" id="stodate" formControlName="stodate"
+                        (blur)="checkInput($event.target)" />
+                      <label for="stodate">Register To</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row align-items-center">
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="sgender" formControlName="sgender"
+                        (blur)="checkInput($event.target)">
+                        <option *ngFor="let g of genders" [value]="g.id">
+                          {{ g.name }}
+                        </option>
+                      </select>
+                      <label for="sgender">Gender</label>
+                    </div>
+                  </div>
+                  @if (userId === '1' && userType == '1') {
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="sempl" formControlName="sempl"
+                        (blur)="checkInput($event.target)">
+                        <option *ngFor="let emp of employees" [value]="emp.id">
+                          {{ emp.fullName }}
+                        </option>
+                      </select>
+                      <label for="sempl">Employee</label>
+                    </div>
+                  </div>
+                  }
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="number" class="form-control active mr-2 " id="syear" formControlName="syear"
+                      placeholder="Year" min="0" />
+                      <label for="syear">Experience</label>
+                      <input type="number" class="form-control ml-2 " id="smonth" formControlName="smonth"
+                        placeholder="Month" min="0" max="11" />
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="txtsquali" formControlName="txtsquali"
+                        (blur)="checkInput($event.target)">
+                        <option *ngFor="let q of qualifications" [value]="q.id">
+                          {{ q.qualifiction || q.name }}
+                        </option>
+                      </select>
+                      <label for="txtsquali">Qualification</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row align-items-center">
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="sreligoin" formControlName="sreligoin"
+                        (blur)="checkInput($event.target)">
+                        <option *ngFor="let r of religions" [value]="r.id">
+                          {{ r.name }}
+                        </option>
+                      </select>
+                      <label for="sreligoin">Religion</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="sprojrct" formControlName="sprojrct"
+                        (blur)="checkInput($event.target)">
+                        <option *ngFor="let p of projects" [value]="p.id">
+                          {{ p.task_nameShow }}
+                        </option>
+                      </select>
+                      <label for="sprojrct">Project</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="spassport" formControlName="spassport"
+                        (blur)="checkInput($event.target)" />
+                      <label for="spassport">Passport No.</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <app-multi-select-dropdown [options]="cityOptions" [grouped]="true" label="City/State"
+                      formControlName="sddcity" [placeholder]="'Search City'" [alwaysActive]="true"
+                      (selectionChange)="onCitySelectionChange($event)">
+                    </app-multi-select-dropdown>
+                  </div>
+                </div>
+                <div class="row align-items-center">
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="sfatherName" formControlName="sfatherName"
+                        (blur)="checkInput($event.target)" />
+                      <label for="sfatherName">Father Name</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="sfinalremark" formControlName="sfinalremark"
+                        (blur)="checkInput($event.target)">
+                        <option *ngFor="let r of remarks" [value]="r.id">
+                          {{ r.name }}
+                        </option>
+                      </select>
+                      <label for="sfinalremark">Remark</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control mr-1 active" id="sortto" formControlName="sortto"
+                        placeholder="Sort By">
+                        <option *ngFor="let s of sortTo" [value]="s.id">
+                          {{ s.name }}
+                        </option>
+                      </select>
+                      <label for="sortto" class="active">Sort By</label>
+                      <select class="form-control ml-1" id="sortby" formControlName="sortby"
+                        placeholder="Order By">
+                        <option *ngFor="let s of sortBy" [value]="s.id">
+                          {{ s.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3 d-flex align-items-end">
+                    <div class="form-group">
+                      <label style="
+                          margin-top: 1rem;
+                          display: flex;
+                          align-items: center;
+                        ">
+                        <input class="custom-checkbox-modern" type="checkbox" value="" id="archdoc"
+                          formControlName="archdoc" />
+                        <span style="margin-left: 0px">Archive Documents</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row align-items-center">
+                  <div class="col-md-12 d-flex">
+                    <button class="btn btn-outline-primary btn-round mr-2" type="submit">
+                      <i class="fas fa-search mr-1"></i>Search
+                    </button>
+                    <button class="btn btn-outline-dark btn-round mr-2" type="button" (click)="onClearSearch()">
+                      <i class="fas fa-times mr-1"></i>Clear
+                    </button>
+                    @if (userId === '1' && userType == '1') {
+                    <button class="btn btn-outline-success btn-round export-btn" type="button"
+                      [disabled]="!exportEnabled || isExporting || isInCooldown" (click)="onExport()"
+                      [title]="exportTooltip">
+                      <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true"
+                        *ngIf="isExporting"></span>
+                      <i class="fas fa-file-excel mr-1" [class.animate-excel]="
+                          exportEnabled && !isExporting && !isInCooldown
+                        "></i>Export
+                    </button>
+                    }
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- Show Search Button (when hidden) -->
+            <button *ngIf="!showSearchSection" class="toggle-search-btn-minimal show-btn"
+              (click)="toggleSearchSection()" type="button" data-bs-toggle="tooltip" title="Advance search">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="card-header">
+              <div class="d-flex align-items-center justify-content-between">
+                <h4 class="card-title mb-0">
+                  {{ assignCvMode ? "Assign CV Manager" : "Jobseeker Manager" }}
+                  <span style="
+                      font-size: 14px;
+                      font-weight: normal;
+                      color: var(--primary-color);
+                    " [title]="
+                      clickval && clickval !== '0'
+                        ? clickval === '1'
+                          ? 'Self CV'
+                          : clickval === '2'
+                          ? 'CV by Me'
+                          : ''
+                        : ''
+                    ">
+                    ({{
+                    (totalRecords | number : "1.0-0") === "0"
+                    ? "0 record"
+                    : totalRecords + " records"
+                    }})
+                  </span>
+                  <!-- Filter icon (icon-only) with custom dropdown to avoid Bootstrap JS dependency -->
+                  <div class="d-inline-block ml-2 position-relative">
+                    <a class="text-secondary" id="cvFilterBtn" role="button"
+                      [attr.aria-expanded]="cvFilterOpen" title="Filter CV" aria-label="Filter CV"
+                      style="cursor: pointer; text-decoration: none" (click)="toggleCvFilter()">
+                      <i class="fa fa-sliders-h" aria-hidden="true" style="font-size: 1rem; vertical-align: middle"></i>
+                    </a>
+                    <ul id="cvFilterMenu" class="dropdown-menu show" *ngIf="cvFilterOpen"
+                      style="display: block; position: absolute; z-index: 1000;">
+                      <li>
+                        <a class="dropdown-item" (click)="setClickval('0'); closeCvFilter()" [class.active]="clickval === '0'"
+                          style="cursor: pointer">All</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" (click)="setClickval('1'); closeCvFilter()" [class.active]="clickval === '1'"
+                          style="cursor: pointer">Self CV</a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" (click)="setClickval('2'); closeCvFilter()" [class.active]="clickval === '2'"
+                          style="cursor: pointer">CV by Me</a>
+                      </li>
+                    </ul>
+                  </div>
+                </h4>
+                <div class="action-buttons" style="gap: 5px;">
+                  <!-- Assign CV Mode Controls -->
+                  <div *ngIf="assignCvMode" class="d-flex align-items-center mr-2">
+                    <div class="input-group mr-2" style="max-width: 400px !important">
+                      <select class="form-control active" [(ngModel)]="selectedProjectId"
+                        (change)="onProjectChange($event)" [ngModelOptions]="{ standalone: true }">
+                        <option value="">
+                          -- Select Task for Assign CVs --
+                        </option>
+                        <option *ngFor="let p of projects" [value]="p.id">
+                          {{ p.task_name }}
+                        </option>
+                      </select>
+                      <label>Assign Project</label>
+                    </div>
+                    <button class="btn btn-outline-success btn-round" style="padding-left: 10px;" (click)="onAssignCvsToProject()" [disabled]="
+                        selectedItems.size === 0 || !selectedProjectId
+                      ">
+                      <i class="fas fa-link mr-1"></i>Assign CVs ({{
+                      selectedItems.size
+                      }})
+                    </button>
+                  </div>
+                  <div class="quick-search-container mr-2">
+                    <div class="input-group">
+                      <input type="text" class="form-control active" id="quickPassport"placeholder="Search by Passport" [(ngModel)]="quickSearchPassport"
+                        [ngModelOptions]="{ standalone: true }" (keyup.enter)="onQuickSearch()"
+                        (keyup)="onQuickSearchKeyUp($event)" (blur)="checkInput($event.target)" />
+                      <label for="quickPassport">Passport</label>
+                      <div class="input-group-append">
+                        <button *ngIf="quickSearchPassport" class="btn danger" type="button"
+                          title="Clear Search" (click)="clearQuickSearch()">
+                          <i class="fas fa-times"></i>
+                        </button>
+                        <button class="btn btn-outline-primary" type="button" title="Quick Search"
+                          (click)="onQuickSearch()">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button *ngIf="!assignCvMode" class="btn btn-outline-success btn-round mr-2"
+                    (click)="onShowEmailForm()">
+                    <i class="fas fa-envelope mr-1"></i>Send Email
+                  </button>
+                  @if (licenseData && licenseData.int_jobseeker_cnt &&
+                  licenseData.int_jobseeker_cnt <= totalRecords) {
+                     <button class="btn btn-outline-danger btn-round mr-2">
+                        <i class="fas fa-exclamation-triangle"></i>CV Limit Reached
+                      </button>
+                  }
+                  @else{
+                      <button *ngIf="!assignCvMode" class="btn btn-outline-primary btn-round mr-2"
+                        (click)="onShowAddForm()">
+                        <i class="fas fa-plus mr-1"></i>Add CV
+                      </button>
+                  }
+                  
+                  @if ((deleteOption != '' && deleteOption == '1') || (userId
+                  === '1' && userType == '1')) {
+                  <button class="btn btn-outline-info btn-round mr-2" (click)="onChangeVisibilityClick()"
+                    [disabled]="selectedItems.size === 0" *ngIf="!assignCvMode">
+                    <i class="fas fa-eye mr-1"></i>Change Visibility{{
+                    selectedItems.size > 0
+                    ? " (" + selectedItems.size + ")"
+                    : ""
+                    }}
+                  </button>
+                  <button class="btn btn-outline-danger btn-round" (click)="onDeleteClick()"
+                    [disabled]="selectedItems.size === 0" *ngIf="!assignCvMode">
+                    <i class="fas fa-trash mr-1"></i>Delete{{
+                    selectedItems.size > 0
+                    ? " (" + selectedItems.size + ")"
+                    : ""
+                    }}
+                  </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Send Email Form Section -->
+          <div class="row email-section-margin" *ngIf="showEmailForm">
+            <div class="col-md-12">
+              <div class="card border-success">
+                <div class="card-body">
+                  <h5 class="card-title mt-3 text-success">
+                    <i class="fa fa-envelope me-2"></i> Send Email / SMS
+                  </h5>
+
+                  <form [formGroup]="emailForm" (ngSubmit)="onSendEmail()">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="input-group mb-3">
+                          <input type="text" class="form-control w-100" id="emailSubject" formControlName="emailSubject"
+                            (blur)="checkInput($event.target)" />
+                          <label for="emailSubject">Email Subject</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label for="emailMessage">Email Message
+                          <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <quill-editor formControlName="emailMessage" [modules]="quillConfig"
+                          placeholder="Type your message here..." class="email-editor" />
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-md-12 d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn btn-success" [disabled]="emailForm.invalid">
+                          <i class="fa fa-paper-plane"></i> Send Email
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" (click)="onCancelEmailForm()">
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Table Section -->
+          <div class="table-section">
+            <div class="table-responsive">
+              <table class="table table-striped table-hover mb-0">
+                <thead class="thead-light sticky-table-header">
+                  <tr>
+                    <th class="text-center" style="width: 2%">
+                      <input type="checkbox" class="custom-checkbox-modern"
+                        [checked]="selectedItems.size === jobseekers.length" (change)="onSelectAll($event)" />
+                    </th>
+                    <th>Personal Details</th>
+                    <th style="width: 46%">Other Details</th>
+                    <th class="text-center" style="width: 5%">Action</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let item of jobseekers">
+                    <td class="text-center">
+                      {{ item.sno }}
+                      <input type="checkbox" class="custom-checkbox-modern" [checked]="selectedItems.has(item.id)"
+                        (change)="onItemSelect(item.id, $event)" />
+                    </td>
+                    <td>
+                      
+                      <div class="card job-card mb-2 shadow-sm">
+                        <div class="card-body py-2">
+                          <!-- Top Row: ID + Action Icons -->
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                              <strong class="text-muted small">REGIS. ID:&nbsp;</strong>
+                              <span class="text-primary fw-bold" (click)="onViewClick(item)">{{
+                                item.job_seeker_id || "" }}
+                              </span>
+                            </div>
+
+
+                          </div>
+
+                          <!-- Details -->
+                          <div class="row mb-1">
+                            <div class="col-4 text-muted"><b>Name</b></div>
+                            <div class="col-8">
+                              {{ item.user_name }}
+                              @if (item.year !== '') {
+                              <span class="text-muted">| Exp {{ item.year }} Yr</span>
+                              }
+                            </div>
+                          </div>
+
+                          <div class="row mb-1">
+                            <div class="col-4 text-muted"><b>Email</b></div>
+                            <div class="col-8">
+                              <a [href]="'mailto:' + item.email">{{
+                                item.email
+                                }}</a>
+                            </div>
+                          </div>
+
+                          <div class="row mb-1">
+                            <div class="col-4 text-muted"><b>Phone</b></div>
+                            <div class="col-8">
+                              {{ item.contactno }}
+                              @if (item.passport_no !== '') {
+                              <span class="text-muted">| Passport: {{ item.passport_no }}</span>
+                              }
+                            </div>
+                          </div>
+
+                          <div class="row mb-1">
+                            <div class="col-4 text-muted"><b>Created</b></div>
+                            <div class="col-8">
+                              {{ item.cdate }} 
+                              @if (item.createBy != '')
+                              {
+                                ({{ item.createBy }})
+                              }
+                            </div>
+                          </div>
+
+                          <div class="row mb-1">
+                            <div class="col-4 text-muted">
+                              <b>Qualification</b>
+                            </div>
+                            <div class="col-8">{{ item.qualifications }}</div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-12 text-muted small fw-semibold">
+                              {{ item.assgnPrj || "-- No Assigned Project --" }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                     
+                      <div class="card job-card mb-2 shadow-sm">
+                        <div class="card-body py-2">
+                          <!-- Category Section -->
+                          <div class="row mb-1">
+                            <div class="col-4 text-muted fw-semibold">
+                              Parent Category
+                            </div>
+                            <div class="col-8">{{ item.parent_cateid }}</div>
+                          </div>
+
+                          <div class="row mb-1">
+                            <div class="col-4 text-muted fw-semibold">
+                              Sub Category
+                            </div>
+                            <div class="col-8">{{ item.subcat_subcatid }}</div>
+                          </div>
+
+                          <div class="row mb-2">
+                            <div class="col-4 text-muted fw-semibold">
+                              Specialization
+                            </div>
+                            <div class="col-8">{{ item.specilization }}</div>
+                          </div>
+
+                          <!-- Updated By -->
+                          <div class="row mb-2 ">
+                            <div class="col-4 text-primary fw-semibold">
+                              Updated By
+                            </div>
+                            <div class="col-8 text-muted">
+                              {{ item.updatedBy }} 
+                              @if (item.updatedBy != '')
+                              {
+                                | 
+                              }
+                              {{ item.updateDate }}
+                            </div>
+                          </div>
+
+                          <!-- Remarks -->
+                          <div class="row mb-2">
+                            <div class="col-4 text-muted fw-semibold">
+                              Remark
+                            </div>
+                            <div class="col-8">
+                              <div class="fw-medium">
+                                {{ item.finalremark }}
+                              </div>
+                              <div class="text-muted small fst-italic">
+                                {{ item.rmktext }}
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Action Buttons -->
+                          <div class="d-flex flex-wrap gap-2 mt-2 pt-2">
+                            <button class="btn btn-outline-warning btn-sm rounded-pill icon-btn-chip"
+                              (click)="openRemarkModal(item)" title="Update Remark" [disabled]="!item.id">
+                              <i class="fa-regular fa-comment me-1"></i> Remark
+                            </button>
+
+                            <button class="btn btn-outline-primary btn-sm rounded-pill icon-btn-chip"
+                              (click)="openResumeLogModal(item)" title="Resume Update Log" [disabled]="
+                                !item.updateStatus ||
+                                item.updateStatus !== 'yes'
+                              ">
+                              <i class="fa fa-history me-1"></i> Resume Log
+                            </button>
+
+                            <button *ngIf="item.resume_file !=='NA'"
+                              class="btn btn-outline-primary btn-sm rounded-pill icon-btn-chip" title="{{
+                                item.resume_file == 'NA'
+                                  ? 'Resume not available'
+                                  : 'Download Resume'
+                              }}" (click)="downloadFile(item.resume_file)">
+                              <i class="fa-regular fa-file-lines me-1"></i>
+                              Resume
+                            </button>
+
+                            <button *ngIf="item.document_file !== 'NA'"
+                              class="btn btn-outline-success btn-sm rounded-pill icon-btn-chip" title="{{
+                                item.document_file == 'NA'
+                                  ? 'Document not available'
+                                  : 'Download Document'
+                              }}" (click)="downloadFile(item.document_file)">
+                              <i class="fa-regular fa-file-pdf me-1"></i>
+                              Document
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center align-middle">
+                      <div class="d-flex flex-column align-items-center gap-2">
+                        @if (item.chr_status === '1') {
+                        <span class="icon-wrapper" title="Active">
+                          <i class="fas fa-check-circle text-success status-icon"></i>
+                        </span>
+                        } @else {
+                        <span class="icon-wrapper" title="Inactive">
+                          <i class="fas fa-times-circle text-danger status-icon"></i>
+                        </span>
+                        } @if ((viewresumechk != '' && viewresumechk == '1') ||
+                        (userId === '1' && userType == '1')) {
+                        <button class="btn p-0 icon-wrapper" (click)="onViewClick(item)" title="View Jobseeker">
+                          <i class="fa fa-eye text-primary status-icon"></i>
+                        </button>
+                        } @if ((printresumechk != '' && printresumechk == '1')
+                        || (userId === '1' && userType == '1')) {
+                        <button class="btn p-0 icon-wrapper" (click)="onPrintClick(item)" title="Print Jobseeker">
+                          <i class="fa fa-print text-secondary status-icon"></i>
+                        </button>
+                        } @if ((editresumechk != '' && editresumechk == '1') ||
+                        (userId === '1' && userType == '1')) {
+                        <button class="btn p-0 icon-wrapper" (click)="onEditClick(item)" title="Edit Jobseeker"
+                          *ngIf="!assignCvMode">
+                          <i class="fa fa-edit text-success status-icon"></i>
+                        </button>
+                        } @if ((archivalchk != '' && archivalchk == '1') ||
+                        (userId === '1' && userType == '1')) {
+                        <button class="btn p-0 icon-wrapper" (click)="onUploadClick(item)" title="Upload Archive">
+                          @if (item.total_arch !== '' && item.total_arch > 0) {
+                          <i class="fa fa-upload text-warning status-icon"></i>
+                          } @else {
+                          <i class="fa fa-upload text-secondary status-icon" style="opacity: 0.5"></i>
+                          }
+                        </button>
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="jobseekers.length === 0" class="table-no-data-row">
+                    <td colspan="8" class="table-no-data-cell">
+                      <div class="no-data-center-container">
+                        <i class="fas fa-inbox fa-2x mb-2"></i><br />
+                        {{ noDataMessage || "No jobseekers found." }}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <app-pagination class="pagination-section sticky-table-footer" [currentPage]="currentPage"
+              [pageSize]="pageSize" [totalRecords]="Number(totalRecords)" [totalPages]="totalPages"
+              [jumpToPage]="jumpToPage" (pageChange)="onPageChange($event)" (jumpToPageChange)="onJumpToPage($event)">
+            </app-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Add/Edit/Upload CV Form Section (use accordions as needed) -->
+    <div class="row" *ngIf="addRecdFlg">
+      <div class="col-md-12">
+        <div class="card">
+          <form [formGroup]="jobseekerForm" (ngSubmit)="onSubmitJobseeker()" enctype="multipart/form-data">
+            @if (licenseData && licenseData.int_jobseeker_cnt &&
+            licenseData.int_jobseeker_cnt <= totalRecords) {
+              <div class="alert alert-warning m-4" role="alert">
+                <h4 class="alert-heading">
+                  <i class="fas fa-exclamation-triangle"></i> CVs/Jobseekers Limit Reached
+                </h4>
+                <p>
+                  You have reached the maximum number of CVs/Jobseekers allowed by your
+                  license ({{ licenseData.int_jobseeker_cnt }} CVs/Jobseekers). <br/>
+                  To add more, please upgrade your license or contact to support.
+                </p>
+              </div>
+            }
+            @else {
+              <div class="card-header">
+                <h4 class="card-title mb-0">
+                  {{ isEditMode ? "Edit" : "Add" }} Jobseeker
+                </h4>
+              </div>
+              <div class="card-body">
+                <div class="form-section-title">
+                  <span>Personal Details</span>
+                  <div class="d-flex align-items-center" style="margin-left: auto; margin-right: 20px">
+                    <div class="input-group" style="min-width: 210px; max-width: 260px" *ngIf="showPersonalSection">
+                      <select class="form-control" formControlName="sassignTsk" (blur)="checkInput($event.target)"
+                        (focus)="checkInput($event.target)">
+                        <option value=""></option>
+                        <option *ngFor="let p of projects" [value]="p.id">
+                          {{ p.task_name }}
+                        </option>
+                      </select>
+                      <label>Assign Project</label>
+                    </div>
+                  </div>
+                  <button type="button" class="form-section-toggle" (click)="toggleSection('personal')">
+                    <i class="fas" [ngClass]="{
+                        'fa-chevron-up': showPersonalSection,
+                        'fa-chevron-down': !showPersonalSection
+                      }"></i>
+                  </button>
+                </div>
+                <div class="form-divider"></div>
+              </div>
+
+              <!-- Personal Details Section -->
+              <div class="card-body section-card mb-3" *ngIf="showPersonalSection">
+                <div class="form-section">
+                  <div class="row align-items-center">
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="email" class="form-control" formControlName="email" required
+                          (blur)="checkInput($event.target); onJobseekerEmailBlur()" />
+                        <label>Email <span class="text-danger">*</span></label>
+                      </div>
+                      <div class="validation-msg text-danger" *ngIf="emailExistsMessage">{{ emailExistsMessage }}</div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="upassword" required
+                          (blur)="checkInput($event.target)" />
+                        <label>Password <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="contact_no" required
+                          (blur)="checkInput($event.target)" />
+                        <label>Contact No <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="fname" required
+                          (blur)="checkInput($event.target)" />
+                        <label>First Name <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row align-items-center">
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="lname"
+                          (blur)="checkInput($event.target)" />
+                        <label>Last Name</label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <select class="form-control" formControlName="parCat" (change)="onAddFormParentCategoryChange()"
+                          (blur)="checkInput($event.target)" required>
+                          <option *ngFor="let cat of parentCategories" [value]="cat.id">
+                            {{ cat.name }}
+                          </option>
+                        </select>
+                        <label>Category <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <select class="form-control" formControlName="sssubCat" (change)="onAddFormSubCategoryChange()"
+                          (blur)="checkInput($event.target)" required>
+                          <option *ngFor="let sub of subCategories" [value]="sub.id">
+                            {{ sub.name }}
+                          </option>
+                        </select>
+                        <label>Sub Category <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <select class="form-control" formControlName="ssplCat" (blur)="checkInput($event.target)"
+                          required>
+                          <option *ngFor="let sp of specializations" [value]="sp.id">
+                            {{ sp.name }}
+                          </option>
+                        </select>
+                        <label>Specialization <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row align-items-center">
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="father_name"
+                          (blur)="checkInput($event.target)" />
+                        <label>Father/Spouse Name</label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <select class="form-control" formControlName="gender" required (blur)="checkInput($event.target)">
+                          <option *ngFor="let g of genders" [value]="g.id">
+                            {{ g.name }}
+                          </option>
+                        </select>
+                        <label>Gender <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="date" class="form-control active" formControlName="dob" id="dob" (change)="onDobChange()"
+                          required (blur)="checkInput($event.target)" />
+                        <label>Date of Birth <span class="text-danger">*</span></label>
+                        <div *ngIf="calculatedAge !== null" class="mt-1" style="
+                          color: var(--primary-color);
+                          font-weight: 500;
+                          font-size: 0.75em;
+                        ">
+                          Age: {{ calculatedAge }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="birth_place"
+                          (blur)="checkInput($event.target)" />
+                        <label>Place of Birth</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row align-items-center">
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <select class="form-control active" formControlName="country" required
+                          (change)="onCountryChange($any($event.target).value)" (blur)="checkInput($event.target)">
+                          <option *ngFor="let c of countriesList" [value]="c.id">
+                            {{ c.name }}
+                          </option>
+                        </select>
+                        <label>Country <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <select class="form-control" formControlName="ddcity" required (blur)="checkInput($event.target)">
+                          <!-- <option value="">-- Select State / City --</option> -->
+                          <option *ngFor="let city of locations" [value]="city.id">
+                            {{ city.name }}
+                          </option>
+                        </select>
+                        <label>State/City <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <select class="form-control" formControlName="religoin" (blur)="checkInput($event.target)">
+                          <option value="">--Select Religion--</option>
+                          <option *ngFor="let r of religions" [value]="r.id">
+                            {{ r.name }}
+                          </option>
+                        </select>
+                        <label>Religion</label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <select class="form-control" formControlName="marri" (blur)="checkInput($event.target)">
+                          <option value="">--Select Marital Status--</option>
+                          <option *ngFor="let m of maritalStatus" [value]="m.id">
+                            {{ m.name }}
+                          </option>
+                        </select>
+                        <label>Marital Status</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row align-items-center" *ngIf="showPersonalSection">
+                    <div class="col-md-6 col-lg-6">
+                      <div class="input-group">
+                        <textarea class="form-control" formControlName="presentadd" rows="2"
+                          (blur)="checkInput($event.target)"></textarea>
+                        <label>Present Address</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                      <div class="input-group">
+                        <textarea class="form-control" formControlName="txtpermadd" rows="2"
+                          (blur)="checkInput($event.target)"></textarea>
+                        <label>Permanent Address</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Passport Details Section -->
+              <div class="card-body section-card mb-3">
+                <div class="form-section">
+                  <div class="form-section-title mt-2">
+                    <span>Passport Details</span>
+                    <button type="button" class="form-section-toggle" (click)="toggleSection('passport')">
+                      <i class="fas" [ngClass]="{
+                        'fa-chevron-up': showPassportSection,
+                        'fa-chevron-down': !showPassportSection
+                      }"></i>
+                    </button>
+                  </div>
+                  <div class="form-divider"></div>
+                  <div class="row align-items-center" *ngIf="showPassportSection">
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="passport_no"
+                          (blur)="checkInput($event.target)" />
+                        <label>Passport No</label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="issue_place"
+                          (blur)="checkInput($event.target)" />
+                        <label>Place of Issue</label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="date" class="form-control active" formControlName="date_issue" id="date_issue"
+                          (blur)="checkInput($event.target)" />
+                        <label>Date of Issue</label>
+                      </div>
+                    </div>
+                    <div class="col-md-3 col-lg-3">
+                      <div class="input-group">
+                        <input type="date" class="form-control active" formControlName="date_exp" id="date_exp"
+                          (blur)="checkInput($event.target)" />
+                        <label>Date of Expiry</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Educational Details Section -->
+              <div class="card-body section-card mb-3">
+                <div class="form-section">
+                  <div class="form-section-title mt-2">
+                    <span>Educational Details</span>
+                    <button type="button" class="form-section-toggle" (click)="toggleSection('education')">
+                      <i class="fas" [ngClass]="{
+                        'fa-chevron-up': showEducationSection,
+                        'fa-chevron-down': !showEducationSection
+                      }"></i>
+                    </button>
+                  </div>
+                  <div class="form-divider"></div>
+                  <!-- Graduation + Post Graduation rows (single label like search Experience) -->
+                  <div class="row align-items-center" *ngIf="showEducationSection">
+                    <div class="col-md-6 col-lg-6">
+                      <div class="row align-items-center">
+                        <div class="col-md-6 col-lg-6">
+                          <div class="input-group">
+                            <select class="form-control" formControlName="graduation" (blur)="checkInput($event.target)">
+                              <option value="">Select Graduation</option>
+                              <option *ngFor="let q of graduationList" [value]="q.id">{{ q.qualifiction }}</option>
+                            </select>
+                            <label>Graduation</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                          <div class="input-group">
+                            <select class="form-control" formControlName="graduation_year"
+                              (blur)="checkInput($event.target)">
+                              <option value="">Year of Passing</option>
+                              <option *ngFor="let y of yearsList" [value]="y">{{ y }}</option>
+                            </select>
+                            <label>Year of Passing</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                      <div class="row align-items-center">
+                        <div class="col-md-6 col-lg-6">
+                          <div class="input-group">
+                            <select class="form-control" formControlName="pgraduation" (blur)="checkInput($event.target)">
+                              <option value="">Select Post Graduation</option>
+                              <option *ngFor="let q of postGraduationList" [value]="q.id">{{ q.qualifiction }}</option>
+                            </select>
+                            <label>Post Graduation</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                          <div class="input-group">
+                            <select class="form-control" formControlName="pgraduation_year"
+                              (blur)="checkInput($event.target)">
+                              <option value="">Year of Passing</option>
+                              <option *ngFor="let y of yearsList" [value]="y">{{ y }}</option>
+                            </select>
+                            <label>Year of Passing</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Fellowship/PhD + Work Experience row (single label like search Experience) -->
+                  <div class="row align-items-center" *ngIf="showEducationSection">
+                    <div class="col-md-6 col-lg-6">
+                      <div class="row align-items-center">
+                        <div class="col-md-6 col-lg-6">
+                          <div class="input-group">
+                            <select class="form-control" formControlName="Felloship" (blur)="checkInput($event.target)">
+                              <option value="">Select Fellowship/PhD</option>
+                              <option *ngFor="let q of fellowshipList" [value]="q.id">{{ q.qualifiction }}</option>
+                            </select>
+                            <label>Fellowship / PhD</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                          <div class="input-group">
+                            <select class="form-control" formControlName="Felloship_year"
+                              (blur)="checkInput($event.target)">
+                              <option value="">Year of Passing</option>
+                              <option *ngFor="let y of yearsList" [value]="y">{{ y }}</option>
+                            </select>
+                            <label>Year of Passing</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                      <div class="row align-items-center">
+                        <div class="col-md-6 col-lg-6">
+                          <div class="input-group">
+                            <select class="form-control" formControlName="year" required
+                              (blur)="checkInput($event.target)">
+                              <option value="">Year</option>
+                              <option *ngFor="let y of experienceYears" [value]="y">{{ y }}</option>
+                            </select>
+                            <label>Work Experience (Years) <span class="text-danger">*</span></label>
+                          </div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                          <div class="input-group">
+                            <select class="form-control" formControlName="month" required
+                              (blur)="checkInput($event.target)">
+                              <option value="">Month</option>
+                              <option *ngFor="let m of monthsList" [value]="m">{{ m }}</option>
+                            </select>
+                            <label>Work Experience (Months) <span class="text-danger">*</span></label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End revised rows -->
+                  <!-- Work Experience Row -->
+                  <!-- <div class="row align-items-center" *ngIf="showEducationSection">
+                  <div class="col-md-6 col-lg-6">
+                    <div class="input-group">
+                      <select
+                        class="form-control mr-1 active"
+                        formControlName="year"
+                        required
+                        (blur)="checkInput($event.target)"
+                        [ngClass]="{
+                          'is-invalid':
+                            jobseekerForm.get('year')?.invalid &&
+                            (jobseekerForm.get('year')?.touched || submitted),
+                          active: jobseekerForm.get('year')?.value
+                        }"
+                      >
+                        <option value="">Year</option>
+                        <option *ngFor="let y of yearsList" [value]="y">
+                          {{ y }}
+                        </option>
+                      </select>
+                      <select
+                        class="form-control ml-1 active"
+                        formControlName="month"
+                        required
+                        (blur)="checkInput($event.target)"
+                        [ngClass]="{
+                          'is-invalid':
+                            jobseekerForm.get('month')?.invalid &&
+                            (jobseekerForm.get('month')?.touched || submitted),
+                          active: jobseekerForm.get('month')?.value
+                        }"
+                      >
+                        <option value="">Month</option>
+                        <option *ngFor="let m of monthsList" [value]="m">
+                          {{ m }}
+                        </option>
+                      </select>
+                      <label class="active"
+                        >Work Experience <span class="text-danger">*</span></label
+                      >
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-lg-6"></div>
+                </div> -->
+                  <!-- Resume Headline and Upload Resume Row -->
+                  <div class="row align-items-center" *ngIf="showEducationSection">
+                    <!-- Resume Upload (left, 4 cols) -->
+                    <div class="col-md-4 col-lg-4">
+                      <div class="upload-label">Upload Resume</div>
+                      <div class="file-upload mb-1">
+                        <label class="btn btn-outline-primary btn-file mb-0" for="txtResume"
+                          style="cursor: pointer; min-width: 110px;">
+                          <i class="fa fa-folder-open me-2"></i>
+                          Choose file
+                        </label>
+                        <input type="file" id="txtResume" #resumeInput (change)="onFileSelected($event, 'resume')"
+                          style="display:none;" accept=".pdf,.doc,.docx" />
+                        <div class="file-display">
+                          <span class="file-name">{{ selectedResumeFile?.name || existingResumeFileName || 'No file
+                            selected' }}</span>
+                        </div>
+                        <div class="file-actions d-flex align-items-center gap-2">
+                          <button *ngIf="existingResumeUrl && !selectedResumeFile" class="btn btn-outline-info btn-sm"
+                            type="button" (click)="downloadExistingResume()" title="Download existing resume">
+                            <i class="fas fa-download"></i>
+                          </button>
+                          <button *ngIf="existingResumeUrl && !selectedResumeFile" class="btn btn-outline-danger btn-sm"
+                            type="button" (click)="removeExistingResume()" title="Remove existing resume">
+                            <i class="fas fa-times"></i>
+                          </button>
+                          <button *ngIf="selectedResumeFile" class="btn btn-outline-secondary btn-sm" type="button"
+                            (click)="resumeInput.value='' ; selectedResumeFile=null ; existingResumeUrl='' "
+                            title="Clear resume file">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="text-muted small mb-1">Accepted: pdf, doc, docx</div>
+                    </div>
+                    <!-- Resume Headline (right, 8 cols) -->
+                    <div class="col-md-8 col-lg-8">
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="resu_headline" required
+                          (blur)="checkInput($event.target)" />
+                        <label>Resume Headline <span class="text-danger">*</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Upload Document and Paste Resume Text Row -->
+                  <div class="row align-items-center" *ngIf="showEducationSection">
+                    <!-- Document Upload (left, 4 cols) -->
+                    <div class="col-md-4 col-lg-4">
+                      <div class="upload-label">Upload Document</div>
+                      <div class="file-upload mb-1">
+                        <label class="btn btn-outline-primary btn-file mb-0" for="documentfile"
+                          style="cursor: pointer; min-width: 110px;">
+                          <i class="fa fa-folder-open me-2"></i>
+                          Choose file
+                        </label>
+                        <input type="file" id="documentfile" #documentInput (change)="onFileSelected($event, 'document')"
+                          style="display:none;" accept=".pdf,.doc,.docx" />
+                        <div class="file-display">
+                          <span class="file-name">{{ selectedDocumentFile?.name || existingDocumentFileName || 'No file
+                            selected' }}</span>
+                        </div>
+                        <div class="file-actions d-flex align-items-center gap-2">
+                          <button *ngIf="existingDocumentUrl" class="btn btn-outline-info btn-sm" type="button"
+                            (click)="downloadExistingDocument()" title="Download existing document">
+                            <i class="fas fa-download"></i>
+                          </button>
+                          <button *ngIf="existingDocumentUrl" class="btn btn-outline-danger btn-sm" type="button"
+                            (click)="removeExistingDocument()" title="Remove existing document">
+                            <i class="fas fa-times"></i>
+                          </button>
+                          <button *ngIf="selectedDocumentFile" class="btn btn-outline-secondary btn-sm" type="button"
+                            (click)="documentInput.value = '' ; selectedDocumentFile = null ; existingDocumentUrl = '' "
+                            title="Clear document file">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="text-muted small mb-1">Accepted: pdf, doc, docx</div>
+                    </div>
+                    <!-- Paste Resume Text (right, 8 cols) -->
+                    <div class="col-md-8 col-lg-8">
+                      <div class="input-group">
+                        <textarea class="form-control" formControlName="presume" rows="2"
+                          (blur)="checkInput($event.target)"></textarea>
+                        <label>Paste Resume Text</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row align-items-center">
+                    <div class="col-md-12 d-flex">
+                      <button class="btn btn-outline-primary btn-round mr-2" type="submit">
+                        Submit
+                      </button>
+                      <button class="btn btn-outline-info btn-round mr-2" type="button" (click)="onCancelClick()">
+                        Cancel
+                      </button>
+                      <button class="btn btn-outline-dark btn-round" type="button" (click)="onClearJobseeker()">
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Jobseeker Remark Modal (sm) -->
+<div class="modal fade" #jobseekerRemarkModal tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+  data-bs-keyboard="false">
+  <div class="modal-dialog modal-sm modal-dialog-centered" [ngClass]="{ 'modal-fullscreen': isRemarkMaximized }">
+    <div class="modal-content">
+      <div class="modal-header modal-head text-white">
+        <h6 class="modal-title">
+          Update Remark — {{ currentRemarkJobseeker?.first_name }} {{ currentRemarkJobseeker?.last_name }} [{{
+          currentRemarkJobseeker?.job_seeker_id || currentRemarkJobseeker?.id }}]
+        </h6>
+        <div class="d-flex align-items-center ms-auto gap-2">
+          <button type="button" class="btn btn-sm btn-outline-light" (click)="toggleRemarkMaximize()"
+            [attr.aria-pressed]="isRemarkMaximized" title="{{ isRemarkMaximized ? 'Restore' : 'Maximize' }}">
+            <i class="fas" [ngClass]="isRemarkMaximized ? 'fa-compress' : 'fa-expand'"></i>
+          </button>
+          <button type="button" class="btn-close btn-close-white" (click)="closeRemarkModal()"></button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="remarkForm">
+          <div class="mb-3">
+            <label class="form-label">Select Remark</label>
+            <select class="form-select form-select-sm" formControlName="finalremark">
+              <option value="">Select a remark</option>
+              <option *ngFor="let r of remarks" [value]="r.id">{{ r.name }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Remark Text</label>
+            <textarea class="form-control form-control-sm" rows="3" formControlName="rmktext"
+              placeholder="Enter remark text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer py-2">
+        <button type="button" class="btn btn-outline-danger btn-sm" (click)="closeRemarkModal()"><i
+            class="fa fa-times me-1"></i>Cancel</button>
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="onUpdateRemark()"><i
+            class="fa fa-save me-1"></i>Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Resume Log Modal (md) -->
+<div class="modal fade" #resumeLogModal tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+  data-bs-keyboard="false">
+  <div class="modal-dialog modal-md modal-dialog-centered" [ngClass]="{ 'modal-fullscreen': isResumeLogMaximized }">
+    <div class="modal-content">
+      <div class="modal-header modal-head text-white">
+        <h6 class="modal-title">
+          Resume Log History — {{ currentResumeLogJobseeker?.first_name }} {{ currentResumeLogJobseeker?.last_name }}
+          [{{ currentResumeLogJobseeker?.job_seeker_id || currentResumeLogJobseeker?.id }}]
+        </h6>
+        <div class="d-flex align-items-center ms-auto gap-2">
+          <button type="button" class="btn btn-sm btn-outline-light" (click)="toggleResumeLogMaximize()"
+            [attr.aria-pressed]="isResumeLogMaximized" title="{{ isResumeLogMaximized ? 'Restore' : 'Maximize' }}">
+            <i class="fas" [ngClass]="isResumeLogMaximized ? 'fa-compress' : 'fa-expand'"></i>
+          </button>
+          <button type="button" class="btn-close btn-close-white" (click)="closeResumeLogModal()"></button>
+        </div>
+      </div>
+      <div class="modal-body p-0">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped table-sm mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="py-2">S.No</th>
+                <th class="py-2">Update Date</th>
+                <th class="py-2">Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngIf="resumeLogList && resumeLogList.length > 0; else noResumeLog">
+                <tr *ngFor="let log of resumeLogList">
+                  <td>{{ log.sno }}</td>
+                  <td>{{ log.UpdateDate }}</td>
+                  <td>{{ log.emplType || '-' }}</td>
+                </tr>
+              </ng-container>
+              <ng-template #noResumeLog>
+                <tr>
+                  <td colspan="3" class="text-center text-muted py-3">No resume log history found.</td>
+                </tr>
+              </ng-template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer py-2">
+        <button type="button" class="btn btn-secondary btn-sm" (click)="closeResumeLogModal()"><i
+            class="fa fa-times me-1"></i>Close</button>
+      </div>
+    </div>
+  </div>
+</div>

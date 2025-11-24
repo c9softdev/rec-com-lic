@@ -1,0 +1,12 @@
+@import '../../../../assets/css/commonstyles.css';
+
+/* Constrain body height for scrolling in normal mode */
+.modal-body {
+  max-height: calc(100vh - 175px);
+  overflow-y: auto;
+}
+
+/* When maximized (fullscreen), lift the height constraint */
+.modal-dialog.modal-fullscreen .modal-body {
+  max-height: none;
+}

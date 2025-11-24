@@ -1,0 +1,151 @@
+<div class="modal fade" #managerModal tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" [ngClass]="{ 'modal-fullscreen': isMaximized }">
+    <div class="modal-content">
+      <div class="modal-header modal-head text-white">
+        <h5 class="modal-title">
+          Interview Manager — {{ jobseekerName }} [{{ jobseekerId }}]
+        </h5>
+        <div class="d-flex align-items-center ms-auto gap-2">
+          <button
+            type="button"
+            class="btn btn-outline-light btn-sm"
+            (click)="toggleMaximize()"
+            [attr.aria-label]="isMaximized ? 'Restore' : 'Maximize'"
+          >
+            <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
+          </button>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="close()"
+          ></button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="managerForm" (ngSubmit)="submitForm()">
+          <!-- Interview Result -->
+          <div class="mb-3">
+            <label class="form-label"
+              >Interview Result <span class="text-danger">*</span></label
+            >
+            <select
+              class="form-control"
+              id="interviewStatus"
+              formControlName="interviewStatus"
+              (change)="onInterviewResultChange($event)"
+              [class.is-invalid]="isInvalid('interviewStatus')"
+            >
+              <option value="">-- Select Result --</option>
+              @for (droDVal of intrvManagerArr; track droDVal.id) {
+              <option [value]="droDVal.id">{{ droDVal.name }}</option>
+              }
+            </select>
+            @if (isInvalid('interviewStatus')) {
+            <div class="invalid-feedback">
+              {{ getValidationMessage('interviewStatus') }}
+            </div>
+            }
+          </div>
+
+          <!-- Offer Letter Fields: shown only if "Passed" -->
+          @if (showOfferFields) {
+          <div class="mb-3">
+            <label class="form-label"
+              >Offer Letter <span class="text-danger">*</span></label
+            >
+            <div class="d-flex gap-4" style="padding-left: 15px">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="offerAccepted"
+                  formControlName="offerLetter"
+                  value="1"
+                />
+                <label class="form-check-label" for="offerAccepted"
+                  >Accepted</label
+                >
+              </div>
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="offerNotAccepted"
+                  formControlName="offerLetter"
+                  value="2"
+                />
+                <label class="form-check-label" for="offerNotAccepted"
+                  >Not Accepted</label
+                >
+              </div>
+            </div>
+            @if (isInvalid('offerLetter')) {
+            <div class="text-danger small">
+              {{ getValidationMessage('offerLetter') }}
+            </div>
+            }
+          </div>
+
+          <!-- Upload Job Offer -->
+          <div class="mb-3">
+            <label class="form-label">Upload Job Offer</label>
+            <div class="input-group">
+              <input
+                type="file"
+                class="form-control"
+                id="offerLetter"
+                (change)="onFileSelected($event)"
+              />
+              <button
+                class="btn btn-outline-secondary btn-sm px-2 py-1"
+                type="button"
+                (click)="uploadOfferLetter(projectId, candidateId)"
+              >
+                <i class="fas fa-upload me-1"></i> Upload Offer
+              </button>
+            </div>
+            @if (selectedFile) {
+            <div class="form-text text-success">
+              <i class="fas fa-file me-1"></i> {{ selectedFile.name }}
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Remarks -->
+          <div class="mb-3">
+            <label class="form-label">Description / Remarks</label>
+            <textarea
+              class="form-control"
+              rows="4"
+              formControlName="description"
+              [class.is-invalid]="isInvalid('description')"
+              placeholder="Write interview remarks here..."
+            ></textarea>
+            @if (isInvalid('description')) {
+            <div class="invalid-feedback">
+              {{ getValidationMessage('description') }}
+            </div>
+            }
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-outline-primary">
+              <i class="fas fa-save me-2"></i> Submit
+            </button>
+
+            <button
+              type="button"
+              (click)="parentComponent.openAllRemarks(jobseekerId, candidateId, projectId, jobseekerName)"
+              class="btn btn-outline-secondary"
+            >
+              <i class="fas fa-comments me-2"></i> View All Remarks
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

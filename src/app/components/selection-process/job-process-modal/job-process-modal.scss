@@ -1,0 +1,23 @@
+.modal-custom-width {
+  max-width: 1100px;
+}
+.modal-content {
+  border-radius: 12px;
+}
+.modal-header .modal-title {
+  font-size: 1.2rem;
+  line-height: 1.3rem;
+}
+h6.heading-border {
+  border-bottom: 2px solid #e4ebf5;
+  padding-bottom: 4px;
+  font-size: 1rem;
+}
+label.fw-semibold {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.btn-save {
+  font-size: 1rem; /* slightly larger font */
+  padding: 0.35rem 0.75rem; /* reduced height */
+}

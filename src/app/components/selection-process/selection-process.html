@@ -1,0 +1,581 @@
+<div class="content">
+  <div class="page-inner">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card border p-3 my-3">
+
+          <textarea [(ngModel)]="emailPrompt" rows="5" placeholder="Enter prompt here"></textarea>
+
+          <button (click)="generateEmailNow()">Generate Email</button>
+
+          <div class="output-box">
+            {{ generatedEmail }}
+          </div>
+
+        </div>
+        <div class="card">
+          @if (showSearchSection) {
+          <div class="card-body position-relative">
+            <!-- Prevent Enter from submitting the form by handling keydown.enter -->
+            <form [formGroup]="searchForm" (ngSubmit)="void 0" (keydown.enter)="$event.preventDefault()">
+              <div class="row align-items-center">
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="passport_no" formControlName="passport_no"
+                      (blur)="checkInput($event.target)" />
+                    <label for="passport_no">Passport Number</label>
+                  </div>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="sjobid" formControlName="sjobid"
+                      (blur)="checkInput($event.target)" />
+                    <label for="sjobid">JobSeeker Id</label>
+                  </div>
+                </div>
+
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="scontactNo" formControlName="scontactNo"
+                      (blur)="checkInput($event.target)" />
+                    <label for="scontactNo">Contact Number</label>
+                  </div>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <select class="form-control" id="sgender" formControlName="sgender"
+                      (blur)="checkInput($event.target)">
+                      @for (gender of genderArr; track gender.id) {
+                      <option [value]="gender.id">{{ gender.name }}</option>
+                      }
+                    </select>
+                    <label for="sgender">Gender</label>
+                  </div>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <input type="date" class="form-control active" id="sfdate" formControlName="sfdate"
+                      (blur)="checkInput($event.target)" />
+                    <label for="sfdate">Register From</label>
+                  </div>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <input type="date" class="form-control active" id="stodate" formControlName="stodate"
+                      (blur)="checkInput($event.target)" />
+                    <label for="stodate">Register To</label>
+                  </div>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <select class="form-control" id="sremarkIntvSch" formControlName="sremarkIntvSch"
+                      (blur)="checkInput($event.target)">
+                      @for (interviewSch of intrvSchedulArr; track
+                      interviewSch.id) {
+                      <option [value]="interviewSch.id">
+                        {{ interviewSch.name }}
+                      </option>
+                      }
+                    </select>
+                    <label for="sremarkIntvSch">Interview Scheduler</label>
+                  </div>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <select class="form-control" id="sremarkIntvMan" formControlName="sremarkIntvMan"
+                      (blur)="checkInput($event.target)">
+                      @for (interviewMgr of intrvManagerArr; track
+                      interviewMgr.id) {
+                      <option [value]="interviewMgr.id">
+                        {{ interviewMgr.name }}
+                      </option>
+                      }
+                    </select>
+                    <label for="sremarkIntvMan">Interview Manager</label>
+                  </div>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                  <div class="input-group">
+                    <select class="form-control" id="sremarkIntvPrs" formControlName="sremarkIntvPrs"
+                      (blur)="checkInput($event.target)">
+                      @for (processMgr of prjManagerArr; track processMgr.id) {
+                      <option [value]="processMgr.id">
+                        {{ processMgr.name }}
+                      </option>
+                      }
+                    </select>
+                    <label for="sremarkIntvPrs">Process Manager</label>
+                  </div>
+                </div>
+                <!-- <div class="col-md-2 col-lg-2">
+                  <div class="ing nput-group">
+                    <select
+                      class="form-control"
+                      id="sprojrct"
+                      formControlName="sprojrct"
+                      (blur)="checkInput($event.target)" 
+                    >
+                    @for (taskArr of sprojectArr; track
+                    taskArr.id) {
+                    <option [value]="taskArr.id">
+                      {{ taskArr.name }}
+                    </option>
+                    }
+                  </select>
+                    <label for="sprojrct">Project List</label>
+                  </div>
+                </div> -->
+                <div class="col-md-4 col-lg-4">
+                  <div class="form-group d-flex flex-wrap align-items-end w-100">
+                    <div class="d-flex flex-wrap align-items-end">
+                      <button class="btn btn-outline-primary btn-round mr-2 mb-2" type="button" (click)="onSearch()">
+                        <i class="fas fa-search mr-1"></i> Search
+                      </button>
+
+                      <button class="btn btn-outline-dark btn-round mr-2 mb-2" type="button" (click)="onClearSearch()">
+                        <i class="fas fa-times mr-1"></i> Clear
+                      </button>
+                    </div>
+
+                    <div class="ms-auto">
+                      <button class="btn btn-primary btn-sm" type="button" (click)="toggleSearchSection()">
+                        <i class="fa fa-chevron-up me-1"></i> Hide
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          }
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">Selection Process</h4>
+            <span class="card-title" style="padding-right: 10px">Assigned CVs: <strong>{{ totalRecords ||
+                ''}}</strong></span>
+
+            @if (!showSearchSection) {
+            <button class="btn btn-primary btn-sm" (click)="toggleSearchSection()">
+              <i class="fa fa-chevron-down me-1"></i>
+              Show
+            </button>
+            }
+          </div>
+          @if (listRec && listRec.length > 0) {
+          <div class="card border-primary mb-2">
+            <div class="card-body py-2 ps-3">
+              <!-- added ps-3 for left padding -->
+              <h5 class="card-title mb-0 d-flex justify-content-between align-items-center">
+                <span>
+                  <h3>{{projectName || ''}}</h3>
+                </span>
+              </h5>
+            </div>
+          </div>
+
+          <div class="project-toolbar d-flex flex-wrap justify-content-start gap-2 mb-3">
+            <input type="checkbox" class="custom-checkbox-modern" style="margin-top: 13px"
+              [checked]="selectedItems.size === listRec.length" (change)="onSelectAll($event)" />
+            <button class="btn btn-outline-primary d-flex align-items-center" type="button"
+              (click)="toggleProjectDetails()" [attr.aria-expanded]="showProjectDetails" aria-controls="projectDetails">
+              <i class="fa fa-calendar-plus-o me-2"></i> Interview Details
+            </button>
+
+            <button class="btn btn-outline-success d-flex align-items-center toggle-btn" type="button"
+              (click)="toggleSendEmail()" [attr.aria-expanded]="showSendEmailForm" aria-controls="sendEmailForm">
+              <i class="fa fa-envelope me-2"></i> Send Email
+            </button>
+
+            <button class="btn btn-outline-info d-flex align-items-center opacity-50" style="pointer-events: none">
+              <i class="fa fa-commenting me-2"></i> Send SMS
+            </button>
+            @if ((deleteOption != '' && deleteOption == '1') || (userId === '1'
+            && userType == '1')) {
+            <button class="btn btn-outline-danger d-flex align-items-center" (click)="onDeleteClick()"
+              [disabled]="selectedItems.size === 0">
+              <i class="fa fa-trash me-2"></i> Remove From List {{
+              selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
+            </button>
+            }
+          </div>
+          }
+          <div id="selectionAccordion">
+            <div id="projectDetails" class="collapse" [class.show]="showProjectDetails">
+              <div class="card border-primary">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-bordered mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th>#</th>
+                          <th width="15%">City</th>
+                          <th width="10%">Contact</th>
+                          <th>Date</th>
+                          <th>Specialization</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of projectArr; track item.sno) {
+                        <tr>
+                          <td>{{ item.sno }}</td>
+                          <td>{{ item.state || ''}} {{ item.city || '' }}</td>
+                          <td>{{ item.cont_perso || 'N/A' }}</td>
+                          <td>{{ item.intv_date }}</td>
+                          <td style="padding: 10px 5px !important">
+                            {{ item.txt_splCat }}
+                          </td>
+                        </tr>
+                        } @empty {
+                        <tr class="table-no-data-row">
+                          <td colspan="5" class="table-no-data-cell text-center text-muted py-4">
+                            <div class="no-data-center-container">
+                              <i class="fas fa-inbox fa-2x mb-2"></i><br />
+                              No Interview details found.
+                            </div>
+                          </td>
+                        </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="sendEmailForm" class="collapse" [class.show]="showSendEmailForm">
+              <div class="card border-success">
+                <div class="card-body">
+                  <h5 class="card-title mb-3 text-success">
+                    <i class="fa fa-envelope me-2"></i> Send Email / SMS
+                  </h5>
+
+                  <form>
+                    <div class="mb-3">
+                      <label for="additionalEmails" class="form-label">Additional Emails</label>
+                      <input type="email" class="form-control" id="additionalEmails"
+                        placeholder="Enter additional email addresses" />
+                      <div class="form-text">
+                        You can add multiple emails separated by commas.
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="emailMessage" class="form-label">Email Message</label>
+                      <textarea class="form-control" id="emailMessage" rows="4"
+                        placeholder="Type your message here..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">
+                      <i class="fa fa-paper-plane me-2"></i> Send
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="candidate-cards">
+            @for (candidate of listRec; track candidate.id) {
+            <div class="card mb-3 border-primary">
+              <!-- Candidate Header -->
+              <div class="candidate-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                  <input type="checkbox" class="custom-checkbox-modern" [checked]="selectedItems.has(candidate.id)"
+                    (change)="onItemSelect(candidate.id, $event)" />
+                  <strong class="fs-5">{{ candidate.sno }}.
+                    <button class="link-button" (click)="openViewJobseeker(candidate)">
+                      {{ candidate.job_seeker_id }}
+                    </button>
+                    &nbsp; <i class="fa fa-passport text-info me-2"></i>{{
+                    candidate.passport_no || '--' }}
+                  </strong>
+                </div>
+                <div class="d-flex align-items-center header-icons">
+                  <i class="fa fa-comments text-success"
+                    (click)="openAllRemarks(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)"
+                    title="All Remarks"></i>
+                  <i class="fa fa-eye text-success" title="View Resume" role="button" tabindex="0"
+                    style="cursor: pointer" (click)="openViewJobseeker(candidate)"
+                    (keydown.enter)="openViewJobseeker(candidate)"></i>
+                  <i class="fa fa-edit text-success" title="Edit Resume" role="button" tabindex="0"
+                    style="cursor: pointer" (click)="openEditJobseeker(candidate)"
+                    (keydown.enter)="openEditJobseeker(candidate)"></i>
+                  <i class="fa fa-upload text-success" title="Upload Archive" role="button" tabindex="0"
+                    style="cursor: pointer" (click)="openArchiveManager(candidate)"
+                    (keydown.enter)="openArchiveManager(candidate)"></i>
+                </div>
+              </div>
+
+              <!-- Candidate Info -->
+              <!-- <div class="row mb-2">
+                <div class="col-md-6">
+                  <strong>
+                    @if (candidate.int_gender === 'Male') {
+                    <i class="fa fa-mars text-primary me-2" title="Male"></i>
+                    } @else if (candidate.int_gender === 'Female') {
+                    <i class="fa fa-venus text-danger me-2" title="Female"></i>
+                    } {{ candidate.first_name }} {{ candidate.last_name }}
+                    <span class="ms-3">
+                      <i
+                        class="fa fa-hourglass-half text-info me-2"
+                        title="Total Experience"
+                      ></i>
+                      {{ candidate.intexpyear }} Year(s) {{
+                      candidate.intexpmonth }} Month(s)
+                    </span>
+                  </strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                  <i class="fa fa-envelope text-primary me-2"></i> {{
+                  candidate.email }}
+                  <span class="ms-3">
+                    <i class="fa fa-phone text-success me-2"></i> {{
+                    candidate.contactno }}
+                  </span>
+                </div>
+              </div> -->
+
+              <!-- <div class="row mb-2">
+                <div class="col-md-6 d-flex align-items-center">
+                  <i class="fa fa-id-card text-primary me-2" title="Resume"></i>
+                  <strong>Resume Title:</strong> {{ candidate.rheadline }}
+                </div>
+                <div
+                  class="col-md-6 text-md-end d-flex align-items-center justify-content-end"
+                >
+                  <i class="fa fa-graduation-cap text-primary me-2"></i>
+                  {{ candidate.qualifications }}
+
+                  <span class="ms-4 d-flex align-items-center">
+                    <i [class]="candidate.int_married === 'Married' ? 'fa fa-ring text-warning me-2' : 'fa fa-user text-secondary me-2'"></i>
+{{ candidate.int_married === 'Married' ? 'Married' : 'Single' }}
+                  </span>
+                </div>
+              </div> -->
+
+              <!-- <div class="row mb-3">
+                <div class="col-md-5 d-flex align-items-center">
+                  <i class="fa fa-comments text-info me-2"></i>
+                  Last Remarks: {{ candidate.remarks_typeExp || '' }} 
+                 &nbsp;<b>[ {{ candidate.emplName || '--' }} ]</b>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-center">
+                  <i class="fa fa-briefcase text-success me-2"></i>
+                  Offer: {{ candidate.offer_letter || '--' }} 
+                  @if (candidate.fileExists != '' && candidate.fileExists == 'YES')
+                  {
+                  &nbsp;
+                  <button 
+                    class="btn btn-outline-success btn-sm px-2 py-1"
+                    (click)="downloadFile(candidate.project_id, candidate.id)">
+                    <i class="fa fa-download me-1"></i> Download
+                  </button>
+                  }
+                </div>
+                <div class="col-md-4 d-flex align-items-right">
+                  <i
+                    class="fa fa-layer-group text-warning ms-2 me-1"
+                    title="Specialization"
+                  ></i>
+                  {{ candidate.parent_cateid }} | {{ candidate.subcat_subcatid
+                  }} | {{ candidate.Specilization1det }}
+                </div>
+              </div> -->
+
+              <div class="card job-card mb-2 shadow-sm">
+                <div class="card-body py-2">
+                  <!-- Row 1: Registration ID -->
+                  <!-- <div
+                    class="d-flex justify-content-between align-items-center mb-2"
+                  >
+                    <div>
+                      <strong class="text-muted small">REGIS. ID:</strong>
+                      <span
+                        class="text-primary fw-bold ms-1"
+                        (click)="openViewJobseeker(candidate)"
+                      >
+                        {{ candidate.job_seeker_id || '' }}
+                      </span>
+                    </div>
+                  </div> -->
+
+                  <!-- Row 2: Name + Gender + Experience -->
+                  <div class="row mb-2">
+                    <div class="col-md-5 d-flex align-items-center">
+                      <strong>
+                        <!-- Gender Icon -->
+                        @if (candidate.gender === 'Male') {
+                        <i class="fa fa-mars text-primary me-2"></i>
+                        } @else if (candidate.gender === 'Female') {
+                        <i class="fa fa-venus text-danger me-2"></i>
+                        } {{ candidate.user_name }}
+
+                        <!-- Experience -->
+                        @if (candidate.year !== '') {
+                        <span class="ms-3">
+                          <i class="fa fa-hourglass-half text-info me-1"></i>
+                          Exp: {{ candidate.year }} Yr
+                        </span>
+                        }
+                      </strong>
+                    </div>
+
+                    <!-- Center Section (Fix Applied) -->
+                    <div class="col-md-2 d-flex align-items-center justify-content-center">
+                      <i class="fa fa-calendar text-info me-2"></i>
+                      {{ candidate.cdate }} @if (candidate.createBy != '') {
+                      <span class="text-muted ms-1">({{ candidate.createBy }})</span>
+                      }
+                    </div>
+
+                    <!-- Right Section -->
+                    <div class="col-md-5 d-flex align-items-center justify-content-end">
+                      <div class="row w-100">
+                        <!-- Email (60%) -->
+                        <div class="col-7 d-flex align-items-center" style="border-bottom: none !important">
+                          <i class="fa fa-envelope text-primary me-2"></i>
+
+                          <a [href]="'mailto:' + candidate.email" style="
+                              text-decoration: none !important;
+                              border-bottom: none !important;
+                              border: none !important;
+                              box-shadow: none !important;
+                            ">
+                            {{ candidate.email }}
+                          </a>
+                        </div>
+
+                        <!-- Phone (40%) -->
+                        <div class="col-5 d-flex align-items-center" style="border-bottom: none !important">
+                          <i class="fa fa-phone text-success me-2"></i>
+                          {{ candidate.contactno }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Row 3: Resume Title + Qualification + Marital Status -->
+                  <div class="row mb-2">
+                    <div class="col-md-6 d-flex align-items-center">
+                      <i class="fa fa-id-card text-primary me-2"></i>
+                      <strong>Resume Title:</strong> {{ candidate.rheadline ||
+                      '--' }}
+                    </div>
+
+                    <div class="col-md-6 text-md-end d-flex align-items-center justify-content-end">
+                      <!-- Qualification -->
+                      <i class="fa fa-graduation-cap text-primary me-2"></i>
+                      {{ candidate.qualifications }}
+
+                      <!-- Marital Status -->
+                      <span class="ms-4 d-flex align-items-center">
+                        <i [class]="candidate.int_married === 'Married' 
+              ? 'fa fa-ring text-warning me-2'
+              : 'fa fa-user text-secondary me-2'">
+                        </i>
+
+                        {{ candidate.int_married === 'Married' ? 'Married' :
+                        'Single' }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Row 4: Created Date + Created By
+    <div class="row mb-2">
+      <div class="col-md-6">
+        
+      </div>
+    </div> -->
+
+                  <!-- Row 5: Last Remarks + Offer Letter + Download + Specialization -->
+                  <div class="row mb-2">
+                    <!-- Remarks -->
+                    <div class="col-md-4 d-flex align-items-center">
+                      <i class="fa fa-comments text-info me-2"></i>
+                      Last Remarks: {{ candidate.remarks_typeExp || '--' }}
+                      <b class="ms-2">[ {{ candidate.emplName || '--' }} ]</b>
+                    </div>
+
+                    <!-- Offer Letter + Download -->
+                    <div class="col-md-4 d-flex align-items-center">
+                      <i class="fa fa-briefcase text-success me-2"></i>
+                      Offer: {{ candidate.offer_letter || '--' }} @if
+                      (candidate.fileExists === 'YES') {
+                      <button class="btn btn-outline-success btn-sm px-2 py-1 ms-2"
+                        (click)="downloadFile(candidate.project_id, candidate.id)">
+                        <i class="fa fa-download me-1"></i> Download
+                      </button>
+                      }
+                    </div>
+
+                    <!-- Specialization -->
+                    <div class="col-md-4 d-flex align-items-center">
+                      <i class="fa fa-layer-group text-warning ms-2 me-1"></i>
+                      {{ candidate.parent_cateid }} | {{
+                      candidate.subcat_subcatid }} | {{
+                      candidate.Specilization1det }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row g-2">
+                <div class="col-12 d-flex flex-wrap mx-2">
+                  <button class="btn btn-outline-secondary btn-round me-2 mb-2"
+                    (click)="openScheduler(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
+                    <i class="fas fa-calendar-alt"></i> Interview Scheduler
+                  </button>
+
+                  <button class="btn btn-outline-primary btn-round me-2 mb-2"
+                    (click)="openInterviewManager(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
+                    <i class="fas fa-user-tie"></i> Interview Manager
+                  </button>
+
+                  <button class="btn btn-outline-success btn-round me-2 mb-2"
+                    (click)="openJobProcess(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
+                    <i class="fas fa-briefcase"></i> Job Process
+                  </button>
+
+                  <button class="btn btn-outline-success btn-round me-2 mb-2"
+                    (click)="openVisaProcess(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
+                    <i class="fas fa-passport"></i> Visa Process
+                  </button>
+
+                  <button class="btn btn-outline-danger btn-round me-2 mb-2"
+                    (click)="openEmigration(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
+                    <i class="fas fa-plane-departure"></i> Emigration
+                  </button>
+
+                  <button class="btn btn-outline-secondary btn-round me-2 mb-2"
+                    (click)="openDepartureDetails(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
+                    <i class="fas fa-plane"></i> Departure Details
+                  </button>
+                </div>
+              </div>
+            </div>
+            } @empty {
+            <div class="text-center text-muted py-4">
+              <div class="no-data-center-container">
+                <i class="fas fa-inbox fa-2x mb-2"></i><br />
+                {{ noDataMessage || 'No records found.' }}
+              </div>
+            </div>
+            }
+          </div>
+          <!-- Pagination Section (Sticky Footer) -->
+          <app-pagination class="pagination-section sticky-table-footer" [currentPage]="currentPage"
+            [pageSize]="pageSize" [totalRecords]="Number(totalRecords)" [totalPages]="totalPages"
+            [jumpToPage]="jumpToPage" (pageChange)="onPageChange($event)" (jumpToPageChange)="onJumpToPage($event)">
+          </app-pagination>
+          <app-all-remark-modal #allRemarkModal></app-all-remark-modal>
+          <app-job-process-modal #jobProcessModal></app-job-process-modal>
+          <app-departure-details-modal #departureDetailsModal></app-departure-details-modal>
+          <app-emigration-modal #emigrationModal></app-emigration-modal>
+          <app-visa-process-modal #visaProcessModal></app-visa-process-modal>
+          <app-interview-scheduler-modal #schedulerModal></app-interview-scheduler-modal>
+          <app-interview-manager-modal #managerModal></app-interview-manager-modal>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

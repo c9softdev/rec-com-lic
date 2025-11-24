@@ -1,0 +1,859 @@
+/* Global common utility and reusable styles for all components */
+
+/* Dynamic Primary Colored Table Headers - Light Version */
+.table thead.sticky-table-header {
+  background: linear-gradient(135deg, var(--primary-color-dark) 0%, rgba(var(--primary-color-rgb), 0.95) 0%, var(--primary-color-light) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease-in-out infinite;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.table thead.sticky-table-header th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  color: white !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  border-right: 1px solid rgba(var(--primary-color-rgb), 0.25);
+  padding: 12px 8px;
+  position: relative;
+  background: transparent;
+  border-bottom: 2px solid rgba(var(--primary-color-rgb), 0.35);
+}
+
+.table thead.sticky-table-header th:first-child {
+  border-top-left-radius: 8px;
+}
+
+.table thead.sticky-table-header th:last-child {
+  border-top-right-radius: 8px;
+  border-right: none;
+}
+
+.table thead.sticky-table-header th:hover {
+  background: rgba(var(--primary-color-rgb), 0.15);
+  transition: background-color 0.3s ease;
+}
+
+/* Gradient animation for dynamic effect */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Ensure table body rows have proper styling */
+.table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.08);
+}
+
+.sticky-table-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 11;
+  background: #f8f9fa;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+  border-top: 1px solid #e9ecef;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.table-section {
+  min-height: 200px;
+  background: white;
+  position: relative;
+  padding-bottom: 0 !important;
+}
+
+.table-responsive {
+  border: none;
+  max-height: 59.77vh;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.table-responsive.table-full-height {
+  max-height: 70.2vh !important;
+}
+
+/* Floating Label Styles */
+.input-group {
+  width: 100%;
+  font-size: 16px;
+  max-width: 400px;
+  height: 45px;
+  position: relative;
+  /* margin-bottom: 10px; */
+  display: flex;
+  align-items: flex-end;
+}
+
+.input-group input,
+.input-group select {
+  width: 100%;
+  color: #333;
+  border: none !important;
+  outline: none !important;
+  padding: 24px 0 0 0 !important; /* balanced spacing for label & text */
+  line-height: 1.2;
+  font-size: 16px;
+  border-bottom: solid 1px #dee2e6 !important; /* lighter, thin underline */
+  background-color: transparent;
+  transition: all 0.2s ease-in;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  height: auto; /* avoid fixed height causing clipping */
+  /* min-height: 42px;  */
+  box-sizing: border-box; /* include padding in height */
+  margin-bottom: 0;
+}
+
+.input-group input+label,
+.input-group select+label {
+  left: 0;
+  bottom: 8px;
+  position: absolute;
+  pointer-events: none;
+  transition: all 0.2s ease-in;
+  color: #999;
+  font-size: 16px !important;
+  transform-origin: left bottom;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+  outline: none !important;
+  border: none !important;
+  border-bottom: solid 1px var(--primary-color) !important;
+  box-shadow: none !important; /* keep underline thin on focus */
+  font-size: 16px !important; /* prevent baseline shifts on focus */
+}
+
+.input-group input.active,
+.input-group select.active {
+  font-size: 16px !important; /* keep consistent size to avoid clipping */
+  border-bottom: solid 1px #cfd4da !important; /* lighter active underline */
+}
+
+.input-group input.active+label,
+.input-group select.active+label {
+  font-size: 12px !important;
+  transform: translateY(-20px) scale(0.9);
+  color: #666;
+}
+
+.input-group input:focus+label,
+.input-group select:focus+label {
+  font-size: 12px !important;
+  transform: translateY(-20px) scale(0.9);
+  color: var(--primary-color) !important;
+}
+
+.input-group input.is-invalid,
+.input-group select.is-invalid {
+  border-bottom-color: #dc3545 !important;
+  box-shadow: none !important; /* keep underline thin when invalid */
+}
+
+.input-group input.is-invalid+label,
+.input-group select.is-invalid+label {
+  color: #dc3545 !important;
+}
+
+.input-group input.is-invalid:focus+label,
+.input-group select.is-invalid:focus+label {
+  color: #dc3545 !important;
+}
+
+/* Override Bootstrap and Atlantis CSS */
+.content .input-group input:focus,
+.content .input-group select:focus {
+  outline: none !important;
+  border: none !important;
+  border-bottom: solid 1px var(--primary-color) !important;
+  box-shadow: none !important; /* thin underline on focus */
+  border-radius: 0 !important;
+  font-size: 16px !important;
+}
+
+.content .input-group input,
+.content .input-group select {
+  outline: none !important;
+  border: none !important;
+  border-bottom: solid 1px #dee2e6 !important; /* lighter default underline */
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-size: 16px !important; /* unify size to prevent descender clipping */
+}
+
+/* Add arrow down icon for select dropdowns in content area */
+.content .input-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  padding-right: 30px !important;
+}
+
+.content .input-group select:focus {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235C0632' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+}
+
+/* Active state (filled but not focused) */
+.content .input-group input.active,
+.content .input-group select.active {
+  font-size: 16px !important;
+  border-bottom: solid 1px #cfd4da !important; /* lighter active underline */
+}
+
+.content .input-group input.active+label,
+.content .input-group select.active+label {
+  font-size: 12px !important;
+  transform: translateY(-20px) scale(0.9) !important;
+  color: #666 !important;
+  margin-top: 5px;
+}
+
+/* Focus state (with or without content) */
+.content .input-group input:focus,
+.content .input-group select:focus {
+  font-size: 16px !important;
+  border-bottom: solid 1px var(--primary-color) !important;
+  box-shadow: 0 1px 0 0 var(--primary-color) !important;
+}
+
+.content .input-group input:focus+label,
+.content .input-group select:focus+label {
+  font-size: 12px !important;
+  transform: translateY(-20px) scale(0.9) !important;
+  color: var(--primary-color) !important;
+  margin-top: 5px;
+}
+
+/* Validation styling */
+.content .input-group input.is-invalid,
+.content .input-group select.is-invalid {
+  border-bottom-color: #dc3545 !important;
+  box-shadow: none !important; /* thin invalid underline */
+}
+
+.content .input-group input.is-invalid+label,
+.content .input-group select.is-invalid+label {
+  color: #dc3545 !important;
+}
+
+/* Invalid and focused */
+.content .input-group input.is-invalid:focus+label,
+.content .input-group select.is-invalid:focus+label {
+  color: #dc3545 !important;
+}
+
+/* Pagination Section */
+.pagination-section {
+  background: #f8f9fa;
+  padding: 15px 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.pagination-section .pagination {
+  margin-bottom: 0;
+}
+
+.pagination-section .pagination .page-link {
+  border: none;
+  color: var(--primary-color);
+  padding: 5px 12px;
+  margin: 0 2px;
+  border-radius: 50px;
+}
+
+.pagination-section .pagination .page-link:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.pagination-section .pagination .page-item.active .page-link {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.card-header {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-bottom: 2px solid #e9ecef;
+  padding: 20px;
+}
+
+.card-title {
+  margin-bottom: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.card-header .card-title i {
+  color: var(--primary-color);
+}
+
+.form-control {
+  padding: 9px !important;
+  height: inherit !important;
+}
+
+.form-control1:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
+}
+
+.toggle-search-btn-minimal {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  /* padding: 2px 6px; */
+  cursor: pointer;
+  z-index: 20;
+  transition: color 0.2s;
+  pointer-events: auto;
+  margin-top: 1px;
+  margin-bottom: -22px;
+  outline: none !important;
+}
+
+.toggle-search-btn-minimal:hover i,
+.toggle-search-btn-minimal:focus i {
+  color: var(--primary-color-dark);
+  background: none;
+  outline: none;
+  transform: scale(1.35);
+  transition: transform 0.15s, color 0.15s;
+}
+
+.toggle-search-btn-minimal.show-btn {
+  position: absolute;
+  top: 5px;
+  /* left: 0px; */
+  transform: none;
+  margin: 0;
+  display: block;
+  pointer-events: auto;
+}
+
+.toggle-search-btn-minimal:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.toggle-search-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.toggle-search-btn {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: box-shadow 0.2s, background 0.2s;
+  outline: none;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.toggle-search-btn:hover,
+.toggle-search-btn:focus {
+  background: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-color: var(--primary-color);
+}
+
+.no-bottom-space {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.status-icon {
+  font-size: 1.3rem;
+  vertical-align: middle;
+  color: var(--primary-color);
+}
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.navbar-brand {
+  max-height: 80%;
+  width: auto;
+  margin-right: 10px;
+}
+
+.table {
+  color: #212545;
+}
+
+.table thead th {
+  background-color: #f8f9fa;
+}
+
+.table thead th .fa-sort {
+  margin-left: 5px;
+  font-size: 0.8em;
+  color: #999;
+}
+
+.table .form-button-action {
+  display: flex;
+  gap: 5px;
+}
+
+.table .form-button-action .btn-link {
+  padding: 0;
+  color: var(--primary-color);
+}
+
+.table .form-button-action .btn-link:hover {
+  color: var(--primary-color-dark);
+}
+
+.table .form-button-action .btn-link.btn-primary {
+  color: var(--primary-color);
+}
+
+.table .form-button-action .btn-link.btn-danger {
+  color: #dc3545;
+}
+
+.pagination .page-item.active .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.pagination .page-link {
+  color: var(--primary-color);
+}
+
+.pagination .page-link:hover {
+  z-index: 2;
+  color: var(--primary-color-dark);
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+/* Sticky top section (search + toggle) */
+.sticky-top-section {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* Compact search section */
+.sticky-top-section .card-body {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+/* Remove extra space from card/page */
+.card,
+.content,
+.page-inner {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.content,
+.page-inner,
+.row,
+.card,
+.table-section {
+  overflow: visible !important;
+  height: auto !important;
+  /* height: 450px !important; */
+  min-height: unset !important;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .toggle-search-btn-minimal {
+    right: 4px;
+    font-size: 1.1rem;
+  }
+
+  .toggle-search-btn-minimal.show-btn {
+    margin: 0.5rem auto 0 auto;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-buttons .btn {
+    width: 100%;
+    margin-right: 0 !important;
+  }
+
+  .card-header .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .card-header .d-flex .action-buttons {
+    margin-top: 15px;
+    width: 100%;
+  }
+
+  .pagination-section .d-flex {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+}
+
+/* === Sidebar & Layout Utilities === */
+.sidebar {
+  width: 250px !important;
+  min-width: 250px !important;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  background: #fff;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 60px !important;
+  min-width: 60px !important;
+}
+
+.sidebar .sidebar-wrapper {
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+.sidebar .sidebar-content {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.main-panel {
+  margin-left: 250px !important;
+  width: calc(100% - 250px) !important;
+  max-width: calc(100vw - 250px);
+  transition: all 0.3s ease;
+}
+
+.main-panel.expanded {
+  margin-left: 60px !important;
+  width: calc(100% - 60px) !important;
+}
+
+.footer {
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  transition: all 0.3s ease;
+}
+
+.sidebar.collapsed~.main-panel,
+.sidebar.collapsed~.footer {
+  margin-left: 60px;
+  width: calc(100% - 60px);
+}
+
+html,
+body,
+.wrapper {
+  overflow-x: hidden !important;
+}
+
+@media (max-width: 900px) {
+  .wrapper {
+    flex-direction: column;
+  }
+
+  .sidebar,
+  .sidebar.collapsed {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100vw !important;
+    min-height: auto;
+    max-height: none;
+    position: relative;
+    left: 0;
+    top: 0;
+  }
+
+  .main-panel,
+  .main-panel.expanded {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+}
+
+/* === End Sidebar & Layout Utilities === */
+
+.password-strength-indicator {
+  min-width: 70px;
+  font-weight: 500;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.password-strength-indicator .fas {
+  transition: color 0.2s, transform 0.2s;
+}
+
+.password-strength-indicator .fas.animated-strength {
+  animation: icon-bounce 0.4s;
+}
+
+@keyframes icon-bounce {
+  0% {
+    transform: scale(1);
+  }
+
+  30% {
+    transform: scale(1.3);
+  }
+
+  60% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.password-strength-label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+/* Modern Custom Checkbox - .custom-checkbox-modern */
+:root {
+  --checkbox-border-color: #8b8c89;
+  --checkbox-checked-color: var(--primary-color);
+  /* Use dynamic primary color */
+  --checkbox-hover-color: rgba(var(--primary-color-rgb), 0.08);
+  /* Lightest version of primary color */
+  --checkbox-disabled-bg-color: #d9d9d9;
+  --checkbox-outline-color: rgba(var(--primary-color-rgb), 0.18);
+  /* Primary color, very light */
+}
+
+input.custom-checkbox-modern[type="checkbox"] {
+  box-sizing: border-box;
+  width: 1.35em;
+  height: 1.35em;
+  margin: 0 8px 0 0;
+  padding: 0;
+  border: 2px solid var(--checkbox-border-color);
+  border-radius: 0.2em;
+  appearance: none;
+  background-color: #fff;
+  outline: none;
+  transition: outline 0.1s, border-color 0.2s, box-shadow 0.2s;
+  display: grid;
+  place-content: center;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+input.custom-checkbox-modern[type="checkbox"]:checked {
+  border-color: var(--checkbox-checked-color);
+  background-color: #fff;
+}
+
+input.custom-checkbox-modern[type="checkbox"]:checked::before {
+  content: "";
+  width: 0.75em;
+  height: 0.75em;
+  transform: scale(1);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--checkbox-checked-color);
+  display: block;
+  transform-origin: bottom left;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+input.custom-checkbox-modern[type="checkbox"]::before {
+  content: "";
+  width: 0.75em;
+  height: 0.75em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em var(--checkbox-checked-color);
+  display: block;
+  transform-origin: bottom left;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+input.custom-checkbox-modern[type="checkbox"]:focus {
+  outline: 2px solid var(--checkbox-outline-color);
+  outline-offset: 2px;
+}
+
+input.custom-checkbox-modern[type="checkbox"]:disabled {
+  background-color: var(--checkbox-disabled-bg-color);
+  border-color: var(--checkbox-disabled-bg-color);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+input.custom-checkbox-modern[type="checkbox"]:hover:not(:disabled),
+input.custom-checkbox-modern[type="checkbox"]:focus-visible:not(:disabled) {
+  background-color: var(--checkbox-hover-color);
+}
+
+input[readonly],
+input[readonly]:focus {
+  background: #f8f9fa91 !important;
+  color: #888 !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+.input-group input[readonly],
+.input-group input[readonly]:focus,
+input.form-control[readonly],
+input.form-control[readonly]:focus {
+  background: #f8f9fa25 !important;
+  color: #777 !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+/* === Sidebar/Nav Menu Fixes === */
+
+/* Fix underline issue in sidebar/nav/menu items */
+.sidebar .nav-primary .nav-item a,
+.sidebar .nav-primary .nav-item a:hover,
+.sidebar .nav-primary .nav-item a:focus,
+.sidebar .nav-primary .nav-item a:active,
+.sidebar .nav-primary .nav-item a:visited,
+.sidebar .nav-primary .submenu li a,
+.sidebar .nav-primary .submenu li a:hover,
+.sidebar .nav-primary .submenu li a:focus,
+.sidebar .nav-primary .submenu li a:active,
+.sidebar .nav-primary .submenu li a:visited,
+.sidebar .nav-primary .sub-submenu li a,
+.sidebar .nav-primary .sub-submenu li a:hover,
+.sidebar .nav-primary .sub-submenu li a:focus,
+.sidebar .nav-primary .sub-submenu li a:active,
+.sidebar .nav-primary .sub-submenu li a:visited {
+  text-decoration: none !important;
+}
+
+/* Dynamic icons from API - force primary color */
+.sidebar .nav-primary .nav-item a span[aria-hidden="true"],
+.sidebar .nav-primary .nav-item a span[aria-hidden="true"] *,
+.sidebar .nav-primary .nav-item a span[aria-hidden="true"] i,
+.sidebar .nav-primary .nav-item a span[aria-hidden="true"] svg,
+.sidebar .nav-primary .nav-item a span[aria-hidden="true"] .fa,
+.sidebar .nav-primary .nav-item a span[aria-hidden="true"] .fas,
+.sidebar .nav-primary .nav-item a span[aria-hidden="true"] .far,
+.sidebar .nav-primary .nav-item a span[aria-hidden="true"] .fab {
+  color: var(--primary-color) !important;
+  fill: var(--primary-color) !important;
+  opacity: 1 !important;
+}
+
+/* Hover effects for dynamic icons */
+.sidebar .nav-primary .nav-item a:hover span[aria-hidden="true"],
+.sidebar .nav-primary .nav-item a:hover span[aria-hidden="true"] *,
+.sidebar .nav-primary .nav-item a:hover span[aria-hidden="true"] i,
+.sidebar .nav-primary .nav-item a:hover span[aria-hidden="true"] svg,
+.sidebar .nav-primary .nav-item a:hover span[aria-hidden="true"] .fa,
+.sidebar .nav-primary .nav-item a:hover span[aria-hidden="true"] .fas,
+.sidebar .nav-primary .nav-item a:hover span[aria-hidden="true"] .far,
+.sidebar .nav-primary .nav-item a:hover span[aria-hidden="true"] .fab {
+  color: var(--primary-color) !important;
+  fill: var(--primary-color) !important;
+  transform: scale(1.1) !important;
+  transition: transform 0.2s ease, color 0.2s ease !important;
+}
+
+/* Ensure collapsed sidebar icons also get primary color */
+.sidebar.collapsed .nav-primary .nav-item a span[aria-hidden="true"],
+.sidebar.collapsed .nav-primary .nav-item a span[aria-hidden="true"] *,
+.sidebar.collapsed .nav-primary .nav-item a span[aria-hidden="true"] i,
+.sidebar.collapsed .nav-primary .nav-item a span[aria-hidden="true"] svg,
+.sidebar.collapsed .nav-primary .nav-item a span[aria-hidden="true"] .fa,
+.sidebar.collapsed .nav-primary .nav-item a span[aria-hidden="true"] .fas,
+.sidebar.collapsed .nav-primary .nav-item a span[aria-hidden="true"] .far,
+.sidebar.collapsed .nav-primary .nav-item a span[aria-hidden="true"] .fab {
+  color: var(--primary-color) !important;
+  fill: var(--primary-color) !important;
+  opacity: 1 !important;
+}
+
+.sidebar.collapsed .nav-primary .nav-item a:hover span[aria-hidden="true"],
+.sidebar.collapsed .nav-primary .nav-item a:hover span[aria-hidden="true"] *,
+.sidebar.collapsed .nav-primary .nav-item a:hover span[aria-hidden="true"] i,
+.sidebar.collapsed .nav-primary .nav-item a:hover span[aria-hidden="true"] svg,
+.sidebar.collapsed .nav-primary .nav-item a:hover span[aria-hidden="true"] .fa,
+.sidebar.collapsed .nav-primary .nav-item a:hover span[aria-hidden="true"] .fas,
+.sidebar.collapsed .nav-primary .nav-item a:hover span[aria-hidden="true"] .far,
+.sidebar.collapsed .nav-primary .nav-item a:hover span[aria-hidden="true"] .fab {
+  color: var(--primary-color) !important;
+  fill: var(--primary-color) !important;
+  transform: scale(1.15) !important;
+  transition: transform 0.2s ease, color 0.2s ease !important;
+}

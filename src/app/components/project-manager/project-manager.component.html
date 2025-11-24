@@ -1,0 +1,522 @@
+<div class="content">
+  <div class="page-inner">
+    <div class="row" *ngIf="listRecdFlg">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="sticky-top-section" [ngClass]="{'search-hidden': !showSearchSection}">
+            <!-- Search Section with Toggle Button -->
+            <div class="card-body position-relative" *ngIf="showSearchSection">
+              <button class="toggle-search-btn-minimal" (click)="toggleSearchSection()" type="button"
+                data-bs-toggle="tooltip" title="Hide search">
+                <i class="fas fa-chevron-up"></i>
+              </button>
+              <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+                <div class="row align-items-center">
+
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <input type="text" class="form-control" id="takeywrd" formControlName="takeywrd">
+                      <label for="takeywrd">Project Name</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="STask_status" formControlName="STask_status"
+                        (blur)="checkInput($event.target)">
+                        <option value=""></option>
+                        <option *ngFor="let type of projectStatusTypes" [value]="type.id">{{ type.label }}</option>
+                      </select>
+                      <label for="STask_status">Project Status</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3">
+                    <div class="input-group">
+                      <select class="form-control" id="sclient_name" formControlName="sclient_name"
+                        (blur)="checkInput($event.target)">
+                        <option value=""></option>
+                        <option *ngFor="let type of clientArr" [value]="type.id">{{ type.name }}</option>
+                      </select>
+                      <label for="sclient_name">Client</label>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-lg-3 d-flex align-items-end">
+                    <div class="form-group w-100">
+                      <button class="btn btn-outline-primary btn-round mr-2" type="submit">
+                        <i class="fas fa-search mr-1"></i>Search
+                      </button>
+                      <button class="btn btn-outline-dark btn-round" type="button" (click)="onClearSearch()">
+                        <i class="fas fa-times mr-1"></i>Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- Show Search Button (when hidden) -->
+            <button *ngIf="!showSearchSection" class="toggle-search-btn-minimal show-btn"
+              (click)="toggleSearchSection()" type="button" data-bs-toggle="tooltip" title="Show search">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+
+            <!-- Main Card Header with Title and Action Buttons -->
+            <div class="card-header">
+              <div class="d-flex align-items-center justify-content-between">
+                <h4 class="card-title mb-0">
+                  @if (selectionId != '' && selectionId == '1') {
+                  Selection Manager
+                  } @else {
+                  Project Manager
+                  }
+                  <span class="ml-2" style="font-size: 14px; font-weight: normal; color: var(--primary-color);">
+                    ({{ (totalRecords | number:'1.0-0') === '0' ? '0 record' : totalRecords + ' records' }})
+                  </span>
+                </h4>
+                @if (selectionId != '' && selectionId == '1') {
+
+                } @else {
+                <div class="action-buttons">
+                  <button class="btn btn-outline-primary btn-round mr-2" (click)="onShowAddForm()">
+                    <i class="fas fa-plus mr-1"></i>Add Record
+                  </button>
+                  @if ((deleteOption != '' && deleteOption == '1') || (userId === '1' && userType == '1')) {
+                  <button class="btn btn-outline-danger btn-round" (click)="onDeleteClick()"
+                    [disabled]="selectedItems.size === 0">
+                    <i class="fas fa-trash mr-1"></i>Delete{{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' :
+                    '' }}
+                  </button>
+                  }
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Table Section -->
+          <div class="table-section">
+            <div class="table-responsive" [ngClass]="{'table-full-height': !showSearchSection}">
+              <table class="table table-striped table-hover mb-0">
+                <thead class="thead-light sticky-table-header">
+                  <tr>
+                    <th class="text-center" style="width: 2%;">
+                      <input type="checkbox" class="custom-checkbox-modern"
+                        [checked]="selectedItems.size === projects.length && projects.length > 0"
+                        (change)="onSelectAll($event)">
+                    </th>
+
+                    <th>Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of projects; let i = index">
+                    <td class="text-center">
+                      <input type="checkbox" class="custom-checkbox-modern" [checked]="selectedItems.has(item.id)"
+                        (change)="onItemSelect(item.id, $event)">
+                    </td>
+
+                    <td>
+                      <b>({{ item.sno }})</b>. {{ item.task_name }},
+                      <span class="badge 
+                                      {{ item.task_status === 'Completed' ? 'bg-success' : 
+                                          item.task_status === 'Pending' ? 'bg-warning text-dark' : 
+                                          'bg-secondary text-light' }}">
+                        {{ item.task_status }}
+                      </span>
+
+                      @if (selectionId != '' && selectionId == '1') {
+                      <button type="button" class="btn btn-sm text-primary fw-semibold ms-2"
+                        (click)="item.totalCv > 0 && applySelection('sprojrct', item.id)" title="View Assigned CVs"
+                        style="background-color: #cce5ff; font-size: 14px;">
+                        <i class="fa fa-file-alt me-1"></i>
+                        Assigned CV: [{{ item.totalCv }}]
+                      </button>
+                      } @else {
+                      <button type="button" class="btn btn-sm text-primary fw-semibold ms-2"
+                        (click)="item.totalCv > 0 && applySearch('sprojrct', item.id, '', '')" title="View Assigned CVs"
+                        style="background-color: #cedff1; font-size: 14px;">
+                        <i class="fa fa-file-alt me-1"></i>
+                        Assigned CV: [{{ item.totalCv }}]
+                      </button>
+                      }
+
+
+                      <br>
+
+                      <!-- <span style="background-color: rgb(186, 197, 197);padding:5px;margin-top:3px!important;"><b>Created By:</b> {{ item.empl_name }}, <b>Date: </b>{{ item.task_cre_date }}, <b>Mode: </b>{{ item.task_online === 'Online' ? 'Online' : 'Offline' }} </span>  -->
+                      <div
+                        class="alert alert-light border border-secondary-subtle py-2 px-3 mb-2 d-inline-block shadow-sm rounded-3"
+                        style="font-size: 15px;">
+                        <strong class="text-dark">Created By:</strong>
+                        <span class="text-primary fw-semibold">{{ item.empl_name }}</span>,
+                        <strong class="text-dark">Date:</strong>
+                        <span class="text-success fw-semibold">{{ item.task_cre_date }}</span>,
+                        <strong class="text-dark">Mode:</strong>
+                        <span [ngClass]="item.task_online === 'Online' 
+                                ? 'badge bg-success text-white px-2 py-1' 
+                                : 'badge bg-danger text-white px-2 py-1'">
+                          {{ item.task_online === 'Online' ? 'Online' : 'Offline' }}
+                        </span>
+                      </div>
+
+
+                      <!-- @if (selectionId != '' && selectionId == '1') {
+                        <button type="button" class="btn btn-icon btn-link"  ><i class="fa fa-users" style="font-size: 20px;color:rgb(205, 195, 195);"></i></button>
+                        } @else {
+                        <button type="button" (click)="onShowAddForm2(item)" class="btn btn-icon btn-link"  title="Add Interview"><i class="fa fa-users" style="font-size: 20px;color:black;"></i></button>
+                        } -->
+                      @if (selectionId != '' && selectionId == '1') {
+
+                      } @else {
+                      <!-- <button type="button" (click)="onShowAddForm2(item)"
+                        class="btn btn-outline-primary align-middle d-inline-flex align-items-center gap-1 px-2 py-0"
+                        title="Add Interview">
+                        <i class="fa fa-user-plus text-primary" style="font-size: 16px;"></i>
+                        <span>Add Interview</span>
+                      </button> -->
+
+                      <button class="btn btn-outline-primary btn-round mr-2" (click)="onShowAddForm2(item)" title="Add Interview">
+                        <i class="fas fa-plus mr-1"></i>Add Interview
+                      </button>
+                      }
+
+                      <span style="float:right;margin-top:-25px;border: solid 0px;padding-top: 15px;">
+                        <span *ngIf="item.chr_taspub === '1'">
+                          <i class="fas fa-check-circle text-success status-icon"></i>
+                        </span>
+                        <span *ngIf="item.chr_taspub !== '1'">
+                          <i class="fas fa-times-circle text-danger status-icon"></i>
+                        </span>
+                        @if (selectionId != '' && selectionId == '1') {
+
+                        } @else {
+                        @if ((editresumechk != '' && editresumechk == '1') || (userId === '1' && userType == '1')) {
+                        <button type="button" class="btn btn-icon btn-link" title="Edit Record"
+                          (click)="onEditClick(item)">
+                          <i class="fa fa-edit status-icon"></i>
+                        </button>
+                        }
+                        }
+                      </span>
+                      <table class="table table-striped table-hover mb-0"
+                        style="border:solid 1px;border-color:rgb(215, 204, 204);margin-bottom:5px!important;">
+                        <tr *ngFor="let intvArr of item.taskArr">
+                          <td>
+                            {{ intvArr.sno }}
+                          </td>
+                          <td style="width: 15%;">
+                            {{ intvArr.city }}
+                          </td>
+                          <td>
+                            {{ intvArr.intv_date }}
+                          </td>
+                          <td>
+                            {{ intvArr.Specili }}
+                          </td>
+                          <td style="width: 12%;">
+                            @if (selectionId != '' && selectionId == '1') {
+
+                            } @else {
+                            @if ((editresumechk != '' && editresumechk == '1') || (userId === '1' && userType == '1')) {
+                            <button type="button" class="btn btn-icon btn-link"
+                              (click)="onEditClick2(intvArr.id, item.id)" title="Edit Details"><i
+                                class="fa fa-edit status-icon"
+                                style="font-size:20px;color:rgb(103, 98, 90);"></i></button>
+                            }
+                            @if ((deleteOption != '' && deleteOption == '1') || (userId === '1' && userType == '1')) {
+                            <button type="button" class="btn btn-icon btn-link" (click)="onDeleteClick2(intvArr.id)"
+                              title="Delete Details"><i class="fa fa-trash status-icon"
+                                style="color:red;font-size:20px;"></i></button>
+                            }
+                            }
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr *ngIf="projects.length === 0">
+                    <td colspan="6" class="text-center text-muted py-4">
+                      <i class="fas fa-inbox fa-2x mb-2"></i>
+                      <br>{{ noDataMessage }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <app-pagination class="pagination-section sticky-table-footer" [currentPage]="currentPage"
+              [pageSize]="pageSize" [totalRecords]="Number(totalRecords)" [totalPages]="totalPages"
+              [jumpToPage]="jumpToPage" (pageChange)="onPageChange($event)" (jumpToPageChange)="onJumpToPage($event)">
+            </app-pagination>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Form Section -->
+    <div class="row" *ngIf="addRecdFlg">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">{{ isEditMode ? 'Edit' : 'Add' }} Project</h4>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="projectForm">
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="task_name" (blur)="checkInput($event.target)"
+                      formControlName="task_name">
+                    <label for="task_name">Project Name</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <select class="form-control" id="task_status" formControlName="task_status"
+                      (blur)="checkInput($event.target)">
+                      <option value=""></option>
+                      <option *ngFor="let type of projectStatusTypes" [value]="type.id">{{ type.label }}</option>
+                    </select>
+                    <label for="task_status">Project Status</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <select class="form-control" id="client_name" formControlName="client_name"
+                      (blur)="checkInput($event.target)">
+                      <option value=""></option>
+                      <option *ngFor="let type of clientArr" [value]="type.id">{{ type.name }}</option>
+                    </select>
+                    <label for="client_name">Client Name</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="hod" (blur)="checkInput($event.target)"
+                      formControlName="hod">
+                    <label for="hod">Head Of Deligation</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="cont_person" (blur)="checkInput($event.target)"
+                      formControlName="cont_person">
+                    <label for="cont_person">Project Incharge</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="cintactNo" (blur)="checkInput($event.target)"
+                      formControlName="cintactNo">
+                    <label for="cintactNo">Contact No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="intvTime" (blur)="checkInput($event.target)"
+                      formControlName="intvTime">
+                    <label for="intvTime">Interview Time</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="requirment" (blur)="checkInput($event.target)"
+                      formControlName="requirment">
+                    <label for="requirment">Add Requirement</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="IdNo" (blur)="checkInput($event.target)"
+                      formControlName="IdNo">
+                    <label for="IdNo">ID Number</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <label
+                    style="font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 0px; margin-top: 10px;">
+                    <input class="custom-checkbox-modern" type="checkbox" id="publishtask"
+                      formControlName="publishtask">
+                    <span style="font-weight: 600;">Publish</span>
+                    &nbsp;&nbsp;&nbsp;
+                    <input class="custom-checkbox-modern" type="checkbox" id="publishOnline"
+                      formControlName="publishOnline">
+                    <span style="font-weight: 600;">Online</span>
+                  </label>
+                </div>
+
+              </div>
+              <div class="form-group d-flex align-items-center" style="margin-top: 1rem; gap: 24px;">
+
+              </div>
+              <div class="form-group mt-3">
+                <button type="button" class="btn btn-outline-primary btn-round mr-2"
+                  (click)="isEditMode ? onUpdateRecord() : onSaveNewRecord()">
+                  <i class="fas fa-save mr-1"></i>{{ isEditMode ? 'Update' : 'Save' }}
+                </button>
+                <button type="button" class="btn btn-outline-info btn-round mr-2" (click)="onCancelClick()">
+                  <i class="fas fa-times mr-1"></i>Cancel
+                </button>
+                <button type="reset" class="btn btn-outline-dark btn-round" (click)="onClearClick()">
+                  <i class="fas fa-eraser mr-1"></i>Clear
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="addSecRecFlg">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title">{{ isEditMode ? 'Edit' : 'Add' }} Interview Details</h4>
+            <h6><b>Project: </b>{{ taskName }}</h6>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="projectDtlForm">
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+
+
+                    <select class="form-control" id="state" formControlName="state" (change)="loadCityOnState($event)"
+                      (blur)="checkInput($event.target)">
+                      <option value=""></option>
+                      <option *ngFor="let state of States" [value]="state.stateID">{{
+                        state.stateName }}</option>
+                    </select>
+
+                    <label for="state">State </label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <select class="form-control" id="currLocCity" formControlName="currLocCity"
+                      (blur)="checkInput($event.target)">
+                      <option value=""></option>
+                      <option *ngFor="let type of cities" [value]="type.id">{{ type.Cityname }}</option>
+                    </select>
+                    <label for="currLocCity">City</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="date" class="form-control active" id="intvDate" (blur)="checkInput($event.target)"
+                      formControlName="intvDate">
+                    <label for="intvDate">Interview Date</label>
+                    <button type="button" class="btn btn-outline-success btn-sm ms-2" (click)="addInterviewDate()"
+                      title="Add Another Interview Date">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+
+                    <textarea class="form-control" id="interviewVenu" formControlName="interviewVenu" rows="1"
+                      style="height: 38px;" (blur)="checkInput($event.target)"
+                      formControlName="interviewVenu"></textarea>
+                    <label for="interviewVenu">Interview Venue</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dynamic Interview Dates Section -->
+              <div class="row" *ngIf="additionalInterviewDates.length > 0">
+                <div class="col-md-12">
+                  <h6 class="text-primary mb-3">
+                    <i class="fas fa-calendar-plus me-2"></i>Additional Interview Dates
+                  </h6>
+                  <div class="row" *ngFor="let date of additionalInterviewDates; let i = index">
+                    <div class="col-md-6 col-lg-6">
+                      <div class="input-group">
+                        <input type="date" class="form-control active" [id]="'intvDate_' + i" [(ngModel)]="date.value"
+                          (blur)="checkInput($event.target)" [ngModelOptions]="{standalone: true}">
+                        <label [for]="'intvDate_' + i">Interview Date {{ i + 2 }}</label>
+                        <button type="button" class="btn btn-outline-danger btn-sm ms-2"
+                          (click)="removeInterviewDate(i)" title="Remove Date">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="intvTime" (blur)="checkInput($event.target)"
+                      formControlName="intvTime">
+                    <label for="intvTime">Interview Time</label>
+                  </div>
+                </div>
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="cont_person" (blur)="checkInput($event.target)"
+                      formControlName="cont_person">
+                    <label for="cont_person">Project Incharge</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <input type="text" class="form-control" id="cintactNo" (blur)="checkInput($event.target)"
+                      formControlName="cintactNo">
+                    <label for="cintactNo">Contact No</label>
+                  </div>
+                </div>
+
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+
+                    <textarea class="form-control" id="splCat" formControlName="splCat" rows="1"
+                      style="height: 38px;"></textarea>
+                    <label for="splCat">Specialization</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 col-lg-6">
+                  <div class="input-group">
+                    <textarea class="form-control" id="remarks" formControlName="remarks" rows="1"
+                      style="height: 38px;"></textarea>
+                    <label for="remarks">Remarks</label>
+                  </div>
+                </div>
+
+              </div>
+              <div class="form-group d-flex align-items-center" style="margin-top: 1rem; gap: 24px;">
+
+              </div>
+              <div class="form-group mt-3">
+                <button type="button" class="btn btn-outline-primary btn-round mr-2"
+                  (click)="isEditMode ? onUpdateRecord2() : onSaveNewRecord2()">
+                  <i class="fas fa-save mr-1"></i>{{ isEditMode ? 'Update Details' : 'Save Details' }}
+                </button>
+                <button type="button" class="btn btn-outline-info btn-round mr-2" (click)="onCancelClick()">
+                  <i class="fas fa-times mr-1"></i>Cancel
+                </button>
+                <button type="reset" class="btn btn-outline-dark btn-round" (click)="onClearClick2()">
+                  <i class="fas fa-eraser mr-1"></i>Clear
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

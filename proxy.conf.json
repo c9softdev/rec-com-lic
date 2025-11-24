@@ -1,0 +1,11 @@
+{
+  "/hf": {
+    "target": "https://api-inference.huggingface.co",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/hf": ""
+    }
+  }
+}

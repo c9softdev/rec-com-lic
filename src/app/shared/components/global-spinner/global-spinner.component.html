@@ -1,0 +1,6 @@
+<div *ngIf="(loading$ | async)" class="global-spinner-overlay" role="status" aria-live="polite">
+  <div class="global-spinner-card" role="alert" aria-label="Loading, please wait">
+    <div class="lds-ring" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
+    <div class="spinner-text">{{ (message$ | async) || 'Please wait…' }}</div>
+  </div>
+</div>

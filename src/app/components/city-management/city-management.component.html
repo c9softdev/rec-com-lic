@@ -1,0 +1,132 @@
+<div class="content">
+    <div class="page-inner">
+        <!-- Search Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="sticky-top-section" [ngClass]="{'search-hidden': !showSearchSection}">
+                        <!-- Search Section -->
+                        <div class="card-body position-relative" *ngIf="showSearchSection">
+                            <!-- Prevent Enter from submitting the form by handling keydown.enter -->
+                            <form [formGroup]="CityForm" (ngSubmit)="void 0" (keydown.enter)="$event.preventDefault()">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="cityName"
+                                                formControlName="cityName" (blur)="checkInput($event.target)">
+                                            <label for="cityName">City Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="input-group">
+                                            <select class="form-control" id="stateName" formControlName="stateName"
+                                                (blur)="checkInput($event.target)">
+                                                <option value=""></option>
+                                                <option *ngFor="let state of States" [value]="state.id">{{
+                                                    state.name }}</option>
+                                            </select>
+                                            <label for="stateName">State</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <div class="form-group d-flex flex-wrap align-items-end w-100">
+                                            <div class="d-flex flex-wrap align-items-end">
+                                                <button class="btn btn-outline-primary btn-round mr-2 mb-2" type="button"
+                                                    (click)="onSearch()">
+                                                    <i class="fas fa-search mr-1"></i>Search
+                                                </button>
+                                                <!-- Use explicit click for Save to avoid accidental submits via Enter -->
+                                                <button class="btn btn-outline-primary btn-round mr-2 mb-2" type="button" (click)="onSaveCity()">
+                                                    <i class="fas fa-save mr-1"></i>Save
+                                                </button>
+                                                <button class="btn btn-outline-dark btn-round mr-2 mb-2" type="button"
+                                                    (click)="onClearSearch()">
+                                                    <i class="fas fa-times mr-1"></i>Clear
+                                                </button>
+                                            </div>
+                                            <div class="ml-auto mb-2">
+                                                <button class="btn btn-primary btn-sm" type="button"
+                                                    (click)="toggleSearchSection()">
+                                                    <i class="fa fa-chevron-up"></i>
+                                                    Hide
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Main Card Header with Title and Action Buttons -->
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h4 class="card-title mb-0">City List
+                                    <span class="ml-2"
+                                        style="font-size: 14px; font-weight: normal; color: var(--primary-color);">
+                                        ({{ (totalRecords | number:'1.0-0') === '0' ? '0 record' : totalRecords + '
+                                        records' }})
+                                    </span>
+                                </h4>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-outline-danger btn-round" (click)="onDeleteClick()">
+                                        <i class="fas fa-trash mr-1"></i>Delete
+                                        {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
+                                    </button>
+                                    <button class="btn btn-primary btn-sm ml-2" (click)="toggleSearchSection()" *ngIf="!showSearchSection">
+                                        <i class="fa fa-chevron-down"></i>
+                                        Show
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table Section -->
+                    <div class="table-section">
+                        <div class="table-responsive" [ngClass]="{'table-full-height': !showSearchSection}">
+                            <table class="table  table-hover mb-0">
+                                <thead class="thead-light sticky-table-header">
+                                    <tr>
+                                        <th class="text-center" style="width: 3%;">
+                                            <input type="checkbox" class="custom-checkbox-modern"
+                                                [checked]="selectedItems.size === cities.length"
+                                                (change)="onSelectAll($event)">
+                                        </th>
+                                        <th style="width: 5%;">S.NO.</th>
+                                        <th>CITY NAME</th>
+                                        <th style="width: 40%;">STATE NAME</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of cities; let i = index">
+                                        <td class="text-center">
+                                            <input type="checkbox" class="custom-checkbox-modern"
+                                                [checked]="selectedItems.has(item.id)"
+                                                (change)="onItemSelect(item.id, $event)">
+                                        </td>
+                                        <td style="text-align: center;">{{ item.sno }}</td>
+                                        <td>{{ item.Cityname }}</td>
+                                        <td>{{ item.State }}</td>
+                                    </tr>
+                                    <tr *ngIf="cities.length === 0">
+                                        <td colspan="11" class="text-center text-muted py-4">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                                            <br>{{ noDataMessage }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination Section (Sticky Footer) -->
+                        <app-pagination class="pagination-section sticky-table-footer" [currentPage]="currentPage"
+                            [pageSize]="pageSize" [totalRecords]="Number(totalRecords)" [totalPages]="totalPages"
+                            [jumpToPage]="jumpToPage" (pageChange)="onPageChange($event)"
+                            (jumpToPageChange)="onJumpToPage($event)">
+                        </app-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

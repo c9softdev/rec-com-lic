@@ -1,0 +1,154 @@
+<div class="content">
+    <div class="page-inner">
+        <!-- Search Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="sticky-top-section" [ngClass]="{'search-hidden': !showSearchSection}">
+                        <!-- Search Section -->
+                        <div class="card-body position-relative" *ngIf="showSearchSection">
+                            <div class="card upload-box mb-3 mt-3 p-3">
+                                <form [formGroup]="archiveForm" (ngSubmit)="onSaveRecord()">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3 col-lg-3">
+                                        <div class="input-group">
+                                            <select class="form-control" id="fileType" formControlName="fileType"
+                                                (blur)="checkInput($event.target)"
+                                                [class.is-invalid]="archiveForm.get('fileType')?.invalid && submitted">
+                                                <!-- <option value="">Select Document Type</option> -->
+                                                <option *ngFor="let type of archivalTypes | keyvalue" [value]="type.key">
+                                                    {{ type.value }}
+                                                </option>
+                                            </select>
+                                            <label for="fileType">Document Type</label>
+                                            <div class="invalid-feedback" *ngIf="archiveForm.get('fileType')?.invalid && submitted">
+                                                Please select a document type
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-lg-5">
+                                        <div class="d-flex align-items-center">
+                                            <label class="btn btn-outline-primary btn-file mb-0" for="uploadFile" style="cursor: pointer;">
+                                                <i class="fa fa-folder-open me-2"></i>
+                                                Choose file
+                                            </label>
+                                            <input type="file" id="uploadFile" (change)="onFileSelected($event)"
+                                                   [accept]="allowedImageTypes.concat(allowedDocTypes).join(',')" #fileInput
+                                                   style="display:none;" />
+
+                                            <div class="ms-3 d-flex flex-column">
+                                                <div class="fw-semibold">{{ selectedFileName || 'No file selected' }}</div>
+                                                <small class="text-muted">Accepted: images, pdf, doc, docx</small>
+                                                <div *ngIf="fileError" class="text-danger mt-1"><small>{{ fileError }}</small></div>
+                                            </div>
+                                            <div *ngIf="previewUrl && selectedFile" class="ms-3">
+                                                <img [src]="previewUrl" class="img-thumbnail" style="max-height:40px;" [alt]="selectedFileName" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-lg-4">
+                                        <div class="d-flex align-items-end">
+                                            <button class="btn btn-primary btn-round me-2" type="submit" [disabled]="isSaving || !selectedFile">
+                                                <i class="fas fa-upload me-1"></i>
+                                                {{ isSaving ? 'Uploading...' : 'Upload' }}
+                                            </button>
+                                            <button class="btn btn-outline-secondary btn-round me-2" type="button" (click)="clearFile()" [disabled]="isSaving">
+                                                <i class="fas fa-times me-1"></i> Clear
+                                            </button>
+                                            <!-- per-row downloads remain; bulk download removed -->
+                                        </div>
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Main Card Header with Title and Action Buttons -->
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h4 class="card-title mb-0">Archive List
+                                    <span class="ml-2"
+                                        style="font-size: 14px; font-weight: normal; color: var(--primary-color);">
+                                        ({{ (totalRecords | number:'1.0-0') === '0' ? '0 record' : totalRecords + '
+                                        records' }})
+                                    </span>
+                                </h4>
+                                <div class="d-flex align-items-center">
+                                    <button class="btn btn-outline-danger btn-round" (click)="onDeleteClick()">
+                                        <i class="fas fa-trash mr-1"></i>Delete
+                                        {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
+                                    </button>
+                                    <button class="btn btn-primary btn-sm ml-2" (click)="toggleSearchSection()"
+                                        *ngIf="!showSearchSection">
+                                        <i class="fa fa-chevron-down"></i>
+                                        Show
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Table Section -->
+                    <div class="table-section">
+                        <div class="table-responsive" [ngClass]="{'table-full-height': !showSearchSection}">
+                            <table class="table  table-hover mb-0">
+                                <thead class="thead-light sticky-table-header">
+                                    <tr>
+                                        <th class="text-center" style="width: 3%;">
+                                            <input type="checkbox" class="custom-checkbox-modern"
+                                                [checked]="isAllSelected()"
+                                                (change)="onSelectAll($event)">
+                                        </th>
+                                        <th style="width: 5%;">S.NO.</th>
+                                        <th>Document Type</th>
+                                        <th style="width: 15%; text-align: center;"> Date</th>
+                                        <th style="width: 10%;">Download</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of records">
+                                        <td class="text-center">
+                                            <input type="checkbox" class="custom-checkbox-modern"
+                                                [checked]="isSelected(item.docid)"
+                                                (change)="onItemSelect(item.docid, $event)">
+                                        </td>
+                                        <td class="text-center">{{ item.sno }}</td>
+                                        <td>{{ item.title }}
+                                            <small class="text-muted d-block">{{ item.chr_type }}</small>
+                                        </td>
+                                        <td class="text-center">{{ item.dtm_date}}</td>
+                                        <td class="text-center">
+                                            <button 
+                                               class="btn btn-link p-0 my-1" 
+                                               [title]="'Download ' + item.title"
+                                               [disabled]="!item.img_file_url"
+                                               (click)="downloadFile(item.img_file_url)">
+                                                <i class="fa fa-download status-icon" 
+                                                   [class.text-success]="item.img_file_url"
+                                                   [class.text-muted]="!item.img_file_url"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="records.length === 0" class="table-no-data-row">
+                                        <td colspan="5" class="table-no-data-cell">
+                                            <div class="no-data-center-container">
+                                                <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                                {{ noDataMessage || 'No archive documents found.' }}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <!-- <div class="d-flex justify-content-end align-items-center p-3" *ngIf="records.length > 0">
+                                <div class="text-muted">
+                                    Total Records: {{ records.length }}
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

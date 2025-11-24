@@ -1,0 +1,192 @@
+@import '../../../assets/css/commonstyles.css';
+
+/* Host element styles */
+:host {
+  --bs-primary: var(--primary-color);
+  --bs-primary-rgb: var(--primary-color-rgb);
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('../../../assets/img/login-background.svg') no-repeat center center;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+}
+
+/* Card styling */
+.auth-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 1100px;
+  position: relative;
+  height: 450px !important;
+}
+
+/* Brand section */
+.brand-section {
+  background-color: #fff;
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  .client-logo {
+    max-width: 90%;
+    height: auto;
+  }
+
+  .company-logo {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    max-width: 240px;
+    opacity: 0.92;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+/* Form section */
+.form-section {
+  background: var(--primary-color);
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .auth-header {
+    font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+}
+
+/* Form controls */
+.form-control {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+
+  &:focus {
+    background-color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+  }
+
+  &.is-invalid {
+    border-color: var(--error-color);
+    box-shadow: none;
+  }
+}
+
+/* Error message */
+.error-message {
+  color: var(--error-color, #dc3545);
+  font-size: 0.875rem;
+  text-align: center;
+  margin: 0.25rem 0 0.5rem;
+  padding: 0.25rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Success message */
+.success-message {
+  background-color: rgba(25, 135, 84, 0.1);
+  color: #fff;
+  font-size: 0.875rem;
+  text-align: center;
+  margin: 0.25rem 0 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+
+  &.btn-light {
+    color: var(--primary-color);
+    &:hover {
+      background-color: #e9ecef;
+    }
+  }
+
+  &.btn-outline-light {
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+/* Links */
+.auth-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+/* reCAPTCHA responsive scaling */
+.recaptcha-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+@media (max-width: 576px) {
+  .recaptcha-wrapper {
+    transform: scale(0.9);
+    transform-origin: center;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .auth-card {
+    max-height: none;
+  }
+
+  .brand-section {
+    min-height: 200px;
+    padding: 1.5rem;
+
+    .company-logo {
+      max-width: 180px;
+    }
+  }
+
+  .form-section {
+    padding: 1.5rem;
+  }
+}

@@ -1,0 +1,46 @@
+@import '../../../../assets/css/commonstyles.css';
+.modal {
+  z-index: 1050;
+}
+
+/* Backdrop */
+.modal-backdrop {
+  z-index: 1040;
+}
+
+/* Keep All Remarks modal on top of others */
+.top-layer-modal.show {
+  z-index: 1075 !important;
+}
+
+.top-layer-modal + .modal-backdrop.show {
+  z-index: 1070 !important;
+  background-color: rgba(0, 0, 0, 0.4); /* slightly transparent for better layer look */
+}
+
+/* Professional UI tweaks for All Remarks */
+/* Constrain body height for scrolling in normal mode */
+.modal-body {
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
+}
+
+/* When maximized (fullscreen), lift the height constraint */
+.modal-dialog.modal-fullscreen .modal-body {
+  max-height: none;
+}
+
+// .remarks-header {
+//   position: sticky;
+//   top: 0;
+//   z-index: 2;
+//   background-color: var(--background-color);
+//   box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+// }
+
+// .remark-row {
+//   transition: background-color 0.15s ease-in-out;
+// }
+// .remark-row:hover {
+//   background-color: rgba(var(--primary-color-rgb), 0.05);
+// }
