@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { paginationProperties } from '../../app.config';
-import { ClientManagerService } from './client-manager.service';
+import { CommonService } from '../../core/services/common.service';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { FileValidatorService, FileValidationOptions } from '../../core/services/file-validator.service';
 import { LoadingService } from '../../core/services/loading.service';
@@ -55,8 +55,8 @@ export class ClientManagerComponent {
 
   constructor(
     private fb: FormBuilder,
-    private clientService: ClientManagerService,
     private sweetAlert: SweetAlertService,
+    private commonService: CommonService,
     private fileValidator: FileValidatorService, 
     private loadingService: LoadingService,
     private authService: AuthService
@@ -123,7 +123,7 @@ export class ClientManagerComponent {
         }
       ]
     };
-    this.clientService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (response: any) => {
         if (response?.status === 'success' && response.data) {
           onSuccess(response.data);
@@ -226,7 +226,7 @@ toggleMaximize(): void {
     };
     this.sweetAlert.confirmStatusChange('Are you sure you want to update the order of the selected clients?').then((result: any) => {
       if (result.isConfirmed) {
-        this.clientService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (response: any) => {
             if (response.status === 'success') {
               this.sweetAlert.showToast(response.message, 'success');
@@ -263,7 +263,7 @@ toggleMaximize(): void {
     };
     this.sweetAlert.confirmStatusChange('Are you sure you want to change the portal visibility of the selected clients?').then((result: any) => {
       if (result.isConfirmed) {
-        this.clientService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (response: any) => {
             if (response.status === 'success') {
               this.sweetAlert.showToast(response.message, 'success');
@@ -300,7 +300,7 @@ toggleMaximize(): void {
     };
     this.sweetAlert.confirmStatusChange('Are you sure you want to change the visibility of the selected clients?').then((result: any) => {
       if (result.isConfirmed) {
-        this.clientService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (response: any) => {
             if (response.status === 'success') {
               this.sweetAlert.showToast(response.message, 'success');
@@ -337,7 +337,7 @@ toggleMaximize(): void {
     };
     this.sweetAlert.confirmDelete('Are you sure you want to delete the selected clients?').then((result: any) => {
       if (result.isConfirmed) {
-        this.clientService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (response: any) => {
             if (response.status === 'success') {
               this.sweetAlert.showToast(response.message, 'success');
@@ -461,7 +461,7 @@ toggleMaximize(): void {
     }
     this.isSaving = true;
     this.loadingService.show();
-    this.clientService.post(formData).subscribe({
+    this.commonService.post(formData).subscribe({
       next: (response: any) => {
         this.isSaving = false;
         this.loadingService.hide();
@@ -513,7 +513,7 @@ toggleMaximize(): void {
 
       this.isSaving = true;
       this.loadingService.show();
-      this.clientService.post(formData).subscribe({
+      this.commonService.post(formData).subscribe({
         next: (response: any) => {
           this.isSaving = false;
           this.loadingService.hide();
@@ -562,7 +562,7 @@ toggleMaximize(): void {
         }
       ]
     };
-    this.clientService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (response: any) => {
         if (response?.data?.list) {
           this.clients = response.data.list;

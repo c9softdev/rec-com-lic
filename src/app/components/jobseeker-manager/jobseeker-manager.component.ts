@@ -1,7 +1,6 @@
 import { Component, OnInit, NgZone, OnDestroy, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { take, takeUntil } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { JobseekerManagerService } from './jobseeker-manager.service';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { paginationProperties, GENDERS, RELIGIONS, SORT_TO, SORT_BY, MARITAL_STATUS } from '../../app.config';
 import { PaginationComponent } from '../pagination/pagination.component';
@@ -231,7 +230,6 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
   constructor(
     private fb: FormBuilder,
-    private jobseekerService: JobseekerManagerService,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
@@ -575,7 +573,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
   loadRemarks(): void {
     const payload = { event: 'jobseeker', mode: 'rmkList', InputData: [{ rmType: '9' }] };
-    this.jobseekerService.post(payload).subscribe(res => {
+    this.commonService.post(payload).subscribe(res => {
       if (res?.status === 'success' && res.data?.list) {
         this.remarks = Object.entries(res.data.list).map(([id, name]) => ({ id, name }));
       }
@@ -706,7 +704,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
           }
         ]
       };
-      this.jobseekerService.post(payload).subscribe({
+      this.commonService.post(payload).subscribe({
         next: (res: any) => {
           if (res?.status === 'success') {
             this.sweetAlert.showToast('Resume file deleted successfully.', 'success');
@@ -744,7 +742,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
           }
         ]
       };
-      this.jobseekerService.post(payload).subscribe({
+      this.commonService.post(payload).subscribe({
         next: (res: any) => {
           if (res?.status === 'success') {
             this.sweetAlert.showToast('Document file deleted successfully.', 'success');
@@ -911,7 +909,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     } else {
       // No files, use regular JSON payload
       console.log('Submitting jobseeker payload without files:', formValue);
-      this.jobseekerService.post(payload).subscribe(res => {
+      this.commonService.post(payload).subscribe(res => {
         if (res?.status === 'success') {
           this.sweetAlert.showToast(res.message || 'Jobseeker saved.', 'success');
           // If opened as standalone popup/window, notify opener and close
@@ -971,7 +969,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
         userId: this.userId
       }]
     };
-    this.jobseekerService.post(payload).subscribe(res => {
+    this.commonService.post(payload).subscribe(res => {
       this.loadingService.hide();
       if (res?.status === 'success' && res.data?.list) {
         console.log('Jobseekers response data:', res.data);
@@ -1050,7 +1048,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
         clk: 'exp'
       }]
     };
-    this.jobseekerService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         // hide global spinner before showing any toast so they don't overlap
         this.loadingService.hide();
@@ -1187,7 +1185,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
       mode: 'cs',
       InputData: [{ ...this.searchForm.value, page: this.currentPage.toString(), artId: idsToChange }]
     };
-    this.jobseekerService.post(payload).subscribe(res => {
+    this.commonService.post(payload).subscribe(res => {
       this.loadingService.hide();
       if (res?.status === 'success') {
         this.sweetAlert.showToast(res.message || 'Visibility updated.', 'success');
@@ -1222,7 +1220,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
       mode: 'dr',
       InputData: [{ ...this.searchForm.value, page: this.currentPage.toString(), artId: idsToDelete }]
     };
-    this.jobseekerService.post(payload).subscribe(res => {
+    this.commonService.post(payload).subscribe(res => {
       this.loadingService.hide();
       if (res?.status === 'success') {
         this.sweetAlert.showToast(res.message || 'Jobseekers deleted.', 'success');
@@ -1314,7 +1312,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
         console.log('Email payload:', payload);
 
         this.loadingService.show('Sending email...');
-        this.jobseekerService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (res: any) => {
             console.log('Email response:', res);
             this.loadingService.hide();
@@ -1379,7 +1377,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
       ]
     };
 
-    this.jobseekerService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res: any) => {
         console.log('Edit fetch response:', res);
         this.loadingService.hide();
@@ -1711,7 +1709,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     };
 
     this.isCheckingEmail = true;
-    this.jobseekerService.post(payload).subscribe(res => {
+    this.commonService.post(payload).subscribe(res => {
       this.isCheckingEmail = false;
       const msg: string = (res?.message || '').toString();
       const duplicate = res?.status === 'success' && msg.toLowerCase().includes('exists');
@@ -1798,7 +1796,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
         }
       ]
     };
-  this.jobseekerService.post(payload).subscribe(res => {
+  this.commonService.post(payload).subscribe(res => {
     if (res?.status === 'success') {
       this.sweetAlert.showToast(res.message || 'Remark updated.', 'success');
       this.remarkForm.reset();
@@ -1841,7 +1839,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
         InputData: [{ id, page: '1' }]
       };
 
-      this.jobseekerService.post(payload).subscribe(
+      this.commonService.post(payload).subscribe(
         (res) => {
           this.loadingService.hide();
           if (res?.status === 'success' && Array.isArray(res.data?.list) && res.data.list.length > 0) {
@@ -1954,7 +1952,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     };
 
     this.loadingService.show('Assigning CVs to project...');
-    this.jobseekerService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
         if (res?.status === 'success') {

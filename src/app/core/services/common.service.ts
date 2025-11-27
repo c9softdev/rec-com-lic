@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { SessionService } from './session.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,21 +11,50 @@ import { environment } from '../../../environments/environment';
 export class CommonService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private sessionService: SessionService) { }
 
   /**
    * Generic post method for API calls
+   * Automatically appends comp_id from session to InputData
    */
   post(payload: any): Observable<any> {
-    // Always attach security key when available
-    const body = {
-      ...(payload || {}),
-      sec_key: environment.sec_key
-    };
-    return this.http.post(this.apiUrl, body);
+    // Append comp_id from session to the payload
+    const enhancedPayload = this.appendCompIdToPayload(payload);
+    return this.http.post(this.apiUrl, enhancedPayload || {});
+  }
+
+  /**
+   * Helper method to append comp_id from session to InputData
+   */
+  private appendCompIdToPayload(payload: any): any {
+    if (!payload) return payload;
+    
+    const session = this.sessionService.getSession();
+    const compId = session?.comp_id || environment.comp_id || '11';
+    
+    // Clone the payload to avoid mutating the original
+    const enhancedPayload = JSON.parse(JSON.stringify(payload));
+    
+    // Append comp_id to each InputData item if not already present
+    if (enhancedPayload.InputData && Array.isArray(enhancedPayload.InputData)) {
+      enhancedPayload.InputData = enhancedPayload.InputData.map((item: any) => {
+        if (!item.comp_id) {
+          return { ...item, comp_id: compId };
+        }
+        return item;
+      });
+    }
+    
+    return enhancedPayload;
   }
 
   postWithFiles(formData: FormData): Observable<any> {
+    // For FormData, append comp_id directly to FormData if needed
+    const session = this.sessionService.getSession();
+    const compId = session?.comp_id || environment.comp_id || '11';
+    if (!formData.has('comp_id')) {
+      formData.append('comp_id', compId);
+    }
     return this.http.post(this.apiUrl, formData);
   }
 
@@ -32,16 +62,19 @@ export class CommonService {
    * Post helper that can handle file downloads (blob response)
    */
   postDownload(payload: any, isDownload: boolean = false): Observable<any> {
+    // Append comp_id from session to the payload
+    const enhancedPayload = this.appendCompIdToPayload(payload);
     return this.http.post(
       this.apiUrl,
-      payload,
+      enhancedPayload || {},
       isDownload ? { responseType: 'blob' as 'json' } : {}
     );
   }
 
   postBlob(payload: any): Observable<Blob> {
-    const body = { ...(payload || {}), sec_key: environment.sec_key };
-    return this.http.post(this.apiUrl, body, { responseType: 'blob' });
+    // Append comp_id from session to the payload
+    const enhancedPayload = this.appendCompIdToPayload(payload);
+    return this.http.post(this.apiUrl, enhancedPayload || {}, { responseType: 'blob' });
   }
 
   /**

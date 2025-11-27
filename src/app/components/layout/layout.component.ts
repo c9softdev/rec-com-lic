@@ -130,9 +130,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private loadGlobalSettings(): void {
-    this.globalSettingsService.loadGlobalSettings().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (settings) => this.globalSettings = settings,
-      error: () => this.globalSettings = this.globalSettingsService.getSettings()
+    // Subscribe to settings changes instead of making duplicate API calls
+    // Settings are loaded after login in auth service
+    this.globalSettingsService.getSettings$().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (settings) => {
+        this.globalSettings = settings;
+        console.log('Layout received settings update:', settings);
+      }
     });
   }
 

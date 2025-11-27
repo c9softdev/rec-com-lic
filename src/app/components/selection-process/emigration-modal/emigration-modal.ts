@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../../core/services/common.service';
 import { LoadingService } from '../../../core/services/loading.service';
 import { SweetAlertService } from '../../../core/services/sweet-alert.service';
-import { SelectionService } from '../selection-process.service';
 import { SelectionProcess } from '../selection-process';
 import { DownloadService } from '../../../core/services/download.service';
 
@@ -51,7 +50,6 @@ export class EmigrationModal {
     private commonService: CommonService,
     private loadingService: LoadingService,
     private sweetAlert: SweetAlertService,
-    private selectionService: SelectionService,
     private downloadService: DownloadService
   ) { }
 
@@ -122,11 +120,14 @@ export class EmigrationModal {
   }
 
   downloadFile() {
-    this.downloadService.downloadEmigrationDocument(
-      this.selectionService,
-      this.candidateId,
-      this.projectId
-    );
+    const payload = {
+      event: 'astsk',
+      mode: 'dvisadoc',
+      InputData: [
+        { id: this.candidateId, prjId: this.projectId }
+      ]
+    };
+    this.downloadService.downloadFileFromApi(this.commonService.postDownload(payload, true), `Emigration_${this.projectId}_${this.candidateId}`);
   }
 
   uploadDocument() {
@@ -147,7 +148,7 @@ export class EmigrationModal {
     formData.append('doc_file', this.selectedDocFile);
 
     this.loadingService.show('Uploading...');
-    this.selectionService.uploadFile(formData).subscribe({
+    this.commonService.postWithFiles(formData).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
         if (res?.status === 'success') {

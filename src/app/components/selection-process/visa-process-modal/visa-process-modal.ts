@@ -4,7 +4,6 @@ import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } 
 import { SweetAlertService } from '../../../core/services/sweet-alert.service';
 import { SelectionProcess } from '../selection-process';
 import { CommonService } from '../../../core/services/common.service';
-import { SelectionService } from '../selection-process.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoadingService } from '../../../core/services/loading.service';
 
@@ -47,7 +46,6 @@ export class VisaProcessModal {
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private authService: AuthService,
-    private selectionService: SelectionService,
     private loadingService: LoadingService,
   ) { }
 
@@ -156,7 +154,7 @@ export class VisaProcessModal {
     formData.append('visa', this.selectedVisaFile);
 
     this.loadingService.show('Uploading...');
-    this.selectionService.uploadFile(formData).subscribe({
+    this.commonService.postWithFiles(formData).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
         if (res?.status === 'success') {
@@ -237,7 +235,7 @@ export class VisaProcessModal {
     };
 
     this.loadingService.show('Downloading...');
-    this.selectionService.postDownload(payload, true).subscribe({
+    this.commonService.postDownload(payload, true).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
         const contentType = (res && res.type) || 'application/octet-stream';

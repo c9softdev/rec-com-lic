@@ -5,7 +5,6 @@ import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { paginationProperties } from '../../app.config';
-import { QualificationManagerService } from './qualification-manager.service';
 import { CommonService } from '../../core/services/common.service';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -47,9 +46,8 @@ export class QualificationManagerComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private qualificationService: QualificationManagerService,
     private sweetAlert: SweetAlertService,
-    private commonService: CommonService, // Add this line
+    private commonService: CommonService,
     private loadingService: LoadingService,
     private authService: AuthService
   ) {
@@ -176,7 +174,7 @@ export class QualificationManagerComponent implements OnInit {
       }]
     };
     this.loadingService.show('Saving...');
-    this.qualificationService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         if (res.status === 'success') {
@@ -206,7 +204,7 @@ export class QualificationManagerComponent implements OnInit {
         sparCat: this.searchForm.controls['sparCat'].value || ''
       }]
     };
-    this.qualificationService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         if (res && res.status === 'success' && res.data) {
           this.isEditMode = true;
@@ -268,7 +266,7 @@ export class QualificationManagerComponent implements OnInit {
       }]
     };
     this.loadingService.show('Updating...');
-    this.qualificationService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         if (res && res.status === 'success') {
@@ -307,7 +305,7 @@ export class QualificationManagerComponent implements OnInit {
     };
     this.sweetAlert.confirmStatusChange('Are you sure you want to change the visibility of the selected qualifications?').then((result: any) => {
       if (result.isConfirmed) {
-        this.qualificationService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (res) => {
             if (res.status === 'success') {
               this.sweetAlert.showToast(res.message || 'Visibility updated.', 'success');
@@ -342,7 +340,7 @@ export class QualificationManagerComponent implements OnInit {
     };
     this.sweetAlert.confirmDelete('Are you sure you want to delete the selected qualifications?').then((result: any) => {
       if (result.isConfirmed) {
-        this.qualificationService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (res) => {
             if (res.status === 'success') {
               this.sweetAlert.showToast(res.message || 'Qualifications deleted.', 'success');

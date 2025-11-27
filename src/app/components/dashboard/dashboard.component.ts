@@ -5,7 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/auth.model';
 import { Router } from '@angular/router';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
-import { DashboardService } from './dashboard.service';
+import { CommonService } from '../../core/services/common.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { paginationProperties } from '../../app.config';
 // import { forkJoin, Observable, of } from 'rxjs';
@@ -92,8 +92,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private sweetAlert: SweetAlertService,
-    private dashboardService: DashboardService
-    , private loadingService: LoadingService
+    private commonService: CommonService,
+    private loadingService: LoadingService
   ) { }
 
   ngOnInit() {
@@ -158,7 +158,7 @@ export class DashboardComponent implements OnInit {
       mode: 'lr',
       InputData: [{ page: '1', perPage: '1' }]
     } as const;
-    this.dashboardService.post(totalPayload).subscribe({
+    this.commonService.post(totalPayload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         this.totalCandidates = Number(res?.data?.totalCvTotal ?? 0);

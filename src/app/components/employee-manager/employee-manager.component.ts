@@ -2,7 +2,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
-import { EmployeeManagerService } from './employee-manager.service';
 import { userType } from '../../app.config';
 import { map } from 'rxjs/operators';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
@@ -75,7 +74,6 @@ export class EmployeeManagerComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private employeeManagerService: EmployeeManagerService,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
@@ -106,7 +104,7 @@ export class EmployeeManagerComponent implements OnInit {
     this.fetchEmployees();
     const menuPayload = { event: 'user', mode: 'lmenu', InputData: [{}] };
 
-    this.employeeManagerService.post(menuPayload).subscribe(res => {
+    this.commonService.post(menuPayload).subscribe(res => {
       if (res && res.data && Array.isArray(res.data.assignMenuArr)) {
         this.menuList = res.data.assignMenuArr;
       }
@@ -139,7 +137,7 @@ export class EmployeeManagerComponent implements OnInit {
   //       page: this.currentPage.toString()
   //     }]
   //   };
-  //   this.employeeManagerService.post(payload).subscribe({
+  //   this.commonService.post(payload).subscribe({
   //     next: (response) => {
   //       if (response?.data?.list) {
   //         this.employees = response.data.list;
@@ -279,7 +277,7 @@ export class EmployeeManagerComponent implements OnInit {
         page: this.currentPage.toString()
       }]
     };
-    this.employeeManagerService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         if (res?.data) {
           const employeeData = res.data;
@@ -401,7 +399,7 @@ export class EmployeeManagerComponent implements OnInit {
     };
     
     this.loadingService.show('Saving...');
-    this.employeeManagerService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         this.sweetAlert.showToast(res?.message || 'Employee saved.', 'success');
@@ -460,7 +458,7 @@ export class EmployeeManagerComponent implements OnInit {
     };
     
     this.loadingService.show('Updating...');
-    this.employeeManagerService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         this.sweetAlert.showToast(res?.message || 'Employee updated successfully.', 'success');
@@ -503,7 +501,7 @@ export class EmployeeManagerComponent implements OnInit {
         page: this.currentPage.toString()
       }]
     };
-    this.employeeManagerService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         const count = selectedUserIds.length;
         this.sweetAlert.showToast(
@@ -550,7 +548,7 @@ export class EmployeeManagerComponent implements OnInit {
         page: this.currentPage.toString()
       }]
     };
-    this.employeeManagerService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         const count = selectedUserIds.length;
         this.sweetAlert.showToast(
@@ -719,7 +717,7 @@ export class EmployeeManagerComponent implements OnInit {
           mode: 'emlchkedit',
           InputData: [{ email, id: this.currentEditEmployeeId }]
         };
-        return this.employeeManagerService.post(payload).pipe(
+        return this.commonService.post(payload).pipe(
           map((res: any) => {
             if (res && res.data && res.data.exists) {
               this.emailCheckMessage = res.message || 'Email Id Already Exists.';
@@ -735,7 +733,7 @@ export class EmployeeManagerComponent implements OnInit {
         mode: 'emlchk',
         InputData: [{ email }]
       };
-      return this.employeeManagerService.post(payload).pipe(
+      return this.commonService.post(payload).pipe(
         map((res: any) => {
           if (res && res.data && res.data.exists) {
             this.emailCheckMessage = res.message || 'Email Id Already Exists.';
@@ -760,7 +758,7 @@ export class EmployeeManagerComponent implements OnInit {
           mode: 'usrchkedit',
           InputData: [{ user, id: this.currentEditEmployeeId }]
         };
-        return this.employeeManagerService.post(payload).pipe(
+        return this.commonService.post(payload).pipe(
           map((res: any) => {
             if (res && res.data && res.data.exists) {
               this.usernameCheckMessage = res.message || 'User Id Already Exists.';
@@ -776,7 +774,7 @@ export class EmployeeManagerComponent implements OnInit {
         mode: 'usrchk',
         InputData: [{ user }]
       };
-      return this.employeeManagerService.post(payload).pipe(
+      return this.commonService.post(payload).pipe(
         map((res: any) => {
           if (res && res.data && res.data.exists) {
             this.usernameCheckMessage = res.message || 'User Id Already Exists.';

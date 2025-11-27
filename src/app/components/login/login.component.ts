@@ -50,6 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Session data
   private tempUsername = '';
   private tempUserId = '';
+  private tempCompanyId = ''; // Add company ID storage
   private destroy$ = new Subject<void>();
 
   private formBuilder = inject(FormBuilder);
@@ -70,6 +71,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private initializeForms(): void {
     this.loginForm = this.formBuilder.group({
+      companyId: ['', [
+        Validators.required,
+        Validators.pattern(/^\d+$/)
+      ]],
       username: ['', [
         Validators.required,
         Validators.minLength(3),
@@ -114,27 +119,35 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private loadConfiguration(): void {
-    this.configService.getConfig()
-      .pipe(timeout(10000))
-      .subscribe({
-        next: (res) => {
-          this.ngZone.run(() => {
-            if (res.status === 'success') {
-              this.config = res.data;
-              this.saveConfigToLocalStorage(res.data);
-            }
-            this.configLoading = false;
-            this.cdr.detectChanges();
-          });
-        },
-        error: () => {
-          this.ngZone.run(() => {
-            this.configLoading = false;
-            this.cdr.detectChanges();
-          });
-          this.sweetAlert.showError('Failed to load configuration');
-        }
-      });
+    // DISABLED: Config API is no longer called on project load
+    // It will be called after successful login with the correct company ID
+    // For now, just mark config loading as complete
+    this.configLoading = false;
+    this.cdr.detectChanges();
+    
+    // ===== COMMENTED OUT CONFIG API CALL =====
+    // this.configService.getConfig()
+    //   .pipe(timeout(10000))
+    //   .subscribe({
+    //     next: (res) => {
+    //       this.ngZone.run(() => {
+    //         if (res.status === 'success') {
+    //           this.config = res.data;
+    //           this.saveConfigToLocalStorage(res.data);
+    //         }
+    //         this.configLoading = false;
+    //         this.cdr.detectChanges();
+    //       });
+    //     },
+    //     error: () => {
+    //       this.ngZone.run(() => {
+    //         this.configLoading = false;
+    //         this.cdr.detectChanges();
+    //       });
+    //       this.sweetAlert.showError('Failed to load configuration');
+    //     }
+    //   });
+    // ===== END COMMENTED OUT CONFIG API CALL =====
   }
 
   private saveConfigToLocalStorage(data: any): void {
@@ -176,15 +189,21 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private handleUsernameStep(): void {
     this.usernameSubmitted = true;
-    if (this.loginForm.get('username')?.invalid) {
-      this.loginForm.get('username')?.markAsTouched();
+    
+    const companyIdCtrl = this.loginForm.get('companyId');
+    const usernameCtrl = this.loginForm.get('username');
+    
+    if (companyIdCtrl?.invalid || usernameCtrl?.invalid) {
+      companyIdCtrl?.markAsTouched();
+      usernameCtrl?.markAsTouched();
       return;
     }
 
     this.loading = true;
-    const username = this.loginForm.get('username')?.value;
+    const username = usernameCtrl?.value;
+    const companyId = companyIdCtrl?.value;
     
-    this.authService.verifyUsername(username)
+    this.authService.verifyUsername(username, companyId)
       .pipe(
         first(),
         takeUntil(this.destroy$),
@@ -199,6 +218,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (response.status === 'success' && !response.message && response.data?.length) {
             this.tempUsername = username;
             this.tempUserId = response.data[0].userId;
+            this.tempCompanyId = companyId;
             Promise.resolve().then(() => {
               this.step = 2;
               this.loginForm.get('password')?.reset();
@@ -227,7 +247,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loading = true;
     const password = this.loginForm.get('password')?.value;
     
-    this.authService.verifyPassword(password)
+    this.authService.verifyPassword(password, this.tempCompanyId)
       .pipe(
         first(),
         takeUntil(this.destroy$),
@@ -362,6 +382,14 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.step = 1;
     this.loginForm.get('password')?.reset();
     this.error = '';
+    // Keep company ID and username, reset form fields
+    const companyId = this.loginForm.get('companyId')?.value;
+    const username = this.loginForm.get('username')?.value;
+    this.loginForm.patchValue({
+      companyId: companyId,
+      username: username,
+      password: ''
+    });
   }
 
   ngOnDestroy(): void {

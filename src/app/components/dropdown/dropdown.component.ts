@@ -5,7 +5,7 @@ import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { paginationProperties } from '../../app.config';
-import { DropdownService } from './dropdown.service';
+import { CommonService } from '../../core/services/common.service';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -46,8 +46,8 @@ export class DropdownComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private dropdownService: DropdownService,
     private sweetAlert: SweetAlertService,
+    private commonService: CommonService,
     private loadingService: LoadingService,
     private authService: AuthService
   ) {
@@ -72,7 +72,7 @@ export class DropdownComponent implements OnInit {
       mode: 'vdropval',
       InputData: [{}]
     };
-    this.dropdownService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         if (res && res.data && res.data.list) {
           this.dropdownTypes = Object.entries(res.data.list).map(([id, name]) => ({ id, name }));
@@ -104,7 +104,7 @@ export class DropdownComponent implements OnInit {
         page: this.currentPage.toString()
       }]
     };
-    this.dropdownService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         if (res?.data?.list) {
@@ -182,7 +182,7 @@ export class DropdownComponent implements OnInit {
       }]
     };
     this.loadingService.show();
-    this.dropdownService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         if (res.status === 'success') {
@@ -213,7 +213,7 @@ export class DropdownComponent implements OnInit {
         page: this.currentPage.toString()
       }]
     };
-    this.dropdownService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         if (res && res.status === 'success' && res.data) {
           this.isEditMode = true;
@@ -257,7 +257,7 @@ export class DropdownComponent implements OnInit {
       }]
     };
     this.loadingService.show();
-    this.dropdownService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         if (res && res.status === 'success') {
@@ -296,7 +296,7 @@ export class DropdownComponent implements OnInit {
     this.sweetAlert.confirmStatusChange('Are you sure you want to change the visibility of the selected dropdowns?').then((result: any) => {
       if (result.isConfirmed) {
         this.loadingService.show('Updating...');
-        this.dropdownService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (res) => {
             this.loadingService.hide();
             if (res.status === 'success') {
@@ -333,7 +333,7 @@ export class DropdownComponent implements OnInit {
     this.sweetAlert.confirmDelete('Are you sure you want to delete the selected dropdowns?').then((result: any) => {
       if (result.isConfirmed) {
         this.loadingService.show('Deleting...');
-        this.dropdownService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (res) => {
             this.loadingService.hide();
             if (res.status === 'success') {

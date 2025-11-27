@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SelectionService } from '../selection-process.service';
+import { CommonService } from '../../../core/services/common.service';
 import { SweetAlertService } from '../../../core/services/sweet-alert.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { paginationProperties } from '../../../app.config';
@@ -44,7 +44,7 @@ export class AllRemarkModal {
   private modalInstance: any;
 
   constructor(
-    private selectionService: SelectionService,
+    private commonService: CommonService,
     private sweetAlert: SweetAlertService,
     private authService: AuthService,
     private loadingService: LoadingService,
@@ -87,7 +87,7 @@ export class AllRemarkModal {
     };
     // console.log("PayLoad",payload);
     // return; 
-    this.selectionService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
         // console.log("REsponse",res);
@@ -196,7 +196,7 @@ export class AllRemarkModal {
     };
     // console.log('Payload for deletion:', payload);
     //     return
-    this.selectionService.post(payload)
+    this.commonService.post(payload)
       .subscribe({
 
         next: (response: any) => {

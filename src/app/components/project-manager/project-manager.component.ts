@@ -6,7 +6,6 @@ import { LoadingService } from '../../core/services/loading.service';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { paginationProperties } from '../../app.config';
 import { projectStatusType } from '../../app.config';
-import { ProjectManagerService } from './project-manager.service';
 import { CommonService } from '../../core/services/common.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
@@ -61,7 +60,6 @@ export class ProjectManagerComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private projectService: ProjectManagerService,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
@@ -164,7 +162,7 @@ export class ProjectManagerComponent implements OnInit {
       }]
     };
     console.log("Input", payload);
-    this.projectService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         if (res?.data?.list) {
@@ -238,7 +236,7 @@ export class ProjectManagerComponent implements OnInit {
           { stateName: selectedId }
         ]
       };
-      this.projectService.post(payload).subscribe({
+      this.commonService.post(payload).subscribe({
         next: (response) => {
           if (response && response.status === 'success' && response.data) {
             this.cities = response.data.list;
@@ -307,7 +305,7 @@ export class ProjectManagerComponent implements OnInit {
     };
     // console.log('Edit Response:', payload);
     // return;
-    this.projectService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         if (res && res.status === 'success' && res.data) {
           this.taskName = res.data.recDetl.project;
@@ -378,7 +376,7 @@ export class ProjectManagerComponent implements OnInit {
       }]
     };
     this.loadingService.show();
-    this.projectService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
         if (res.status === 'success') {
@@ -436,7 +434,7 @@ export class ProjectManagerComponent implements OnInit {
     };
     // console.log('Payload for saving new record:', payload);
 
-    this.projectService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         console.log('Payload for saving new record:', res);
         if (res.status === 'success') {
@@ -466,7 +464,7 @@ export class ProjectManagerComponent implements OnInit {
         page: this.currentPage.toString()
       }]
     };
-    this.projectService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         // console.log('Edit Response:', res);
         if (res && res.status === 'success' && res.data) {
@@ -513,7 +511,7 @@ export class ProjectManagerComponent implements OnInit {
     };
     console.log('Edit Response:', payload);
     // return;
-    this.projectService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         console.log('Edit Response:', res);
         if (res && res.status === 'success' && res.data) {
@@ -596,7 +594,7 @@ export class ProjectManagerComponent implements OnInit {
       }]
     };
     // console.log('Response:', payload);
-    this.projectService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
 
         console.log('Response:', res);
@@ -662,7 +660,7 @@ export class ProjectManagerComponent implements OnInit {
       }]
     };
     // console.log('Response:', payload);
-    this.projectService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         // console.log('Response:', res);
         this.loadingService.hide();
@@ -706,7 +704,7 @@ export class ProjectManagerComponent implements OnInit {
     // console.log('Response:', payload);
     this.sweetAlert.confirmDelete('Are you sure you want to delete the selected projects?').then((result: any) => {
       if (result.isConfirmed) {
-        this.projectService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (res) => {
             // console.log('Response:', res);
             if (res.status === 'success') {
@@ -738,7 +736,7 @@ export class ProjectManagerComponent implements OnInit {
     // console.log('Response:', payload);
     this.sweetAlert.confirmDelete('Are you sure you want to delete the selected Details?').then((result: any) => {
       if (result.isConfirmed) {
-        this.projectService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (res) => {
             // console.log('Response:', res);
             if (res.status === 'success') {

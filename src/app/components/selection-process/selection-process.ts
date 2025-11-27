@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
-import { SelectionService } from './selection-process.service';
+import { CommonService } from '../../core/services/common.service';
 import { AllRemarkModal } from './all-remark-modal/all-remark-modal';
 import { InterviewManagerModal } from './interview-manager-modal/interview-manager-modal';
 import { InterviewSchedulerModal } from './interview-scheduler-modal/interview-scheduler-modal';
@@ -75,7 +75,7 @@ export class SelectionProcess {
   constructor(
     private route: ActivatedRoute,
     private sweetAlert: SweetAlertService,
-    private selectionService: SelectionService,   // ✅ Properly injected
+    private commonService: CommonService,
     private loadingService: LoadingService,
     private authService: AuthService,
     private fb: FormBuilder,
@@ -143,7 +143,7 @@ export class SelectionProcess {
     };
     // console.log('Payload for deletion:', payload);
     //     return
-    this.selectionService.post(payload)
+    this.commonService.post(payload)
       .subscribe({
 
         next: (response: any) => {
@@ -234,7 +234,7 @@ export class SelectionProcess {
         page: this.currentPage.toString()
       }]
     };
-    this.selectionService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         // console.log('Payload:', payload);
         this.loadingService.hide();
@@ -277,7 +277,7 @@ export class SelectionProcess {
         pass: ''
       }]
     };
-    this.selectionService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         console.log('payload:', payload);
         console.log('Dropdown Value:', res);
@@ -333,7 +333,7 @@ export class SelectionProcess {
     // return;
 
     this.loadingService.show('Downloading...');
-    this.selectionService.postDownload(payload, true).subscribe({
+    this.commonService.postDownload(payload, true).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
 

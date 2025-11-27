@@ -65,22 +65,30 @@ export class ErrorPageComponent {
   tryRecover(): void {
     if (this.checking) return;
     this.checking = true;
-    this.settings.validateLicenseCached(0).subscribe({
-      next: (res: any) => {
-        const ok = res?.status === 'success' && String(res?.data?.chr_status || '') === '1';
-        if (ok) {
-          this.router.navigate(['/login'], { replaceUrl: true });
-        } else {
-          this.description = res?.message || this.description;
-          this.checking = false;
-        }
-      },
-      error: () => {
-        if (this.type === 'server-down' || this.type === '500') {
-          this.description = 'Service unreachable. Please try again shortly.';
-        }
-        this.checking = false;
-      }
-    });
+    
+    // LICENSE VALIDATION DISABLED - NOT USED IN THIS VERSION
+    // Simply navigate back to login instead of checking license
+    // Previously: this.settings.validateLicenseCached(0)
+    this.router.navigate(['/login'], { replaceUrl: true });
+
+    // ===== COMMENTED OUT LICENSE VALIDATION CODE =====
+    // this.settings.validateLicenseCached(0).subscribe({
+    //   next: (res: any) => {
+    //     const ok = res?.status === 'success' && String(res?.data?.chr_status || '') === '1';
+    //     if (ok) {
+    //       this.router.navigate(['/login'], { replaceUrl: true });
+    //     } else {
+    //       this.description = res?.message || this.description;
+    //       this.checking = false;
+    //     }
+    //   },
+    //   error: () => {
+    //     if (this.type === 'server-down' || this.type === '500') {
+    //       this.description = 'Service unreachable. Please try again shortly.';
+    //     }
+    //     this.checking = false;
+    //   }
+    // });
+    // ===== END COMMENTED OUT LICENSE VALIDATION CODE =====
   }
 }

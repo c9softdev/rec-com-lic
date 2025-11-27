@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 export interface UserSession {
   userId: string;
   username: string;
+  comp_id?: string;  // Company ID for multi-tenant support
   empType?: string;
   assignmenuIdStr?: string;
   archivalchk?: string;

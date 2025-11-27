@@ -61,7 +61,12 @@ export class ThemeService {
     const newTheme = { ...this.currentThemeSubject.value, ...theme };
     this.currentThemeSubject.next(newTheme);
     this.applyTheme(newTheme);
-    sessionStorage.setItem('appTheme', JSON.stringify(newTheme));
+    // Always update sessionStorage to keep theme in sync
+    try {
+      sessionStorage.setItem('appTheme', JSON.stringify(newTheme));
+    } catch (e) {
+      console.warn('Could not save theme to sessionStorage:', e);
+    }
   }
 
   /**

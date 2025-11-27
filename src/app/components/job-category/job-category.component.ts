@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { JobCategoryService } from './job-category.service';
 import { FormsModule, FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { LoadingService } from '../../core/services/loading.service';
@@ -49,7 +48,6 @@ export class JobCategoryComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private jobCategoryService: JobCategoryService,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
@@ -103,7 +101,7 @@ export class JobCategoryComponent implements OnInit {
         }
       ]
     };
-    this.jobCategoryService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (response) => {
         this.loadingService.hide();
         if (response?.data?.list) {
@@ -136,7 +134,7 @@ export class JobCategoryComponent implements OnInit {
   //       { catId: '' }
   //     ]
   //   };
-  //   this.jobCategoryService.post(payload).subscribe({
+  //   this.commonService.post(payload).subscribe({
   //     next: (response) => {
   //       if (response && response.status === 'success' && response.data) {
   //         this.parentCategories = Object.entries(response.data).map(([catId, catName]) => ({
@@ -173,7 +171,7 @@ export class JobCategoryComponent implements OnInit {
   //         { catId: selectedCatId }
   //       ]
   //     };
-  //     this.jobCategoryService.post(payload).subscribe({
+  //     this.commonService.post(payload).subscribe({
   //       next: (response) => {
   //         if (response && response.status === 'success' && response.data) {
   //           this.subCategories = Object.entries(response.data).map(([subCatId, subCatName]) => ({ subCatId, subCatName }));
@@ -311,7 +309,7 @@ export class JobCategoryComponent implements OnInit {
       }]
     };
     this.loadingService.show('Saving...');
-    this.jobCategoryService.post(payload)
+    this.commonService.post(payload)
       .subscribe({
         next: (response: any) => {
           this.loadingService.hide();
@@ -421,7 +419,7 @@ export class JobCategoryComponent implements OnInit {
         }
       ]
     };
-    this.jobCategoryService.post(payload)
+    this.commonService.post(payload)
       .subscribe({
         next: (response: any) => {
           this.loadingService.hide();
@@ -486,7 +484,7 @@ export class JobCategoryComponent implements OnInit {
         }
       ]
     };
-    this.jobCategoryService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (response: any) => {
         if (response && response.status === 'success' && response.data) {
           this.isEditMode = true;
@@ -509,7 +507,7 @@ export class JobCategoryComponent implements OnInit {
                 { catId: response.data.int_cat_par }
               ]
             };
-            this.jobCategoryService.post(subPayload).subscribe({
+            this.commonService.post(subPayload).subscribe({
               next: (subRes) => {
                 if (subRes && subRes.status === 'success' && subRes.data) {
                   this.subCategories = Object.entries(subRes.data).map(([subCatId, subCatName]) => ({ subCatId, subCatName }));
@@ -556,7 +554,7 @@ export class JobCategoryComponent implements OnInit {
         ssubCat: this.searchForm.controls['subCategorySearch'].value
       }]
     };
-    this.jobCategoryService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (response: any) => {
         this.loadingService.hide();
         if (response && response.status === 'success') {
@@ -617,7 +615,7 @@ export class JobCategoryComponent implements OnInit {
       ]
     };
 
-    this.jobCategoryService.post(payload)
+    this.commonService.post(payload)
       .subscribe({
         next: (response: any) => {
           this.loadingService.hide();

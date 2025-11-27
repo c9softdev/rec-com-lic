@@ -3,7 +3,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { paginationProperties } from '../../app.config';
-import { GrievanceService } from './grievance.service';
+import { CommonService } from '../../core/services/common.service';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -59,8 +59,8 @@ export class GrievanceComponent {
   @ViewChild('viewModal') viewModalRef!: ElementRef<HTMLDivElement>;
 
   constructor(
-    private grievanceService: GrievanceService,
     private sweetAlert: SweetAlertService,
+    private commonService: CommonService,
     private loadingService: LoadingService,
     private authService: AuthService
   ) { }
@@ -135,7 +135,7 @@ export class GrievanceComponent {
       mode: 'vr',
       InputData: [{ id: item.id }]
     };
-    this.grievanceService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (response: any) => {
         if (response?.status === 'success' && response.data) {
           const data = response.data.list;
@@ -207,7 +207,7 @@ export class GrievanceComponent {
         }
       ]
     };
-    this.grievanceService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (response: any) => {
         if (response?.status === 'success') {
           this.sweetAlert.showToast(response.message, 'success');
@@ -245,7 +245,7 @@ export class GrievanceComponent {
     this.sweetAlert.confirmStatusChange('Are you sure you want to delete the selected records?').then((result: any) => {
       if (result.isConfirmed) {
         this.loadingService.show('Deleting...');
-        this.grievanceService.post(payload).subscribe({
+        this.commonService.post(payload).subscribe({
           next: (response: any) => {
             this.loadingService.hide();
             if (response.status === 'success') {
@@ -303,7 +303,7 @@ export class GrievanceComponent {
         }
       ]
     };
-    this.grievanceService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       // this.loadingService.hide(); 
       next: (response: any) => {
         this.loadingService.hide(); 

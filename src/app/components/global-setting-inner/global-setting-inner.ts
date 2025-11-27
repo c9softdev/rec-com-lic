@@ -4,7 +4,6 @@ import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { CommonService } from '../../core/services/common.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { CommonModule } from '@angular/common';
-import { GlobalSettingInnerService } from './global-setting-inner.service';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -30,7 +29,6 @@ export class GlobalSettingInner {
 
   constructor(
     private fb: FormBuilder,
-    private gSettingInner: GlobalSettingInnerService,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
@@ -71,10 +69,10 @@ export class GlobalSettingInner {
       mode: 'gloConfig',
       InputData: [{
         id: item.id,
-        sec_key: 'Bw5EDNlJgDEH0wRBiNguSis3aGlOb29BeVFMSmYrcU5kR01jdGc9PQ=='
+        comp_id: '11'  // Use comp_id instead of sec_key
       }]
     };
-    this.gSettingInner.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res) => {
         // console.log('Edit Response:', res);
         if (res && res.status === 'success' && res.data) {
@@ -137,7 +135,7 @@ export class GlobalSettingInner {
     };
     console.log('Response:', payload);
     this.loadingService.show('Updating...');
-    this.gSettingInner.post(payload).subscribe({ 
+    this.commonService.post(payload).subscribe({ 
       next: (res) => {
         this.loadingService.hide();
         console.log('Response:', res);

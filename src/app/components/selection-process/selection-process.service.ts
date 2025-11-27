@@ -14,10 +14,6 @@ export class SelectionService {
 
   constructor(private http: HttpClient) { }
 
-  post(payload: any): Observable<any> {
-    return this.http.post(this.apiUrl, payload);
-  }
-
   uploadFile(formData: FormData) {
     return this.http.post<any>(environment.apiUrl, formData, {
       responseType: 'json' as const,

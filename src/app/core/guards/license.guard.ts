@@ -8,32 +8,36 @@ import { map, catchError } from 'rxjs/operators';
 
 /**
  * Guard to enforce valid license on all routes.
- * Calls the license API and blocks navigation when status is failed or inactive.
+ * LICENSE VALIDATION DISABLED - NOT USED IN THIS VERSION
  */
 export const licenseGuard: CanActivateFn = () => {
   const router = inject(Router);
-  const settings = inject(GlobalSettingsService);
+  // const settings = inject(GlobalSettingsService);
   const licenseState = inject(LicenseStateService);
   // const sweetAlert = inject(SweetAlertService);
 
-  // Use a short TTL (2 minutes) to reduce repeated license calls while keeping enforcement strict.
-  return settings.validateLicenseCached(120000).pipe(
-    map((res: any) => {
-      const ok = res?.status === 'success' && String(res?.data?.chr_status || '') === '1';
-      if (ok) {
-        // console.log("Data", res.data);
-        licenseState.setLicenseData(res.data);
-        return true;
+  // License validation is disabled - simply return true to allow navigation
+  // Previously: settings.validateLicenseCached(120000)
+  return of(true);
 
-      }
-      // Navigate to unified error page with license-expired type
-      router.navigate(['/error'], { queryParams: { type: 'license-expired', message: res?.message || '' }, replaceUrl: true });
-      return false;
-    }),
-    catchError((err: any) => {
-      const msg = (typeof err === 'object' && err?.message) ? err.message : 'Service unreachable';
-      router.navigate(['/error'], { queryParams: { type: 'server-down', message: msg }, replaceUrl: true });
-      return of(false);
-    })
-  );
+  // ===== COMMENTED OUT LICENSE VALIDATION CODE =====
+  // return settings.validateLicenseCached(120000).pipe(
+  //   map((res: any) => {
+  //     const ok = res?.status === 'success' && String(res?.data?.chr_status || '') === '1';
+  //     if (ok) {
+  //       // console.log("Data", res.data);
+  //       licenseState.setLicenseData(res.data);
+  //       return true;
+  //     }
+  //     // Navigate to unified error page with license-expired type
+  //     router.navigate(['/error'], { queryParams: { type: 'license-expired', message: res?.message || '' }, replaceUrl: true });
+  //     return false;
+  //   }),
+  //   catchError((err: any) => {
+  //     const msg = (typeof err === 'object' && err?.message) ? err.message : 'Service unreachable';
+  //     router.navigate(['/error'], { queryParams: { type: 'server-down', message: msg }, replaceUrl: true });
+  //     return of(false);
+  //   })
+  // );
+  // ===== END COMMENTED OUT LICENSE VALIDATION CODE =====
 };

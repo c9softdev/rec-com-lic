@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SweetAlertService } from '../../../core/services/sweet-alert.service';
 import { SelectionProcess } from '../selection-process';
-import { SelectionService } from '../selection-process.service';
+import { CommonService } from '../../../core/services/common.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoadingService } from '../../../core/services/loading.service';
 
@@ -48,7 +48,7 @@ export class InterviewManagerModal {
   constructor(
     private fb: FormBuilder,
     private sweetAlert: SweetAlertService,
-    private selectionService: SelectionService,
+    private commonService: CommonService,
     private authService: AuthService,
     private loadingService: LoadingService,
   ) { }
@@ -79,7 +79,7 @@ export class InterviewManagerModal {
 
     this.loadingService.show('Uploading file...');
 
-    this.selectionService.uploadFile(formData).subscribe({
+    this.commonService.postWithFiles(formData).subscribe({
       next: (response: any) => {
         this.loadingService.hide();
 
@@ -147,7 +147,7 @@ export class InterviewManagerModal {
     };
     console.log("Payload", payload);
 
-    this.selectionService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res: any) => {
         // console.log("Response", res); return;
         this.loadingService.hide();

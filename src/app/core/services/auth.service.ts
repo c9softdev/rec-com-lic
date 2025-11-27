@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, forkJoin } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, User } from '../models/auth.model';
 import { SessionService, UserSession } from './session.service';
+import { GlobalSettingsService } from './global-settings.service';
+import { CommonService } from './common.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +16,12 @@ export class AuthService {
   public currentUser: Observable<User | null>;
   private tempUsername: string = '';
   private tempUserId: string = '';
+  private tempCompanyId: string = '';
   private emailId: string = '';
   getSession: any;
   empResponse: any;
 
-  constructor(private http: HttpClient, private sessionService: SessionService) {
+  constructor(private http: HttpClient, private sessionService: SessionService, private globalSettingsService: GlobalSettingsService, private commonService: CommonService) {
     this.currentUserSubject = new BehaviorSubject<User | null>(
       JSON.parse(localStorage.getItem('currentUser') || 'null')
     );
@@ -54,14 +57,18 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  verifyUsername(username: string): Observable<LoginResponse> {
+  verifyUsername(username: string, companyId: string = '11'): Observable<LoginResponse> {
+    this.tempCompanyId = companyId;
     const request: LoginRequest = {
       event: 'login',
       mode: 'authenticate',
-      InputData: [{ Username: username }]
+      InputData: [{ 
+        Username: username,
+        comp_id: companyId  // Pass company ID in the login payload
+      }]
     };
 
-    return this.http.post<LoginResponse>(environment.apiUrl, request)
+    return this.commonService.post(request)
       .pipe(
         map(response => {
           if (response.status === 'success' && !response.message && response.data?.length) {
@@ -73,21 +80,23 @@ export class AuthService {
       );
   }
 
-  verifyPassword(password: string): Observable<LoginResponse> {
+  verifyPassword(password: string, companyId: string = '11'): Observable<LoginResponse> {
     if (!this.tempUsername) {
       throw new Error('No username captured. Please verify username first.');
     }
 
+    this.tempCompanyId = companyId;
     const request: LoginRequest = {
       event: 'login',
       mode: 'next',
       InputData: [{ 
         Username: this.tempUsername,
-        Password: password 
+        Password: password,
+        comp_id: companyId  // Pass company ID in password verification payload
       }]
     };
 
-    return this.http.post<LoginResponse>(environment.apiUrl, request)
+    return this.commonService.post(request)
       .pipe(
         map(response => {
           if (response.status === 'success' && !response.message) {
@@ -113,6 +122,7 @@ export class AuthService {
             const sess: UserSession = {
               userId: String(user.userId || this.tempUserId || ''),
               username: String(user.username || this.tempUsername || ''),
+              comp_id: this.tempCompanyId,  // Store company ID in session
               empType: mappedEmpType,
               assignmenuIdStr: String(user.assignmenuIdStr || ''),
               archivalchk: String(user.archivalchk || ''),
@@ -127,11 +137,36 @@ export class AuthService {
             this.sessionService.setSession(sess);
             this.sessionService.init();
             this.currentUserSubject.next(user);
+            
+            // Load global settings in background after successful login
+            // This will update the application settings without blocking the login flow
+            this.loadGlobalSettingsInBackground();
+            
             // temp vars remain in memory only
           }
           return response;
         })
       );
+  }
+
+  /**
+   * Load global settings in background after successful login
+   * Uses the company ID provided during login
+   */
+  private loadGlobalSettingsInBackground(): void {
+    // Use the company_id from login, or default to "11"
+    const companyId = this.tempCompanyId || '11';
+    
+    this.globalSettingsService.loadGlobalSettings(companyId).subscribe({
+      next: (settings) => {
+        console.log('Global settings loaded after login for company:', companyId, settings);
+        // Settings are automatically applied by GlobalSettingsService
+      },
+      error: (error) => {
+        console.error('Failed to load global settings after login:', error);
+        // System will continue with default settings
+      }
+    });
   }
 
   // Deprecated: use SessionService instead
@@ -152,7 +187,7 @@ export class AuthService {
       }]
     };
 
-    return this.http.post<LoginResponse>(environment.apiUrl, request);
+    return this.commonService.post(request);
   }
 
   logout() {
@@ -163,6 +198,8 @@ export class AuthService {
     try { localStorage.removeItem('app_session'); } catch {}
     try { localStorage.removeItem('user_session'); } catch {}
     try { this.sessionService.clear(); } catch {}
+    // Reset global settings to defaults on logout
+    try { this.globalSettingsService.resetToDefaults(); } catch {}
     this.currentUserSubject.next(null);
   }
 }

@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SelectionService } from '../selection-process.service';
+import { CommonService } from '../../../core/services/common.service';
 import { SweetAlertService } from '../../../core/services/sweet-alert.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoadingService } from '../../../core/services/loading.service';
@@ -50,7 +50,7 @@ export class DepartureDetailsModal {
 
   constructor(
     private fb: FormBuilder,
-    private selectionService: SelectionService,
+    private commonService: CommonService,
     private sweetAlert: SweetAlertService,
     private authService: AuthService,
     private loadingService: LoadingService,
@@ -148,7 +148,7 @@ export class DepartureDetailsModal {
 
     this.loading = true;
     this.loadingService.show(this.editMode ? 'Updating flight details...' : 'Saving flight details...');
-    this.selectionService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res: any) => {
         this.loading = false;
         this.loadingService.hide();
@@ -198,7 +198,7 @@ export class DepartureDetailsModal {
         pageSize: String(this.pageSize)
       } ]
     };
-    this.selectionService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res: any) => {
         this.listLoading = false;
         if (res?.status === 'success') {
@@ -250,7 +250,7 @@ export class DepartureDetailsModal {
     }
     const payload = { event: 'astsk', mode: 'delFlight', InputData: [ { infoId: Array.from(this.selectedIds) } ] };
     this.loadingService.show('Deleting selected records...');
-    this.selectionService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
         if (res?.status === 'success') {
@@ -274,7 +274,7 @@ export class DepartureDetailsModal {
     if (!reid) return;
     const payload = { event: 'astsk', mode: 'edFlight', InputData: [ { id: reid } ] };
     this.loadingService.show('Fetching record...');
-    this.selectionService.post(payload).subscribe({
+    this.commonService.post(payload).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
         if (res?.status === 'success' && res?.data?.editRec) {

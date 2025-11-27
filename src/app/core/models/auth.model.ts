@@ -4,6 +4,7 @@ export interface LoginRequest {
   InputData: Array<{
     Username: string;
     Password?: string;
+    comp_id?: string;  // Company ID for multi-tenant support
   }>;
 }
 

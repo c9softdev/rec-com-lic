@@ -22,18 +22,10 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Load global settings from API (or use default if API not available)
-    this.globalSettingsService.loadGlobalSettings().subscribe({
-      next: (settings) => {
-        console.log('Global settings loaded:', settings);
-        
-        // Theme is automatically applied by the GlobalSettingsService
-      },
-      error: (error) => {
-        console.error('Failed to load global settings:', error);
-        // ThemeService will use default theme if settings can't be loaded
-      }
-    });
+    // Initialize global settings with hardcoded defaults (no API call on app load)
+    // Settings will be loaded from API after successful user login
+    const defaultSettings = this.globalSettingsService.getSettings();
+    console.log('App initialized with default settings:', defaultSettings);
 
     // License is enforced via `licenseGuard` on routes.
 
