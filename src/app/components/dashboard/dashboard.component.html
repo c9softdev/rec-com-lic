@@ -1,9 +1,7 @@
 <div class="content">
   <div class="panel-header bg-primary-gradient">
     <div class="page-inner py-5 mt--3">
-      <div
-        class="d-flex align-items-left align-items-md-center flex-column flex-md-row"
-      >
+      <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
         <div>
           <h2 class="text-white fw-bold mb-0">Dashboard</h2>
         </div>
@@ -21,18 +19,18 @@
                 <i class="fa-solid fa-chart-column me-2 text-secondary"></i>Overview (Last {{ trendMonths }} Months)
               </div>
               <div class="btn-group" role="group">
-                <button type="button" class="btn btn-sm trend-filter" [class.selected]="trendMonths===3" (click)="setTrendMonths(3)" title="Show last 3 months">3</button>
-                <button type="button" class="btn btn-sm trend-filter" [class.selected]="trendMonths===6" (click)="setTrendMonths(6)" title="Show last 6 months">6</button>
-                <button type="button" class="btn btn-sm trend-filter" [class.selected]="trendMonths===12" (click)="setTrendMonths(12)" title="Show last 12 months">12</button>
+                <button type="button" class="btn btn-sm trend-filter" [class.selected]="trendMonths===3"
+                  (click)="setTrendMonths(3)" title="Show last 3 months">3</button>
+                <button type="button" class="btn btn-sm trend-filter" [class.selected]="trendMonths===6"
+                  (click)="setTrendMonths(6)" title="Show last 6 months">6</button>
+                <button type="button" class="btn btn-sm trend-filter" [class.selected]="trendMonths===12"
+                  (click)="setTrendMonths(12)" title="Show last 12 months">12</button>
               </div>
             </div>
             <div class="card-body pt-3">
               <div style="height: 260px;">
-                <canvas baseChart
-                  [data]="{ labels: categoryTrendLabels, datasets: categoryTrendDataSets }"
-                  [type]="'bar'"
-                  [options]="trendOptions"
-                  (chartClick)="onCategoryTrendClick($event)">
+                <canvas baseChart [data]="{ labels: categoryTrendLabels, datasets: categoryTrendDataSets }"
+                  [type]="'bar'" [options]="trendOptions" (chartClick)="onCategoryTrendClick($event)">
                 </canvas>
               </div>
             </div>
@@ -48,13 +46,20 @@
             <div class="card-body pt-3 glance-body">
               <div class="glance-cards">
                 @for (g of glance; track g.title) {
-                  <div class="glance routable" [attr.title]="'Open ' + g.title" (click)="goToJobseekers()">
+                <!-- <div class="glance routable" [attr.title]="'Open ' + g.title" (click)="goToJobseekers()">
                     <i class="fa {{ g.icon }}" [ngClass]="g.colorClass"></i>
                     <div>
-                      <div class="g-title routable">{{ g.title }}</div>
                       <div class="g-value routable">{{ g.value | number : '1.0-0' }}</div>
+                      <div class="g-title routable">{{ g.title }}</div>
                     </div>
+                  </div> -->
+                <div class="glance routable" [attr.title]="'Open ' + g.title" (click)="goToJobseekers()">
+                  <div class="glance-top">
+                    <i class="fa {{ g.icon }}" [ngClass]="g.colorClass"></i>
+                    <div class="g-value">{{ g.value | number : '1.0-0' }}</div>
                   </div>
+                  <div class="g-title routable">{{ g.title }}</div>
+                </div>
                 }
               </div>
             </div>
@@ -130,23 +135,26 @@
             </div>
             <div class="card-body pt-3">
               <div style="height: 240px;">
-                <canvas baseChart class="routable"
-                  [data]="employeeCvChartData"
-                  [type]="pieTypeEmp"
-                  [options]="pieOptions"
-                  (chartClick)="onEmployeeChartClick($event)" title="Click slices to filter by employee">
+                <canvas baseChart class="routable" [data]="employeeCvChartData" [type]="pieTypeEmp"
+                  [options]="pieOptions" (chartClick)="onEmployeeChartClick($event)"
+                  title="Click slices to filter by employee">
                 </canvas>
               </div>
               <div style="max-height: 240px; overflow: auto;" class="mt-2">
                 <ul class="list-group list-group-flush small">
                   @for (a of totalCVsByEmployees; track a.EmployeeId; let i = $index) {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div class="d-flex align-items-center">
-                        <span class="legend-dot" [style.background]="employeeCvChartData?.datasets[0]?.backgroundColor?.[i]"></span>
-                        <a (click)="applySearch('sempl', a.EmployeeId, '', '')" class="text-decoration-none routable" [attr.title]="'Filter by employee: ' + a.EmployeeName">{{ a.EmployeeName }}</a>
-                      </div>
-                      <a class="badge bg-light routable" (click)="applySearch('sempl', a.EmployeeId, '', '')" [style.color]="employeeCvChartData?.datasets[0]?.backgroundColor?.[i]" [style.borderColor]="employeeCvChartData?.datasets[0]?.backgroundColor?.[i]" [attr.title]="'Filter by employee: ' + a.EmployeeName">{{ a.totalCv || 0 }}</a>
-                    </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                      <span class="legend-dot"
+                        [style.background]="employeeCvChartData?.datasets[0]?.backgroundColor?.[i]"></span>
+                      <a (click)="applySearch('sempl', a.EmployeeId, '', '')" class="text-decoration-none routable"
+                        [attr.title]="'Filter by employee: ' + a.EmployeeName">{{ a.EmployeeName }}</a>
+                    </div>
+                    <a class="badge bg-light routable" (click)="applySearch('sempl', a.EmployeeId, '', '')"
+                      [style.color]="employeeCvChartData?.datasets[0]?.backgroundColor?.[i]"
+                      [style.borderColor]="employeeCvChartData?.datasets[0]?.backgroundColor?.[i]"
+                      [attr.title]="'Filter by employee: ' + a.EmployeeName">{{ a.totalCv || 0 }}</a>
+                  </li>
                   }
                 </ul>
               </div>
@@ -162,23 +170,25 @@
             </div>
             <div class="card-body pt-3">
               <div style="height: 240px;">
-                <canvas baseChart class="routable"
-                  [data]="categoryChartData"
-                  [type]="pieTypeCat"
-                  [options]="pieOptions"
+                <canvas baseChart class="routable" [data]="categoryChartData" [type]="pieTypeCat" [options]="pieOptions"
                   (chartClick)="onCategoryChartClick($event)" title="Click slices to filter by category">
                 </canvas>
               </div>
               <div style="max-height: 240px; overflow: auto;" class="mt-2">
                 <ul class="list-group list-group-flush small">
                   @for (a of totalCvByCategory; track a.CategoryKey; let i = $index) {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div class="d-flex align-items-center">
-                        <span class="legend-dot" [style.background]="categoryChartData?.datasets[0]?.backgroundColor?.[i]"></span>
-                        <a (click)="applySearch('sparCat', a.CategoryKey, '', '')" class="text-decoration-none routable" [attr.title]="'Filter by category: ' + a.CategoryTitle">{{ a.CategoryTitle }}</a>
-                      </div>
-                      <a class="badge bg-light routable" (click)="applySearch('sparCat', a.CategoryKey, '', '')" [style.color]="categoryChartData?.datasets[0]?.backgroundColor?.[i]" [style.borderColor]="categoryChartData?.datasets[0]?.backgroundColor?.[i]" [attr.title]="'Filter by category: ' + a.CategoryTitle">{{ a.totalCv || 0 }}</a>
-                    </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                      <span class="legend-dot"
+                        [style.background]="categoryChartData?.datasets[0]?.backgroundColor?.[i]"></span>
+                      <a (click)="applySearch('sparCat', a.CategoryKey, '', '')" class="text-decoration-none routable"
+                        [attr.title]="'Filter by category: ' + a.CategoryTitle">{{ a.CategoryTitle }}</a>
+                    </div>
+                    <a class="badge bg-light routable" (click)="applySearch('sparCat', a.CategoryKey, '', '')"
+                      [style.color]="categoryChartData?.datasets[0]?.backgroundColor?.[i]"
+                      [style.borderColor]="categoryChartData?.datasets[0]?.backgroundColor?.[i]"
+                      [attr.title]="'Filter by category: ' + a.CategoryTitle">{{ a.totalCv || 0 }}</a>
+                  </li>
                   }
                 </ul>
               </div>
@@ -194,23 +204,26 @@
             </div>
             <div class="card-body pt-3">
               <div style="height: 240px;">
-                <canvas baseChart class="routable"
-                  [data]="remarkChartData"
-                  [type]="pieTypeRmk"
-                  [options]="pieOptions"
+                <canvas baseChart class="routable" [data]="remarkChartData" [type]="pieTypeRmk" [options]="pieOptions"
                   (chartClick)="onRemarkChartClick($event)" title="Click slices to filter by remark">
                 </canvas>
               </div>
               <div style="max-height: 240px; overflow: auto;" class="mt-2">
                 <ul class="list-group list-group-flush small">
                   @for (g of miniBarData; track g.IntvRmkKey; let i = $index) {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div class="d-flex align-items-center">
-                        <span class="legend-dot" [style.background]="remarkChartData?.datasets[0]?.backgroundColor?.[i]"></span>
-                        <a (click)="applySearch('sfinalremark', g.IntvRmkKey, '', '')" class="text-decoration-none routable" [attr.title]="'Filter by remark: ' + g.IntvRmkTitle">{{ g.IntvRmkTitle }}</a>
-                      </div>
-                      <a class="badge bg-light routable" (click)="applySearch('sfinalremark', g.IntvRmkKey, '', '')" [style.color]="remarkChartData?.datasets[0]?.backgroundColor?.[i]" [style.borderColor]="remarkChartData?.datasets[0]?.backgroundColor?.[i]" [attr.title]="'Filter by remark: ' + g.IntvRmkTitle">{{ g.totalCv || 0 }}</a>
-                    </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                      <span class="legend-dot"
+                        [style.background]="remarkChartData?.datasets[0]?.backgroundColor?.[i]"></span>
+                      <a (click)="applySearch('sfinalremark', g.IntvRmkKey, '', '')"
+                        class="text-decoration-none routable" [attr.title]="'Filter by remark: ' + g.IntvRmkTitle">{{
+                        g.IntvRmkTitle }}</a>
+                    </div>
+                    <a class="badge bg-light routable" (click)="applySearch('sfinalremark', g.IntvRmkKey, '', '')"
+                      [style.color]="remarkChartData?.datasets[0]?.backgroundColor?.[i]"
+                      [style.borderColor]="remarkChartData?.datasets[0]?.backgroundColor?.[i]"
+                      [attr.title]="'Filter by remark: ' + g.IntvRmkTitle">{{ g.totalCv || 0 }}</a>
+                  </li>
                   }
                 </ul>
               </div>
@@ -224,61 +237,48 @@
         <div class="col-12">
           @if (userId === '1' && userType === '1') {
           <div class="card simple-card reports-card">
-            <div
-              class="card-header bg-white d-flex justify-content-between align-items-center"
-            >
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
               <div class="card-title h6 mb-0">
                 <i class="fa-solid fa-chart-column me-2 text-secondary"></i>Reports
               </div>
-              <button
-                class="btn btn-outline-primary btn-sm"
-                (click)="showReports = !showReports"
-              >
-                <i
-                  class="fa"
-                  [ngClass]="showReports ? 'fa-chevron-up' : 'fa-chevron-down'"
-                ></i>
+              <button class="btn btn-outline-primary btn-sm" (click)="showReports = !showReports">
+                <i class="fa" [ngClass]="showReports ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                 {{ showReports ? "Hide" : "Show" }}
               </button>
             </div>
             <div class="card-body pt-3" *ngIf="showReports">
-  <div class="report-list">
-    @for (r of reports; track r.task_name) {
-      <div class="report-item border rounded p-3 mb-3 shadow-sm bg-light">
-        <div class="r-header d-flex justify-content-between align-items-center mb-2">
-          <div class="title fw-normal text-dark">
-            <i class="fa-solid fa-file-lines me-2 text-secondary"></i>
-            {{ r.task_name }}
-          </div>
-          <span class="text-muted small">
-            <i class="fa-solid fa-calendar-day me-1"></i>Date: {{ r.dtm_date }}
-          </span>
-        </div>
+              <div class="report-list">
+                @for (r of reports; track r.task_name) {
+                <div class="report-item border rounded p-3 mb-3 shadow-sm bg-light">
+                  <div class="r-header d-flex justify-content-between align-items-center mb-2">
+                    <div class="title fw-normal text-dark">
+                      <i class="fa-solid fa-file-lines me-2 text-secondary"></i>
+                      {{ r.task_name }}
+                    </div>
+                    <span class="text-muted small">
+                      <i class="fa-solid fa-calendar-day me-1"></i>Date: {{ r.dtm_date }}
+                    </span>
+                  </div>
 
-        <div class="r-grid d-flex flex-wrap gap-2">
-          @for (s of r.intvShedArr; track s.IntvRmkTitle) {
-            <a
-              (click)="s.totalCv > 0 && applySearch('sfinalremark', s.IntvRmkKey, 'sprojrct', r.recordId)"
-              class="r-stat text-decoration-none d-flex align-items-center border rounded-pill px-3 py-2 bg-white"
-            >
-              <i class="fa-solid fa-chart-simple me-2 text-theme-primary"></i>
-              <span class="fw-normal text-dark">{{ s.IntvRmkTitle }}</span>
-              <span
-                class="badge ms-2"
-                [ngClass]="{
+                  <div class="r-grid d-flex flex-wrap gap-2">
+                    @for (s of r.intvShedArr; track s.IntvRmkTitle) {
+                    <a (click)="s.totalCv > 0 && applySearch('sfinalremark', s.IntvRmkKey, 'sprojrct', r.recordId)"
+                      class="r-stat text-decoration-none d-flex align-items-center border rounded-pill px-3 py-2 bg-white">
+                      <i class="fa-solid fa-chart-simple me-2 text-theme-primary"></i>
+                      <span class="fw-normal text-dark">{{ s.IntvRmkTitle }}</span>
+                      <span class="badge ms-2" [ngClass]="{
                   'bg-success text-light': s.IntvRmkTitle === 'Deployed',
                   'bg-info text-dark': s.IntvRmkTitle !== 'Deployed'
-                }"
-              >
-                {{ s.totalCv || 0 }}
-              </span>
-            </a>
-          }
-        </div>
-      </div>
-    }
-  </div>
-</div>
+                }">
+                        {{ s.totalCv || 0 }}
+                      </span>
+                    </a>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
 
           </div>
           }
