@@ -479,12 +479,38 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private applySettingsAndNavigate(companyId: string): void {
     const cid = String(companyId || this.tempCompanyId || this.loginForm.get('companyId')?.value || '');
-    this.globalSettings.loadGlobalSettings(cid).pipe(first()).subscribe({
-      next: () => {
-        this.router.navigate(['/dashboard']);
+    this.loading = true;
+    const payload = {
+      event: 'msp',
+      mode: 'gloConfig',
+      InputData: [{ comp_id: cid }]
+    };
+    this.commonService.post(payload).pipe(first()).subscribe({
+      next: (res: any) => {
+        if (res?.status === 'success') {
+          this.globalSettings.loadGlobalSettings(cid).pipe(first()).subscribe({
+            next: () => {
+              this.loading = false;
+              this.router.navigate(['/dashboard']);
+            },
+            error: (err) => {
+              this.loading = false;
+              const msg = err?.message || 'Failed to load configuration.';
+              this.error = msg;
+              this.step = 2;
+            }
+          });
+        } else {
+          this.loading = false;
+          this.error = res?.message || 'Failed to load configuration.';
+          this.step = 2;
+        }
       },
-      error: () => {
-        this.router.navigate(['/dashboard']);
+      error: (err: any) => {
+        this.loading = false;
+        const msg = err?.message || 'Failed to load configuration.';
+        this.error = msg;
+        this.step = 2;
       }
     });
   }
