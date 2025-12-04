@@ -111,13 +111,22 @@
 .page-inner .row.g-3 { animation: fadeUp .35s ease both; }
 
 /* Glance cards */
-.glance-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.glance { display: flex; align-items: center; gap: 10px; border: 1px dashed var(--border-color); border-radius: 6px; padding: 10px; background: #fff; }
-.glance .g-title { font-size: .8rem; color: #6c757d; }
-.glance .g-value { font-weight: 600; color: #212529; }
+.glance-body { height: 260px; }
+.glance-cards { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; height: 94%; }
+.glance { display: flex; align-items: center; gap: 14px; border: 1px solid var(--border-color); border-radius: 10px; padding: 16px; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform .15s ease, box-shadow .15s ease; }
+.glance { height: 100%; }
+.glance .g-title { font-size: 1rem; color: #6c757d; }
+.glance .g-value { font-weight: 600; color: #212529; font-size: 1.25rem; }
+.glance i { font-size: 1.8rem; transition: transform .15s ease; }
+.glance:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.glance:hover { transform: translateY(-1px); }
+.glance:hover i { transform: scale(1.08); }
+.glance .g-value { transition: transform .15s ease; }
+.glance:hover .g-value { transform: scale(1.03); }
 
 @media (max-width: 768px) {
-  .glance-cards { grid-template-columns: 1fr; }
+  .glance-body { height: auto; }
+  .glance-cards { grid-template-columns: 1fr; grid-template-rows: auto; }
 }
 
 /* Reports */
@@ -269,6 +278,12 @@
   font-size: 0.8rem;
   padding: 3px 7px;
 }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; flex: 0 0 10px; }
+.routable { cursor: pointer; }
+.routable.badge { display: inline-block; }
+.routable.badge:hover { background: rgba(var(--primary-color-rgb), 0.06); }
+.trend-filter { border: 1px solid var(--primary-color); color: var(--primary-color); background: #fff; }
+.trend-filter.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
 .r-stat {
   transition: all 0.25s ease-in-out;
 }

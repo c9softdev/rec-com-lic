@@ -71,7 +71,7 @@ export class AuthService {
     return this.commonService.post(request)
       .pipe(
         map(response => {
-          if (response.status === 'success' && !response.message && response.data?.length) {
+          if (response.status === 'success' && response.data?.length) {
             this.tempUsername = username;
             this.tempUserId = response.data[0].userId;
           }
@@ -99,11 +99,8 @@ export class AuthService {
     return this.commonService.post(request)
       .pipe(
         map(response => {
-          if (response.status === 'success' && !response.message) {
+          if (response.status === 'success') {
             this.empResponse = response.data;
-            // Create full user object
-            // console.log('Storing this full user data:', this.empResponse);
-            // return response;
             const mappedEmpType = String(this.empResponse?.chrType || this.empResponse?.empType || '');
             const user: User = {
               username: this.tempUsername,
@@ -122,7 +119,7 @@ export class AuthService {
             const sess: UserSession = {
               userId: String(user.userId || this.tempUserId || ''),
               username: String(user.username || this.tempUsername || ''),
-              comp_id: this.tempCompanyId,  // Store company ID in session
+              comp_id: this.tempCompanyId,
               empType: mappedEmpType,
               assignmenuIdStr: String(user.assignmenuIdStr || ''),
               archivalchk: String(user.archivalchk || ''),
@@ -137,12 +134,7 @@ export class AuthService {
             this.sessionService.setSession(sess);
             this.sessionService.init();
             this.currentUserSubject.next(user);
-            
-            // Load global settings in background after successful login
-            // This will update the application settings without blocking the login flow
             this.loadGlobalSettingsInBackground();
-            
-            // temp vars remain in memory only
           }
           return response;
         })

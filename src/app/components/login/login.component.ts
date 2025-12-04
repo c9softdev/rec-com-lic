@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, NgZone, CUSTOM_ELEMENTS_SCHEMA, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, NgZone, CUSTOM_ELEMENTS_SCHEMA, inject, ChangeDetectorRef, ViewChildren, ElementRef, QueryList } from '@angular/core';
 import { AutoFocusDirective } from '../../shared/directives/auto-focus.directive';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -11,6 +11,7 @@ import { ConfigService } from '../../core/services/config.service';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { ThemeService, ThemeColors } from '../../core/services/theme.service';
 import { CommonService } from '../../core/services/common.service';
+import { GlobalSettingsService } from '../../core/services/global-settings.service';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +32,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Forms
   loginForm!: FormGroup;
   forgotForm!: FormGroup;
+  otpForm!: FormGroup;
+  
+  get otpControls() {
+    const fa = this.otpForm.get('otpDigits') as any;
+    return fa && fa.controls ? fa.controls : [];
+  }
+
+  @ViewChildren('otpDigit') otpDigitEls!: QueryList<ElementRef<HTMLInputElement>>;
 
   // UI state
   loading = false;
@@ -65,6 +74,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private themeService: ThemeService,
     private commonService: CommonService,
+    private globalSettings: GlobalSettingsService,
   ) {
     this.initializeForms();
   }
@@ -90,6 +100,20 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.forgotForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]]
     });
+
+    this.otpForm = this.formBuilder.group({
+      comp_id: ['', [Validators.required]],
+      otp_val: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+      otpDigits: this.formBuilder.array([
+        this.formBuilder.control('', [Validators.pattern(/^\d$/)]),
+        this.formBuilder.control('', [Validators.pattern(/^\d$/)]),
+        this.formBuilder.control('', [Validators.pattern(/^\d$/)]),
+        this.formBuilder.control('', [Validators.pattern(/^\d$/)]),
+        this.formBuilder.control('', [Validators.pattern(/^\d$/)]),
+        this.formBuilder.control('', [Validators.pattern(/^\d$/)])
+      ])
+    });
+    (this as any).otpBoxes = ['', '', '', '', '', ''];
   }
 
   private setupRecaptchaCallbacks(): void {}
@@ -98,10 +122,17 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.checkRouteParameters();
     this.loadConfiguration();
     this.subscribeToTheme();
+    this.globalSettings.resetToDefaults();
 
     if (this.forgotMode) {
       // reCAPTCHA component renders automatically
     }
+
+    this.loginForm.get('companyId')?.valueChanges.subscribe((val) => {
+      this.otpForm.patchValue({ comp_id: val || '' });
+    });
+    const initialCompId = this.loginForm.get('companyId')?.value;
+    this.otpForm.patchValue({ comp_id: initialCompId || '' });
   }
 
   private checkRouteParameters(): void {
@@ -208,14 +239,15 @@ export class LoginComponent implements OnInit, OnDestroy {
         first(),
         takeUntil(this.destroy$),
         catchError(err => {
-          this.error = 'Failed to verify username. Please try again.';
+          const msg = err?.message || 'Failed to verify username. Please try again.';
+          this.error = msg;
           this.loading = false;
           throw err;
         })
       )
       .subscribe({
         next: (response) => {
-          if (response.status === 'success' && !response.message && response.data?.length) {
+          if (response.status === 'success' && response.data?.length) {
             this.tempUsername = username;
             this.tempUserId = response.data[0].userId;
             this.tempCompanyId = companyId;
@@ -230,8 +262,9 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.loading = false;
         },
         error: (error) => {
+          const msg = error?.message || 'An unexpected error occurred';
           console.error('Login error:', error);
-          this.error = error?.message || 'An unexpected error occurred';
+          this.error = msg;
           this.loading = false;
         }
       });
@@ -246,29 +279,41 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     const password = this.loginForm.get('password')?.value;
+    const companyId = String(this.loginForm.get('companyId')?.value || '');
     
-    this.authService.verifyPassword(password, this.tempCompanyId)
+    this.authService.verifyPassword(password, companyId)
       .pipe(
         first(),
         takeUntil(this.destroy$),
         catchError(err => {
-          this.error = 'Failed to verify password. Please try again.';
+          const msg = err?.message || 'Failed to verify password. Please try again.';
+          this.error = msg;
           this.loading = false;
           throw err;
         })
       )
       .subscribe({
         next: (response) => {
-          if (response.status === 'success' && !response.message) {
-            this.router.navigate(['/dashboard']);
+          if (response.status === 'success') {
+            const cid = companyId || this.tempCompanyId || this.loginForm.get('companyId')?.value;
+            const isSuperAdmin = String(cid || '') === String(environment.superAdminID || '');
+            if (isSuperAdmin) {
+              this.step = 3;
+              this.otpForm.patchValue({ comp_id: cid || '' });
+              this.loading = false;
+              this.cdr.detectChanges();
+              return;
+            }
+            this.applySettingsAndNavigate(cid);
           } else {
             this.error = response.message || 'Invalid password';
             this.loading = false;
           }
         },
         error: (error) => {
+          const msg = error?.message || 'An unexpected error occurred';
           console.error('Login error:', error);
-          this.error = error?.message || 'An unexpected error occurred';
+          this.error = msg;
           this.loading = false;
         }
       });
@@ -390,6 +435,112 @@ export class LoginComponent implements OnInit, OnDestroy {
       username: username,
       password: ''
     });
+  }
+
+  get isSuperAdmin(): boolean {
+    const cid = this.loginForm.get('companyId')?.value;
+    return String(cid || '') === String(environment.superAdminID || '');
+  }
+
+  onValidateOtp(): void {
+    const fa = this.otpForm.get('otpDigits') as any;
+    const otp = Array.isArray(fa?.controls) ? fa.controls.map((c: any) => String(c.value || '')).join('') : (this.otpForm.get('otp_val')?.value || '');
+    this.otpForm.patchValue({ otp_val: otp });
+    if (this.otpForm.invalid) {
+      this.sweetAlert.showToast('Enter a valid 6-digit OTP.', 'warning');
+      return;
+    }
+    const compId = this.otpForm.get('comp_id')?.value;
+    const otpVal = this.otpForm.get('otp_val')?.value;
+    const payload = {
+      event: 'msp',
+      mode: 'upOTP',
+      InputData: [{ comp_id: String(compId || ''), otp_val: String(otpVal || '') }]
+    };
+    this.loading = true;
+    this.commonService.post(payload)
+      .pipe(first(), takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.loading = false;
+          if (res?.status === 'success') {
+            this.sweetAlert.showToast(res?.message || 'OTP validated.', 'success');
+            this.applySettingsAndNavigate(String(compId || ''));
+          } else {
+            this.sweetAlert.showError(res?.message || 'Invalid OTP.');
+          }
+        },
+        error: () => {
+          this.loading = false;
+          this.sweetAlert.showError('Failed to validate OTP.');
+        }
+      });
+  }
+
+  private applySettingsAndNavigate(companyId: string): void {
+    const cid = String(companyId || this.tempCompanyId || this.loginForm.get('companyId')?.value || '');
+    this.globalSettings.loadGlobalSettings(cid).pipe(first()).subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: () => {
+        this.router.navigate(['/dashboard']);
+      }
+    });
+  }
+
+  backToPasswordStep(): void {
+    this.step = 2;
+    const fa = this.otpForm.get('otpDigits') as any;
+    if (fa && fa.controls) fa.controls.forEach((c: any) => c.setValue(''));
+    this.otpForm.patchValue({ otp_val: '' });
+  }
+
+  onOtpDigitInput(e: Event, index: number): void {
+    const input = e.target as HTMLInputElement;
+    let val = (input.value || '').replace(/\D/g, '');
+    if (val.length > 1) val = val.slice(-1);
+    const fa = this.otpForm.get('otpDigits') as any;
+    if (fa && fa.controls && fa.controls[index]) fa.controls[index].setValue(val);
+    if (val) {
+      const next = this.otpDigitEls.get(index + 1);
+      if (next) next.nativeElement.focus();
+    }
+  }
+
+  onOtpKeyDown(e: KeyboardEvent, index: number): void {
+    const fa = this.otpForm.get('otpDigits') as any;
+    const key = e.key;
+    if (key === 'Backspace') {
+      const currentVal = fa?.controls?.[index]?.value || '';
+      if (!currentVal && index > 0) {
+        const prev = this.otpDigitEls.get(index - 1);
+        if (prev) prev.nativeElement.focus();
+      }
+      return;
+    }
+    if (key === 'ArrowLeft' && index > 0) {
+      const prev = this.otpDigitEls.get(index - 1);
+      if (prev) prev.nativeElement.focus();
+    } else if (key === 'ArrowRight' && index < 5) {
+      const next = this.otpDigitEls.get(index + 1);
+      if (next) next.nativeElement.focus();
+    }
+  }
+
+  onOtpPaste(e: ClipboardEvent): void {
+    e.preventDefault();
+    const text = e.clipboardData?.getData('text') || '';
+    const digits = text.replace(/\D/g, '').slice(0, 6).split('');
+    const fa = this.otpForm.get('otpDigits') as any;
+    digits.forEach((d, i) => {
+      if (fa?.controls?.[i]) fa.controls[i].setValue(d);
+    });
+    const lastIndex = digits.length - 1;
+    if (lastIndex >= 0) {
+      const el = this.otpDigitEls.get(lastIndex);
+      if (el) el.nativeElement.focus();
+    }
   }
 
   ngOnDestroy(): void {

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { ThemeService } from './theme.service';
+import { SessionService } from './session.service';
 import { environment } from '../../../environments/environment';
 import { CommonService } from './common.service';
 
@@ -108,7 +109,8 @@ export class GlobalSettingsService {
   constructor(
     private http: HttpClient,
     private themeService: ThemeService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private sessionService: SessionService
   ) {
     // Initialize with defaults
     this.settings = this.defaultSettings;
@@ -188,6 +190,7 @@ export class GlobalSettingsService {
         this.settingsSubject.next(settings);
         // Apply theme and other settings
         this.applySettings(settings);
+        // Do not store company_sec_id; always use fresh value from config per request
       }),
       catchError(error => {
         console.error('Error loading global settings:', error);

@@ -39,6 +39,11 @@ export class SessionService {
     this.seedActivityStore();
   }
 
+  updateSession(partial: Partial<UserSession>): void {
+    const merged = { ...(this.session || {}), ...(partial || {}) } as UserSession;
+    this.setSession(merged);
+  }
+
   clear(): void {
     this.session = null;
     this.menuIdSet.clear();

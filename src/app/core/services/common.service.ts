@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { SessionService } from './session.service';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,37 +12,36 @@ import { SessionService } from './session.service';
 export class CommonService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, private sessionService: SessionService) { }
+  constructor(private http: HttpClient, private sessionService: SessionService, private configService: ConfigService) { }
 
   /**
    * Generic post method for API calls
    * Automatically appends comp_id from session to InputData
    */
   post(payload: any): Observable<any> {
-    // Append comp_id from session to the payload
-    const enhancedPayload = this.appendCompIdToPayload(payload);
-    return this.http.post(this.apiUrl, enhancedPayload || {});
+    return this.fetchCompanySecId().pipe(
+      map((companySecId) => this.appendCompIdToPayload(payload, companySecId)),
+      switchMap((enhancedPayload) => this.http.post(this.apiUrl, enhancedPayload || {}).pipe(catchError(this.handleApiError)))
+    );
   }
 
   /**
    * Helper method to append comp_id from session to InputData
    */
-  private appendCompIdToPayload(payload: any): any {
+  private appendCompIdToPayload(payload: any, companySecId: string): any {
     if (!payload) return payload;
-    
     const session = this.sessionService.getSession();
     const compId = session?.comp_id || environment.comp_id || '11';
-    
     // Clone the payload to avoid mutating the original
     const enhancedPayload = JSON.parse(JSON.stringify(payload));
     
     // Append comp_id to each InputData item if not already present
     if (enhancedPayload.InputData && Array.isArray(enhancedPayload.InputData)) {
       enhancedPayload.InputData = enhancedPayload.InputData.map((item: any) => {
-        if (!item.comp_id) {
-          return { ...item, comp_id: compId };
-        }
-        return item;
+        const base = { ...item };
+        if (!base.comp_id) base.comp_id = compId;
+        if (!base.company_sec_id && companySecId) base.company_sec_id = companySecId;
+        return base;
       });
     }
     
@@ -49,32 +49,65 @@ export class CommonService {
   }
 
   postWithFiles(formData: FormData): Observable<any> {
-    // For FormData, append comp_id directly to FormData if needed
     const session = this.sessionService.getSession();
     const compId = session?.comp_id || environment.comp_id || '11';
     if (!formData.has('comp_id')) {
       formData.append('comp_id', compId);
     }
-    return this.http.post(this.apiUrl, formData);
+    return this.fetchCompanySecId().pipe(
+      map((companySecId) => {
+        if (companySecId && !formData.has('company_sec_id')) {
+          formData.append('company_sec_id', companySecId);
+        }
+        return formData;
+      }),
+      switchMap((fd) => this.http.post(this.apiUrl, fd).pipe(catchError(this.handleApiError)))
+    );
   }
 
   /**
    * Post helper that can handle file downloads (blob response)
    */
   postDownload(payload: any, isDownload: boolean = false): Observable<any> {
-    // Append comp_id from session to the payload
-    const enhancedPayload = this.appendCompIdToPayload(payload);
-    return this.http.post(
-      this.apiUrl,
-      enhancedPayload || {},
-      isDownload ? { responseType: 'blob' as 'json' } : {}
+    return this.fetchCompanySecId().pipe(
+      map((companySecId) => this.appendCompIdToPayload(payload, companySecId)),
+      switchMap((enhancedPayload) => this.http.post(
+        this.apiUrl,
+        enhancedPayload || {},
+        isDownload ? { responseType: 'blob' as 'json' } : {}
+      ).pipe(catchError(this.handleApiError)))
     );
   }
 
   postBlob(payload: any): Observable<Blob> {
-    // Append comp_id from session to the payload
-    const enhancedPayload = this.appendCompIdToPayload(payload);
-    return this.http.post(this.apiUrl, enhancedPayload || {}, { responseType: 'blob' });
+    return this.fetchCompanySecId().pipe(
+      map((companySecId) => this.appendCompIdToPayload(payload, companySecId)),
+      switchMap((enhancedPayload) => this.http.post(this.apiUrl, enhancedPayload || {}, { responseType: 'blob' }).pipe(catchError(this.handleApiError)))
+    );
+  }
+
+  private fetchCompanySecId(): Observable<string> {
+    return this.configService.getConfig().pipe(
+      map((res: any) => (res?.data?.company_sec_id || ''))
+    );
+  }
+
+  private handleApiError = (error: any) => {
+    const status = error?.status;
+    const serverMessage = error?.error?.message || error?.message;
+    let message = 'Unexpected error occurred.';
+    if (status === 0) {
+      message = 'Network error. Please check your internet connection.';
+    } else if (status >= 500) {
+      message = serverMessage || 'Server error. Please try again later.';
+    } else if (status === 404) {
+      message = 'Endpoint not found.';
+    } else if (status === 401 || status === 403) {
+      message = 'Unauthorized. Please login again.';
+    } else if (serverMessage) {
+      message = serverMessage;
+    }
+    return throwError(() => ({ status, message, error }));
   }
 
   /**

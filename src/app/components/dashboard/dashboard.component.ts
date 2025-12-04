@@ -1,20 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/auth.model';
 import { Router } from '@angular/router';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
-import { CommonService } from '../../core/services/common.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { paginationProperties } from '../../app.config';
+import { CommonService } from '../../core/services/common.service';
 // import { forkJoin, Observable, of } from 'rxjs';
 // import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BaseChartDirective],
+  providers: [provideCharts(withDefaultRegisterables())],
   //imports: [CommonModule, RouterLink],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -60,6 +62,37 @@ export class DashboardComponent implements OnInit {
   userType: any;
   empType: any;
   emailId: any;
+  
+  employeeCvChartData: any = { labels: [], datasets: [{ data: [], backgroundColor: [] }] };
+  categoryChartData: any = { labels: [], datasets: [{ data: [], backgroundColor: [] }] };
+  remarkChartData: any = { labels: [], datasets: [{ data: [], backgroundColor: [] }] };
+  pieOptions: any = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+  pieTypeEmp: any = 'pie';
+  pieTypeCat: any = 'doughnut';
+  pieTypeRmk: any = 'pie';
+
+  trendMonths = 6;
+  categoryTrendLabels: string[] = [];
+  categoryTrendDataSets: any[] = [];
+  totalCVbyLastMonths: any[] = [];
+  parseMonthYear = (m: any): { year: number; monthIndex: number } => {
+    const name: string = String(m?.MonthName || '');
+    const monthStr: string = String(m?.Month || '');
+    let year = parseInt(name.split(' ').pop() || `${new Date().getFullYear()}`, 10);
+    let monthIndex = Math.max(0, Math.min(11, (parseInt(monthStr || '1', 10) - 1)));
+    if (isNaN(monthIndex)) {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const found = months.findIndex((mm) => name.startsWith(mm));
+      monthIndex = found >= 0 ? found : 0;
+    }
+    return { year, monthIndex };
+  };
+  trendOptions: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: { x: { stacked: false }, y: { stacked: false, beginAtZero: true } },
+    plugins: { legend: { display: false } }
+  };
 
   // View model helpers
   get kpis(): Array<{ icon: string; label: string; value: number | null; meterPct: number; trend: 'trend-up' | 'trend-down' | 'trend-flat'; meterClass?: 'warn' | 'ok' }> {
@@ -71,12 +104,19 @@ export class DashboardComponent implements OnInit {
     ];
   }
 
-  get glance(): Array<{ icon: string; colorClass: string; title: string; value: number }> {
+  get glance(): Array<{ icon: string; colorClass: string; title: string; value: number | null }> {
     return [
-      { icon: 'fa-regular fa-calendar-check', colorClass: 'text-success', title: 'Upcoming Interviews', value: this.alerts.upcomingInterviews },
-      { icon: 'fa-solid fa-passport', colorClass: 'text-warning', title: 'Passports Expiring', value: this.alerts.passportsExpiring },
-  { icon: 'fa-solid fa-plane-departure', colorClass: 'text-theme-primary', title: 'Flights This Week', value: this.alerts.flightsThisWeek }
+      { icon: 'fa-solid fa-database', colorClass: 'text-theme-primary', title: 'Total CV', value: this.animatedValues.totalCandidates },
+      { icon: 'fa-solid fa-calendar-day', colorClass: 'text-success', title: 'CVs (Today)', value: this.animatedValues.totalTodayCandidate },
+      { icon: 'fa-regular fa-calendar', colorClass: 'text-warning', title: 'CVs (Yesterday)', value: this.animatedValues.totalYesCandidate },
+      { icon: 'fa-solid fa-calendar-week', colorClass: 'text-info', title: 'CVs (This Week)', value: this.animatedValues.totalWeekCandidate }
     ];
+  }
+
+  get topCategories(): Array<{ title: string; key: any; totalCv: number; color: string }> {
+    const src = (this.totalCvByCategory || []).slice().sort((a: any, b: any) => Number(b.totalCv || 0) - Number(a.totalCv || 0)).slice(0, 4);
+    const colors: string[] = (this.categoryChartData?.datasets?.[0]?.backgroundColor as string[]) || [];
+    return src.map((c: any, i: number) => ({ title: String(c.CategoryTitle || ''), key: c.CategoryKey, totalCv: Number(c.totalCv || 0), color: colors[i % (colors.length || 1)] || '#0d6efd' }));
   }
 
   // get reportChips(): Array<{ label: string; value: number }>{
@@ -92,8 +132,8 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private sweetAlert: SweetAlertService,
-    private commonService: CommonService,
-    private loadingService: LoadingService
+    private commonService: CommonService
+    , private loadingService: LoadingService
   ) { }
 
   ngOnInit() {
@@ -122,6 +162,11 @@ export class DashboardComponent implements OnInit {
     queryParams['page'] = 1;
     queryParams['pageSize'] = paginationProperties.pageSize;
     // console.log('Navigating to jobseeker-manager with params:', queryParams);
+    this.router.navigate(['/jobseeker-manager'], { queryParams });
+  }
+
+  goToJobseekers(): void {
+    const queryParams: any = { page: 1, pageSize: paginationProperties.pageSize };
     this.router.navigate(['/jobseeker-manager'], { queryParams });
   }
 
@@ -164,6 +209,7 @@ export class DashboardComponent implements OnInit {
         this.totalCandidates = Number(res?.data?.totalCvTotal ?? 0);
         this.totalTodayCandidate = Number(res?.data?.totalCvWeek ?? 0);
         this.totalCvByCategory = res.data.totalCVbyCategory || [];
+        this.totalCVbyLastMonths = res.data.totalCVbyLastMonths || [];
 
         this.reports = res.data.prjArr || [];
         this.totalYesCandidate = res.data?.totalCvyesterday ?? 0;
@@ -173,6 +219,7 @@ export class DashboardComponent implements OnInit {
         console.log('Total Category response:', this.totalCVsByEmployees);
 
         this.animateKpiCounts();
+        this.updateCharts();
       },
 
       error: () => {
@@ -365,6 +412,106 @@ export class DashboardComponent implements OnInit {
     //   { label: 'May', valuePct: 55 },
     //   { label: 'Jun', valuePct: 80 }
     // ];
+  }
+
+  private updateCharts(): void {
+    const empLabels = (this.totalCVsByEmployees || []).map((e: any) => e.EmployeeName);
+    const empValues = (this.totalCVsByEmployees || []).map((e: any) => Number(e.totalCv || 0));
+    const catLabels = (this.totalCvByCategory || []).map((c: any) => c.CategoryTitle);
+    const catValues = (this.totalCvByCategory || []).map((c: any) => Number(c.totalCv || 0));
+    const rmkLabels = (this.miniBarData || []).map((r: any) => r.IntvRmkTitle);
+    const rmkValues = (this.miniBarData || []).map((r: any) => Number(r.totalCv || 0));
+
+    const palette = ['#0d6efd','#6f42c1','#198754','#dc3545','#fd7e14','#20c997','#6610f2','#0dcaf0','#ffc107','#6c757d'];
+
+    this.employeeCvChartData = {
+      labels: empLabels,
+      datasets: [{ data: empValues, backgroundColor: empLabels.map((_: any, i: number) => palette[i % palette.length]) }]
+    };
+    this.categoryChartData = {
+      labels: catLabels,
+      datasets: [{ data: catValues, backgroundColor: catLabels.map((_: any, i: number) => palette[(i+2) % palette.length]) }]
+    };
+    this.remarkChartData = {
+      labels: rmkLabels,
+      datasets: [{ data: rmkValues, backgroundColor: rmkLabels.map((_: any, i: number) => palette[(i+4) % palette.length]) }]
+    };
+
+    this.updateCategoryTrend();
+  }
+
+  onEmployeeChartClick(evt: any): void {
+    const a = (evt?.active && evt.active[0]) || null;
+    if (!a) return;
+    const idx = (typeof a.index === 'number') ? a.index : (typeof a._index === 'number' ? a._index : null);
+    if (idx === null) return;
+    const item = (this.totalCVsByEmployees || [])[idx];
+    if (!item) return;
+    this.applySearch('sempl', item.EmployeeId, '', '');
+  }
+
+  private updateCategoryTrend(): void {
+    const all = this.totalCVbyLastMonths || [];
+    const months = all.slice(0, this.trendMonths).reverse();
+    const labels: string[] = months.map((m: any) => {
+      const { year, monthIndex } = this.parseMonthYear(m);
+      return new Date(year, monthIndex, 1).toLocaleString('en-GB', { month: 'short' });
+    });
+    const values: number[] = months.map((m: any) => Number(m.totalCv || 0));
+    this.categoryTrendLabels = labels;
+    this.categoryTrendDataSets = [{ label: 'CVs', data: values, backgroundColor: '#20C997', borderWidth: 0 }];
+  }
+
+  private computeMonths(n: number): string[] {
+    const out: string[] = [];
+    const now = new Date();
+    for (let i = n - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      out.push(d.toLocaleString('en-GB', { month: 'short' }));
+    }
+    return out;
+  }
+
+  setTrendMonths(n: number): void {
+    this.trendMonths = n;
+    this.updateCategoryTrend();
+  }
+
+  // parseMonthYear utility declared as a property above
+
+  onCategoryTrendClick(evt: any): void {
+    const a = (evt?.active && evt.active[0]) || null;
+    if (!a) return;
+    const idx = (typeof a.index === 'number') ? a.index : null;
+    if (idx === null) return;
+    const all = this.totalCVbyLastMonths || [];
+    const months = all.slice(0, this.trendMonths).reverse();
+    const item = months[idx];
+    if (!item) return;
+    const { year, monthIndex } = this.parseMonthYear(item);
+    const sfdate = this.formatDateDdMmYyyy(new Date(year, monthIndex, 1));
+    const stodate = this.formatDateDdMmYyyy(new Date(year, monthIndex + 1, 0));
+    this.applySearch('sfdate', sfdate, 'stodate', stodate);
+  }
+
+  onCategoryChartClick(evt: any): void {
+    const a = (evt?.active && evt.active[0]) || null;
+    if (!a) return;
+    const idx = (typeof a.index === 'number') ? a.index : (typeof a._index === 'number' ? a._index : null);
+    if (idx === null) return;
+    const item = (this.totalCvByCategory || [])[idx];
+    if (!item) return;
+    this.applySearch('sparCat', item.CategoryKey, '', '');
+  }
+
+  onRemarkChartClick(evt: any): void {
+    const a = (evt?.active && evt.active[0]) || null;
+    if (!a) return;
+    const idx = (typeof a.index === 'number') ? a.index : (typeof a._index === 'number' ? a._index : null);
+    if (idx === null) return;
+    const item = (this.miniBarData || [])[idx];
+    if (!item) return;
+    this.applySearch('sfinalremark', item.IntvRmkKey, '', '');
   }
 
   private animateKpiCounts(): void {

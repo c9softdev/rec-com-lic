@@ -2,93 +2,82 @@
   <div class="row g-0 w-100 auth-card">
     <!-- Left: Branding -->
     <div class="col-lg-6 brand-section">
-      @if (configLoading) {
+      <!-- @if (configLoading) {
         <div class="text-muted">Loading...</div>
       } @else {
         @if (config) {
           <img *ngIf="config.var_logo_client" [src]="config.var_logo_client" alt="Client Logo" class="client-logo">
           <img *ngIf="config.var_logo_url" [src]="config.var_logo_url" alt="Company Logo" class="company-logo">
         }
-      }
+      } -->
+        <img src="https://c9soft.com/app_assets/client_logo/client-1.png" alt="Client Logo" class="client-logo">
+        <img src="https://c9soft.com/app_assets/c9soft_assets/c9logo.png" alt="Company Logo" class="company-logo">
     </div>
 
     <!-- Right: Login / Forgot -->
     <div class="col-lg-6 form-section">
       <div class="text-center mb-1">
-        <h1 class="fw-bold text-white text-uppercase mb-2">{{ forgotMode ? 'FORGOT PASSWORD' : 'LOGIN' }}</h1>
-        <div class="text-white-50 text-uppercase">{{ config?.var_title || 'Advance Recruitment System' }}</div>
+        <h1 class="fw-bold text-white text-uppercase mb-2">{{ forgotMode ? 'FORGOT PASSWORD' : (step === 3 ? 'VERIFY ADMIN' : 'LOGIN') }}</h1>
+        <div class="text-white-50 text-uppercase">
+          @if (!forgotMode && step === 3) { Check your email for the admin login OTP. }
+          @else { {{ config?.var_title || 'Advance Recruitment System' }} }
+        </div>
       </div>
 
-      @if (!forgotMode) {
+      @if (!forgotMode && step === 1) {
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          @if (error) {
-            <div class="error-message">{{ error }}</div>
-          }
-          @if (!error) {
-            @if (step === 1 && usernameSubmitted && (loginForm.get('companyId')?.invalid || loginForm.get('username')?.invalid)) {
-              <div class="error-message">
-                @if (loginForm.get('companyId')?.errors?.['required']) { <span>Company ID is required.</span> }
-                @if (loginForm.get('companyId')?.errors?.['pattern']) { <span>Company ID must be a number.</span> }
-                @if (loginForm.get('username')?.errors?.['required']) { <span>User name is required.</span> }
-                @if (loginForm.get('username')?.errors?.['minlength']) { <span>Minimum 3 characters.</span> }
-                @if (loginForm.get('username')?.errors?.['maxlength']) { <span>Maximum 30 characters.</span> }
-              </div>
-            }
-            @if (step === 2 && passwordSubmitted && loginForm.get('password')?.invalid) {
-              <div class="error-message">
-                @if (loginForm.get('password')?.errors?.['required']) { <span>Password is required.</span> }
-                @if (loginForm.get('password')?.errors?.['minlength']) { <span>Minimum 6 characters.</span> }
-                @if (loginForm.get('password')?.errors?.['maxlength']) { <span>Maximum 32 characters.</span> }
-              </div>
-            }
-          }
-
-          @if (step === 1) {
-            <div class="mb-3">
-              <input type="text" class="form-control form-control-lg" placeholder="Enter User Name *" formControlName="username" [class.is-invalid]="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
-              @if (step === 1 && usernameSubmitted && loginForm.get('username')?.invalid) {
-                <div class="error-message">
-                  @if (loginForm.get('username')?.errors?.['required']) { <span>User name is required.</span> }
-                  @if (loginForm.get('username')?.errors?.['minlength']) { <span>Minimum 3 characters.</span> }
-                  @if (loginForm.get('username')?.errors?.['maxlength']) { <span>Maximum 30 characters.</span> }
-                </div>
-              } 
-            </div>
-            <div class="mb-3">
-              <input type="number" class="form-control form-control-lg" style="width: 200px;" placeholder="Company ID *" formControlName="companyId" inputmode="numeric" [appAutoFocus]="step === 1" [class.is-invalid]="loginForm.get('companyId')?.touched && loginForm.get('companyId')?.invalid">
-              @if (step === 1 && usernameSubmitted && loginForm.get('companyId')?.invalid) {
-                <div class="error-message">
-                  @if (loginForm.get('companyId')?.errors?.['required']) { <span>Company ID is required.</span> }
-                  @if (loginForm.get('companyId')?.errors?.['pattern']) { <span>Company ID must be a number.</span> }
-                </div>
-              }
-            </div>
-            
-            <div class="d-flex justify-content-between align-items-center">
-              <a href="javascript:void(0)" (click)="toggleForgotMode()" class="text-white text-decoration-none">Forgot Password?</a>
-              <button type="submit" class="btn btn-light btn-lg" [disabled]="(loginForm.get('companyId')?.invalid || loginForm.get('username')?.invalid) || loading">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-                {{ loading ? 'Loading...' : 'Next' }}
-              </button>
-            </div>
-          } @else {
-            <div class="mb-3">
-              <input type="password" class="form-control form-control-lg" placeholder="Enter Password *" formControlName="password" [appAutoFocus]="step === 2" [class.is-invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <button type="button" class="btn btn-outline-light btn-lg" (click)="backToUsername()">Back</button>
-              <button type="submit" class="btn btn-light btn-lg" [disabled]="loginForm.get('password')?.invalid || loading">
-                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-                {{ loading ? 'Loading...' : 'Login' }}
-              </button>
-            </div>
-            <div class="text-center mt-3">
-              <a href="javascript:void(0)" (click)="toggleForgotMode()" class="text-white-50 text-decoration-none">Forgot password?</a>
+          @if (error) { <div class="error-message">{{ error }}</div> }
+          @if (usernameSubmitted && (loginForm.get('companyId')?.invalid || loginForm.get('username')?.invalid)) {
+            <div class="error-message">
+              @if (loginForm.get('companyId')?.errors?.['required']) { <span>Company ID is required.</span> }
+              @if (loginForm.get('companyId')?.errors?.['pattern']) { <span>Company ID must be a number.</span> }
+              @if (loginForm.get('username')?.errors?.['required']) { <span>User name is required.</span> }
+              @if (loginForm.get('username')?.errors?.['minlength']) { <span>Minimum 3 characters.</span> }
+              @if (loginForm.get('username')?.errors?.['maxlength']) { <span>Maximum 30 characters.</span> }
             </div>
           }
+          <div class="mb-3">
+            <input type="text" class="form-control form-control-lg" placeholder="Enter User Name *" formControlName="username" [class.is-invalid]="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
+          </div>
+          <div class="mb-3">
+            <input type="number" class="form-control form-control-lg" style="width: 200px;" placeholder="Company ID *" formControlName="companyId" inputmode="numeric" [appAutoFocus]="true" [class.is-invalid]="loginForm.get('companyId')?.touched && loginForm.get('companyId')?.invalid">
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <a href="javascript:void(0)" (click)="toggleForgotMode()" class="text-white text-decoration-none">Forgot Password?</a>
+            <button type="submit" class="btn btn-light btn-lg" [disabled]="(loginForm.get('companyId')?.invalid || loginForm.get('username')?.invalid) || loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+              {{ loading ? 'Loading...' : 'Next' }}
+            </button>
+          </div>
         </form>
       }
 
+      @if (!forgotMode && step === 2) {
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          @if (error) { <div class="error-message">{{ error }}</div> }
+          @if (passwordSubmitted && loginForm.get('password')?.invalid) {
+            <div class="error-message">
+              @if (loginForm.get('password')?.errors?.['required']) { <span>Password is required.</span> }
+              @if (loginForm.get('password')?.errors?.['minlength']) { <span>Minimum 6 characters.</span> }
+              @if (loginForm.get('password')?.errors?.['maxlength']) { <span>Maximum 32 characters.</span> }
+            </div>
+          }
+          <div class="mb-3">
+            <input type="password" class="form-control form-control-lg" placeholder="Enter Password *" formControlName="password" [appAutoFocus]="true" [class.is-invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <button type="button" class="btn btn-outline-light btn-lg" (click)="backToUsername()">Back</button>
+            <button type="submit" class="btn btn-light btn-lg" [disabled]="loginForm.get('password')?.invalid || loading">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+              {{ loading ? 'Loading...' : 'Login' }}
+            </button>
+          </div>
+          <div class="text-center mt-3">
+            <a href="javascript:void(0)" (click)="toggleForgotMode()" class="text-white-50 text-decoration-none">Forgot password?</a>
+          </div>
+        </form>
+      }
+      
       @if (forgotMode) {
         <form [formGroup]="forgotForm" (ngSubmit)="onForgotSubmit()">
           @if (error) {
@@ -116,6 +105,29 @@
               <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
               {{ loading ? 'Processing...' : 'Reset Password' }}
             </button>
+          </div>
+        </form>
+      }
+
+      @if (!forgotMode && step === 3) {
+        <form [formGroup]="otpForm" (ngSubmit)="onValidateOtp()" class="mx-auto" style="max-width: 460px;">
+          <div class="mb-3">
+            <label for="otpCompId" class="form-label text-white">Company ID</label>
+            <input id="otpCompId" type="text" class="form-control form-control-lg" placeholder="Company ID" formControlName="comp_id" readonly>
+          </div>
+          <div class="mb-2">
+            <label class="form-label text-white">Enter 6-digit Admin OTP</label>
+          </div>
+          <div class="mb-3">
+            <div class="otp-inputs d-flex gap-3 justify-content-center" formArrayName="otpDigits">
+              <ng-container *ngFor="let c of otpControls; let i = index">
+                <input #otpDigit type="text" maxlength="1" class="otp-box form-control text-center" [formControlName]="i" inputmode="numeric" aria-label="OTP digit" (input)="onOtpDigitInput($event, i)" (keydown)="onOtpKeyDown($event, i)" (paste)="onOtpPaste($event)" [appAutoFocus]="step === 3 && i === 0">
+              </ng-container>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <button type="button" class="btn btn-outline-light btn-lg" (click)="backToPasswordStep()">Back</button>
+            <button type="submit" class="btn btn-light btn-lg">Validate OTP</button>
           </div>
         </form>
       }
