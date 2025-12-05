@@ -157,7 +157,7 @@ export class GlobalSettingsService {
    * @param companyId Optional company ID for the settings. Uses hardcoded "11" if not provided.
    * @returns Observable of GlobalSettings
    */
-  loadGlobalSettings(companyId: string = '11'): Observable<GlobalSettings> {
+  loadGlobalSettings(companyId: string = ''): Observable<GlobalSettings> {
     const requestBody: ApiRequest = {
       event: 'msp',
       mode: 'gloConfig',

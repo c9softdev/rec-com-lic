@@ -9,6 +9,7 @@ import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { paginationProperties } from '../../app.config';
 import { CommonService } from '../../core/services/common.service';
+import { SessionService } from '../../core/services/session.service';
 // import { forkJoin, Observable, of } from 'rxjs';
 // import { catchError, map } from 'rxjs/operators';
 
@@ -132,14 +133,16 @@ export class DashboardComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private sweetAlert: SweetAlertService,
-    private commonService: CommonService
-    , private loadingService: LoadingService
+    private commonService: CommonService,
+    private loadingService: LoadingService,
+    private sessionService: SessionService
   ) { }
 
   ngOnInit() {
     // this.currentUser = this.authService.currentUserValue;
     // console.log('Current User:', this.currentUser);
-    
+    const sess = this.sessionService.getSession();
+    console.log('Session Data in Dashboard:', sess);
     if (this.useDummyData) {
       this.fillDummyData();
     } else {

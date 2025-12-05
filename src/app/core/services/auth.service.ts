@@ -146,8 +146,8 @@ export class AuthService {
    * Uses the company ID provided during login
    */
   private loadGlobalSettingsInBackground(): void {
-    // Use the company_id from login, or default to "11"
-    const companyId = this.tempCompanyId || '11';
+    // Use the company_id from login
+    const companyId = this.tempCompanyId || '';
     
     this.globalSettingsService.loadGlobalSettings(companyId).subscribe({
       next: (settings) => {
