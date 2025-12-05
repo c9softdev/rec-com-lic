@@ -76,6 +76,8 @@ export class ClientManagerComponent {
   }
 
   ngOnInit() {
+    
+
     this.loadClientManager();
   }
 

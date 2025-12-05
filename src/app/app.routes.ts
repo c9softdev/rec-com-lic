@@ -44,7 +44,7 @@ export const routes: Routes = [
       { path: 'employee-manager', component: EmployeeManagerComponent, canActivate: [privilegeGuard() as any], data: { menuId: '22' } },
       { path: 'city-management', component: CityManagementComponent, canActivate: [privilegeGuard() as any], data: { menuId: '10' } },
       { path: 'client-manager', component: ClientManagerComponent, canActivate: [privilegeGuard() as any], data: { menuId: '15' } },
-      { path: 'grievances', component: GrievanceComponent, canActivate: [privilegeGuard() as any], data: { menuId: '30' } },
+      // { path: 'grievances', component: GrievanceComponent, canActivate: [privilegeGuard() as any], data: { menuId: '30' } },
       { path: 'qualification', component: QualificationManagerComponent, canActivate: [privilegeGuard() as any], data: { menuId: '9' } },
       { path: 'dropdown', component: DropdownComponent, canActivate: [privilegeGuard() as any], data: { menuId: '8' } },
       { path: 'project-manager', component: ProjectManagerComponent, canActivate: [privilegeGuard() as any], data: { menuId: '26' } },

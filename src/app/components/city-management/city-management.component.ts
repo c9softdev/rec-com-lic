@@ -6,6 +6,8 @@ import { PaginationComponent } from '../pagination/pagination.component';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { CommonService } from '../../core/services/common.service';
+import { environment } from '../../../environments/environment';
+import { SessionService } from '../../core/services/session.service';
 
 @Component({
   selector: 'app-city-management',
@@ -29,12 +31,15 @@ export class CityManagementComponent implements OnInit {
   totalRecords = '0';
   CityForm!: FormGroup;
   submitted = false;
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
     private commonService: CommonService,
     private sweetAlert: SweetAlertService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private sessionService: SessionService
   ) {
     this.CityForm = this.fb.group({
       cityName: [''],
@@ -43,6 +48,11 @@ export class CityManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.loadCities();
   }
 

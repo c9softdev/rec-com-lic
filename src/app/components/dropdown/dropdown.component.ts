@@ -7,6 +7,8 @@ import { PaginationComponent } from '../pagination/pagination.component';
 import { paginationProperties } from '../../app.config';
 import { CommonService } from '../../core/services/common.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dropdown',
@@ -43,13 +45,16 @@ export class DropdownComponent implements OnInit {
   editresumechk: any;
   viewresumechk: any;
   deleteOption: any;
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sessionService: SessionService
   ) {
     this.searchForm = this.fb.group({
       ssection: ['']
@@ -62,6 +67,10 @@ export class DropdownComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.loadDropdownTypes();
     this.listDropdowns();
   }

@@ -7,6 +7,8 @@ import { PaginationComponent } from '../pagination/pagination.component';
 import { paginationProperties } from '../../app.config';
 import { CommonService } from '../../core/services/common.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-qualification-manager',
@@ -43,13 +45,16 @@ export class QualificationManagerComponent implements OnInit {
   editresumechk: any;
   viewresumechk: any;
   deleteOption: any;
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sessionService: SessionService
   ) {
     this.searchForm = this.fb.group({
       sparCat: [''],
@@ -63,6 +68,10 @@ export class QualificationManagerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.loadParentQualifications();
     this.listQualifications();
   }
@@ -93,12 +102,14 @@ export class QualificationManagerComponent implements OnInit {
     this.editresumechk = session?.editresumechk || '';
     this.deleteOption = session?.deleteOption || '';
 
+    this.loadingService.show('Loading...');
     this.commonService.loadQualifications({
       title: this.searchForm.controls['scat_title'].value || '',
       parentCategory: this.searchForm.controls['sparCat'].value || '',
       page: this.currentPage.toString()
     }).subscribe({
       next: (res) => {
+        this.loadingService.hide();
         if (res?.data?.list) {
           this.qualifications = res.data.list;
           this.totalRecords = res.data.total_records || this.qualifications.length;

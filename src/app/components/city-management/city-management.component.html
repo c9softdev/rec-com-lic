@@ -36,9 +36,11 @@
                                                     <i class="fas fa-search mr-1"></i>Search
                                                 </button>
                                                 <!-- Use explicit click for Save to avoid accidental submits via Enter -->
+                                                @if  (comp_id === superAdminID) {
                                                 <button class="btn btn-outline-primary btn-round mr-2 mb-2" type="button" (click)="onSaveCity()">
                                                     <i class="fas fa-save mr-1"></i>Save
                                                 </button>
+                                                }
                                                 <button class="btn btn-outline-dark btn-round mr-2 mb-2" type="button"
                                                     (click)="onClearSearch()">
                                                     <i class="fas fa-times mr-1"></i>Clear
@@ -68,10 +70,12 @@
                                     </span>
                                 </h4>
                                 <div class="d-flex align-items-center">
+                                    @if  (comp_id === superAdminID) {
                                     <button class="btn btn-outline-danger btn-round" (click)="onDeleteClick()">
                                         <i class="fas fa-trash mr-1"></i>Delete
                                         {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
                                     </button>
+                                    }
                                     <button class="btn btn-primary btn-sm ml-2" (click)="toggleSearchSection()" *ngIf="!showSearchSection">
                                         <i class="fa fa-chevron-down"></i>
                                         Show
@@ -87,11 +91,13 @@
                             <table class="table  table-hover mb-0">
                                 <thead class="thead-light sticky-table-header">
                                     <tr>
+                                        @if  (comp_id === superAdminID) {
                                         <th class="text-center" style="width: 3%;">
                                             <input type="checkbox" class="custom-checkbox-modern"
                                                 [checked]="selectedItems.size === cities.length"
                                                 (change)="onSelectAll($event)">
                                         </th>
+                                        }
                                         <th style="width: 5%;">S.NO.</th>
                                         <th>CITY NAME</th>
                                         <th style="width: 40%;">STATE NAME</th>
@@ -99,11 +105,13 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let item of cities; let i = index">
+                                        @if  (comp_id === superAdminID) {
                                         <td class="text-center">
                                             <input type="checkbox" class="custom-checkbox-modern"
                                                 [checked]="selectedItems.has(item.id)"
                                                 (change)="onItemSelect(item.id, $event)">
                                         </td>
+                                        }
                                         <td style="text-align: center;">{{ item.sno }}</td>
                                         <td>{{ item.Cityname }}</td>
                                         <td>{{ item.State }}</td>

@@ -5,6 +5,9 @@ import { CommonService } from '../../core/services/common.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
+import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'app-global-setting-inner',
@@ -26,13 +29,16 @@ export class GlobalSettingInner {
   editresumechk: any;
   viewresumechk: any;
   deleteOption: any;
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sessionService: SessionService
   ) {
 
 
@@ -51,6 +57,10 @@ export class GlobalSettingInner {
   }
 
   ngOnInit(): void {
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.onEditClick({ id: '1' }); // Example call to onEditClick with a dummy ID
   }
 
@@ -64,16 +74,18 @@ export class GlobalSettingInner {
     this.editresumechk = session?.editresumechk || '';
     this.deleteOption = session?.deleteOption || '';
 
+    this.loadingService.show('Loading...');
     const payload = {
       event: 'msp',
       mode: 'gloConfig',
       InputData: [{
         id: item.id,
-        comp_id: '11'  // Use comp_id instead of sec_key
+        comp_id: this.comp_id  // Use comp_id instead of sec_key
       }]
     };
     this.commonService.post(payload).subscribe({
       next: (res) => {
+        this.loadingService.hide();
         // console.log('Edit Response:', res);
         if (res && res.status === 'success' && res.data) {
           this.pageForm.patchValue({

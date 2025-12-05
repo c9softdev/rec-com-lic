@@ -7,6 +7,8 @@ import { PaginationComponent } from '../pagination/pagination.component';
 import { paginationProperties } from '../../app.config';
 import { CommonService } from '../../core/services/common.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-job-category',
@@ -45,13 +47,16 @@ export class JobCategoryComponent implements OnInit {
   editresumechk: any;
   viewresumechk: any;
   deleteOption: any;
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
     private sweetAlert: SweetAlertService,
     private commonService: CommonService,
     private loadingService: LoadingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sessionService: SessionService
 
   ) {
     this.jobCategoryForm = this.fb.group({
@@ -71,6 +76,15 @@ export class JobCategoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // const session = this.authService.currentUserValue;
+    // const sess = this.sessionService.getSession();
+    // console.log('Session:', sess);
+
+    // this.comp_id = session?.comp_id || '';
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.loadParentCategories();
     this.loadJobCategories();
   }
@@ -78,13 +92,15 @@ export class JobCategoryComponent implements OnInit {
   loadJobCategories(): void {
 
     const session = this.authService.currentUserValue;
-    console.log('Session data-1:', session);
+    
+    // console.log('Session data-1:', sess);
 
     this.userId = session?.userId || '0';
     this.userType = session?.empType || '0';
     this.emailId = session?.emailId || '';
     this.editresumechk = session?.editresumechk || '';
     this.deleteOption = session?.deleteOption || '';
+
 
     this.loadingService.show('Loading...');
     const payload = {
