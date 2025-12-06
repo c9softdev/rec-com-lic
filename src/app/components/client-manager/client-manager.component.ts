@@ -8,6 +8,8 @@ import { SweetAlertService } from '../../core/services/sweet-alert.service';
 import { FileValidatorService, FileValidationOptions } from '../../core/services/file-validator.service';
 import { LoadingService } from '../../core/services/loading.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-client-manager',
@@ -52,6 +54,8 @@ export class ClientManagerComponent {
   editresumechk: any;
   viewresumechk: any;
   deleteOption: any;
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
@@ -59,7 +63,8 @@ export class ClientManagerComponent {
     private commonService: CommonService,
     private fileValidator: FileValidatorService, 
     private loadingService: LoadingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sessionService: SessionService
   ) {
     this.ClientsForm = this.fb.group({
       clname: ['', Validators.required],
@@ -77,6 +82,9 @@ export class ClientManagerComponent {
 
   ngOnInit() {
     
+  this.superAdminID = environment.superAdminID;
+  const sess = this.sessionService.getSession();
+  this.comp_id = sess?.comp_id || '';
 
     this.loadClientManager();
   }

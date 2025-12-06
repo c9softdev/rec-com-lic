@@ -58,21 +58,22 @@
                                     </span>
                                 </h4>
                                 <div class="action-buttons">
+                                    @if  (comp_id !== superAdminID) {
                                     <button class="btn btn-outline-primary btn-round mr-2" (click)="onShowAddForm()">
                                         <i class="fas fa-plus mr-1"></i>Add Client
                                     </button>
-                                    <button class="btn btn-outline-warning btn-round mr-2"
+                                    }
+                                    <!-- <button class="btn btn-outline-warning btn-round mr-2"
                                         (click)="onChangeOrderClick()"
                                         [disabled]="objectKeys(orderChanges).length === 0">
                                         <i class="fas fa-list-ol mr-1"></i>Change Order
-                                        <!-- {{ objectKeys(orderChanges).length > 0 ? ' (' + objectKeys(orderChanges).length+ ')' : '' }} -->
                                         {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
-                                    </button>
-                                    <button class="btn btn-outline-dark btn-round mr-2"
+                                    </button> -->
+                                    <!-- <button class="btn btn-outline-dark btn-round mr-2"
                                         (click)="onDisplayPortalClick()">
                                         <i class="fas fa-eye mr-1"></i>Display in Portal
                                         {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
-                                    </button>
+                                    </button> -->
                                     <button class="btn btn-outline-info btn-round mr-2"
                                         (click)="onChangeVisibilityClick()">
                                         <i class="fas fa-eye mr-1"></i>Change visibility
@@ -102,12 +103,13 @@
                                         </th>
                                         <th style="width: 5%;">S.NO.</th>
                                         <th>CLIENT NAME</th>
+                                        @if  (comp_id === superAdminID) {
+                                        <th>Company</th>
+                                        }
                                         <th class="text-center" style="width: 15%;">LOGO</th>
                                         <th style="width: 20%;">WEBSITE</th>
                                         <th class="text-center" style="width: 10%;">DATE</th>
-                                        <th class="text-center" style="width: 5%;">ORDER</th>
                                         <th class="text-center" style="width: 5%;">STATUS</th>
-                                        <th class="text-center" style="width: 5%;">PORTAL</th>
                                         @if ((editresumechk != '' && editresumechk == '1') || (userId === '1' && userType == '1')) {
                                         <th class="text-center" style="width: 5%;">EDIT</th>
                                         }
@@ -123,18 +125,21 @@
                                         </td>
                                         <td style="text-align: center;">{{ item.sno }}</td>
                                         <td>{{ item.name }}</td>
+                                        @if  (comp_id === superAdminID) {
+                                        <td>{{ item.company }}</td>
+                                        }
                                         <td class="text-center">
                                             <img *ngIf="item.img_url" [src]="item.img_url" alt="Client Logo"
                                                 style="max-height: 70px;" />
                                         </td>
                                         <td>{{ item.websites }}</td>
                                         <td class="text-center">{{ item.cdate }}</td>
-                                        <td class="text-center">
+                                        <!-- <td class="text-center">
                                             <input #orderInput type="number" class="form-control form-control-sm"
                                                 [value]="orderChanges[item.id] !== undefined ? orderChanges[item.id] : item.order"
                                                 (input)="onOrderInputChange(item.id, orderInput.value)" min="1"
                                                 [max]="totalRecords">
-                                        </td>
+                                        </td> -->
                                         <td class="text-center">
                                             <span *ngIf="item.status === '1'">
                                                 <i class="fas fa-check-circle text-success status-icon"></i>
@@ -143,14 +148,14 @@
                                                 <i class="fas fa-times-circle text-danger status-icon"></i>
                                             </span>
                                         </td>
-                                        <td class="text-center">
+                                        <!-- <td class="text-center">
                                             <span *ngIf="item.portal === '1'">
                                                 <i class="fas fa-check-circle text-success status-icon"></i>
                                             </span>
                                             <span *ngIf="item.portal !== '1'">
                                                 <i class="fas fa-times-circle text-danger status-icon"></i>
                                             </span>
-                                        </td>
+                                        </td> -->
                                         @if ((editresumechk != '' && editresumechk == '1') || (userId === '1' && userType == '1')) {
                                         <td class="text-center">
                                             <button type="button" class="btn btn-icon btn-link" title="Edit Record"
