@@ -82,9 +82,9 @@ export class ClientManagerComponent {
 
   ngOnInit() {
     
-  this.superAdminID = environment.superAdminID;
-  const sess = this.sessionService.getSession();
-  this.comp_id = sess?.comp_id || '';
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
 
     this.loadClientManager();
   }
@@ -561,6 +561,7 @@ toggleMaximize(): void {
     this.editresumechk = session?.editresumechk || '';
     this.deleteOption = session?.deleteOption || '';
 
+    this.loadingService.show('Loading...');
     const payload = {
       event: 'client',
       mode: 'lr',
@@ -568,12 +569,14 @@ toggleMaximize(): void {
         {
           sname: this.searchForm.controls['sname'].value || '',
           semail: this.searchForm.controls['semail'].value || '',
+          // scompany: this.searchForm.controls['scompany'].value || '',
           page: this.currentPage.toString(),
         }
-      ]
+      ] 
     };
     this.commonService.post(payload).subscribe({
       next: (response: any) => {
+        this.loadingService.hide();
         if (response?.data?.list) {
           this.clients = response.data.list;
           this.totalRecords = response.data.total_records?.toString() || '0';
