@@ -471,7 +471,7 @@ toggleMaximize(): void {
     }
     this.isSaving = true;
     this.loadingService.show();
-    this.commonService.post(formData).subscribe({
+    this.commonService.postWithFiles(formData).subscribe({
       next: (response: any) => {
         this.isSaving = false;
         this.loadingService.hide();
@@ -523,7 +523,7 @@ toggleMaximize(): void {
 
       this.isSaving = true;
       this.loadingService.show();
-      this.commonService.post(formData).subscribe({
+      this.commonService.postWithFiles(formData).subscribe({
         next: (response: any) => {
           this.isSaving = false;
           this.loadingService.hide();
