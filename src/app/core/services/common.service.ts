@@ -31,7 +31,7 @@ export class CommonService {
   private appendCompIdToPayload(payload: any, companySecId: string): any {
     if (!payload) return payload;
     const session = this.sessionService.getSession();
-    const compId = session?.comp_id || environment.comp_id || '11';
+    const compId = session?.comp_id || environment.comp_id;
     // Clone the payload to avoid mutating the original
     const enhancedPayload = JSON.parse(JSON.stringify(payload));
     
@@ -50,7 +50,7 @@ export class CommonService {
 
   postWithFiles(formData: FormData): Observable<any> {
     const session = this.sessionService.getSession();
-    const compId = session?.comp_id || environment.comp_id || '11';
+    const compId = session?.comp_id || environment.comp_id;
     if (!formData.has('comp_id')) {
       formData.append('comp_id', compId);
     }
