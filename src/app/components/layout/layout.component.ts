@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild, inje
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
 import { Router } from '@angular/router';
 import { User } from '../../core/models/auth.model';
 import { MenuService } from '../../core/services/menu.service';
@@ -55,6 +56,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
+    private sessionService: SessionService,
     private menuService: MenuService,
     private sanitizer: DomSanitizer,
     private configService: ConfigService,
@@ -68,7 +70,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     // this.fetchMenu('1', '1');
-    const session = this.authService.getSession ? this.authService.getSession() : this.authService.currentUserValue;
+    const session = this.sessionService.getSession();
     const userId = session?.userId || '0';
     const userType = session?.empType || '0';
     // console.log('Session Data:', session);
