@@ -98,7 +98,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
     
     this.forgotForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
+      companyId: ['', [Validators.required, Validators.pattern(/^\d+$/)]]
     });
 
     this.otpForm = this.formBuilder.group({
@@ -357,8 +358,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     
     this.loading = true;
     const email = this.forgotForm.get('email')?.value;
+    const companyId = String(this.forgotForm.get('companyId')?.value || '');
     
-    this.processForgotPassword(email);
+    this.processForgotPassword(email, companyId);
   }
 
   private validateForgotSubmit(): boolean {
@@ -366,6 +368,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     
     if (this.forgotForm.invalid) {
       this.forgotForm.get('email')?.markAsTouched();
+      this.forgotForm.get('companyId')?.markAsTouched();
       return false;
     }
     
@@ -377,12 +380,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  private processForgotPassword(email: string): void {
+  private processForgotPassword(email: string, companyId: string): void {
     const payload = {
       event: "forgetpassword",
       mode: "fpsend",
       InputData: [{
         Femail: email,
+        comp_id: String(companyId || ''),
         scode: "123456" // This would typically be generated server-side
       }]
     };
