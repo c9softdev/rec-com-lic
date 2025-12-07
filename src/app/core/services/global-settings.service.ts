@@ -172,6 +172,7 @@ export class GlobalSettingsService {
       map(response => {
         if (response.status === 'success') {
           // Merge API response with defaults - API values take precedence
+          // console.log('GS Setting:', response.data);
           const settings = {
             ...this.defaultSettings,
             ...response.data,

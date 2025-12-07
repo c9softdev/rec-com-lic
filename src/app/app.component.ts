@@ -25,10 +25,21 @@ export class AppComponent implements OnInit {
     // Initialize global settings with hardcoded defaults (no API call on app load)
     // Settings will be loaded from API after successful user login
     const defaultSettings = this.globalSettingsService.getSettings();
+    
     console.log('App initialized with default settings:', defaultSettings);
 
     // License is enforced via `licenseGuard` on routes.
 
     this.sessionService.init();
+
+    // 2️⃣ Load global settings from API once
+    this.globalSettingsService.loadGlobalSettings().subscribe({
+      next: (settings) => {
+        console.log("Global settings loaded on app start:", settings);
+      },
+      error: (err) => {
+        console.error("Failed to load global settings:", err);
+      }
+    });
   }
 }

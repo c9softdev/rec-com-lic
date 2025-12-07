@@ -13,7 +13,9 @@ import { AuthService } from '../../core/services/auth.service';
 import { LicenseStateService } from '../../core/services/license-state.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
+import { SessionService } from '../../core/services/session.service';
+import { environment } from '../../../environments/environment';
+import { GlobalSettingsService, GlobalSettings } from '../../core/services/global-settings.service';
 
 // 2. Utility Functions
 function hasSubmenuArr2(obj: any): obj is { submenuArr2: any[] } {
@@ -68,6 +70,11 @@ export class EmployeeManagerComponent implements OnInit {
   editresumechk: any;
   viewresumechk: any;
   deleteOption: any;
+  comp_id: any;
+  superAdminID: any;
+  globalSettings: any;
+  employee_cnt: any;
+  jobseeker_cnt: any;
 
   licenseData: any;
   private destroy$ = new Subject<void>();
@@ -78,7 +85,9 @@ export class EmployeeManagerComponent implements OnInit {
     private commonService: CommonService,
     private loadingService: LoadingService,
     private authService: AuthService,
-    private licenseState: LicenseStateService 
+    private licenseState: LicenseStateService,
+    private sessionService: SessionService,
+    private globalSettingsService: GlobalSettingsService
   ) {
     this.searchForm = this.fb.group({
       name: [''],
@@ -101,6 +110,23 @@ export class EmployeeManagerComponent implements OnInit {
 
   // 4. Lifecycle Hooks
   ngOnInit(): void {
+
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
+    this.globalSettingsService.getSettings$().subscribe(settings => {
+      if (settings) {
+        this.globalSettings = settings;
+        this.employee_cnt = Number(this.globalSettings.int_employee_cnt) || 0;
+        // this.jobseeker_cnt = Number(this.globalSettings.int_jobseeker_cnt) || 0;
+        console.log("Countter:", this.employee_cnt);
+
+        // 🔥 Now safe to load employees or apply settings
+        // this.loadEmployees();
+      }
+    });
+
     this.fetchEmployees();
     const menuPayload = { event: 'user', mode: 'lmenu', InputData: [{}] };
 
@@ -111,71 +137,28 @@ export class EmployeeManagerComponent implements OnInit {
     });
 
     this.licenseState.licenseData$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(data => {
-      this.licenseData = data;
-      console.log('License Data in Employee Manager:', this.licenseData);
-    });
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
+        this.licenseData = data;
+        console.log('License Data in Employee Manager:', this.licenseData);
+      });
 
   }
 
-  // 5. Form Initialization
-  // Removed initSearchForm and initEmployeeForm
 
-  // 6. Data Fetching & Table Logic
-  // fetchEmployees(): void {
-  //   const name = this.searchForm.controls['name'].value || '';
-  //   const email = this.searchForm.controls['email'].value || '';
-  //   const userType = this.searchForm.controls['userType'].value || '';
-  //   const payload = {
-  //     event: 'user',
-  //     mode: 'lr',
-  //     InputData: [{
-  //       sname: name,
-  //       semail: email,
-  //       smember_type: userType,
-  //       page: this.currentPage.toString()
-  //     }]
-  //   };
-  //   this.commonService.post(payload).subscribe({
-  //     next: (response) => {
-  //       if (response?.data?.list) {
-  //         this.employees = response.data.list;
-  //         this.totalRecords = response.data.total_records || this.employees.length;
-  //         this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
-  //         this.updatePaginationRange();
-  //         this.noDataMessage = '';
-  //       } else {
-  //         this.noDataMessage = response?.message || 'No data found.';
-  //         this.employees = [];
-  //         this.totalRecords = 0;
-  //         this.totalPages = 0;
-  //         this.paginationRange = [];
-  //       }
-  //     },
-  //     error: () => {
-  //       this.employees = [];
-  //       this.totalRecords = 0;
-  //       this.totalPages = 0;
-  //       this.paginationRange = [];
-  //     }
-  //   });
-  // }
   fetchEmployees(): void {
     const session = this.authService.currentUserValue;
-
     this.userId = session?.userId || '0';
     this.userType = session?.empType || '0';
     this.emailId = session?.emailId || '';
     this.editresumechk = session?.editresumechk || '';
     this.deleteOption = session?.deleteOption || '';
-    
+
     const name = this.searchForm.controls['name'].value || '';
     const email = this.searchForm.controls['email'].value || '';
     const userType = this.searchForm.controls['userType'].value || '';
-    
-    this.loadingService.show('Loading...');
 
+    this.loadingService.show('Loading...');
     this.commonService.loadEmployees({
       name,
       email,
@@ -184,7 +167,6 @@ export class EmployeeManagerComponent implements OnInit {
     }).subscribe({
       next: (response) => {
         this.loadingService.hide();
-        
         if (response?.data?.list) {
           this.employees = response.data.list;
           this.totalRecords = response.data.total_records || this.employees.length;
@@ -198,11 +180,13 @@ export class EmployeeManagerComponent implements OnInit {
           this.totalPages = 0;
           this.paginationRange = [];
         }
+        this.loadingService.hide();
       },
       error: (error) => {
         this.sweetAlert.showError('Failed to load employees. Please try again.');
         this.employees = [];
         this.noDataMessage = 'Error loading data.';
+        this.loadingService.hide();
       }
     });
   }
@@ -259,6 +243,7 @@ export class EmployeeManagerComponent implements OnInit {
     this.clearForm();
     this.updateFloatingLabels();
   }
+
   onEditClick(employee: any): void {
     this.isEditMode = true;
     this.currentEditEmployeeId = employee.id;
@@ -351,7 +336,7 @@ export class EmployeeManagerComponent implements OnInit {
       this.sweetAlert.showToast('Please fill all required fields.', 'warning');
       return;
     }
-    
+
     if (this.isEditMode) {
       this.updateEmployee();
     } else {
@@ -366,12 +351,12 @@ export class EmployeeManagerComponent implements OnInit {
       this.sweetAlert.showToast('Please fill all required fields.', 'warning');
       return;
     }
-    
+
     const formValue = this.employeeForm.value;
     let accessOptions = [...formValue.accessOptions];
     const selectedMenuIds = Array.from(this.selectedMenuKeys).join(',');
     const access = (opt: string) => accessOptions.includes(opt) ? '1' : '';
-    
+
     const data = {
       username: this.employeeForm.controls['userName'].value,
       first_name: this.employeeForm.controls['fullName'].value,
@@ -391,17 +376,18 @@ export class EmployeeManagerComponent implements OnInit {
       deleteOption: access('Delete Record'),
       email: this.employeeForm.controls['email'].value
     };
-    
+
     const payload = {
       event: 'user',
       mode: 'sv',
       InputData: [{ ...data }]
     };
-    
+
     this.loadingService.show('Saving...');
     this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
+        console.log('Save Employee Response:', res);
         this.sweetAlert.showToast(res?.message || 'Employee saved.', 'success');
         this.onCancelClick();
         this.fetchEmployees();
@@ -420,12 +406,12 @@ export class EmployeeManagerComponent implements OnInit {
       this.sweetAlert.showToast('Please fill all required fields.', 'warning');
       return;
     }
-    
+
     const formValue = this.employeeForm.value;
     let accessOptions = [...formValue.accessOptions];
     const selectedMenuIds = Array.from(this.selectedMenuKeys).join(',');
     const access = (opt: string) => accessOptions.includes(opt) ? '1' : '';
-    
+
     const updateData = {
       id: this.currentEditEmployeeId,
       username: this.employeeForm.controls['userName'].value,
@@ -450,13 +436,13 @@ export class EmployeeManagerComponent implements OnInit {
       smember_type: this.searchForm.controls['userType'].value || '',
       page: this.currentPage.toString()
     };
-    
+
     const payload = {
       event: 'user',
       mode: 'up',
       InputData: [{ ...updateData }]
     };
-    
+
     this.loadingService.show('Updating...');
     this.commonService.post(payload).subscribe({
       next: (res) => {
@@ -471,7 +457,7 @@ export class EmployeeManagerComponent implements OnInit {
       }
     });
   }
-  
+
   onDeleteClick(): void {
     if (this.selectedItems.size === 0) {
       this.sweetAlert.showToast('Please select at least one employee to delete.', 'warning');
@@ -516,8 +502,8 @@ export class EmployeeManagerComponent implements OnInit {
       }
     });
 
-  // show global loading while deleting
-  this.loadingService.show('Deleting...');
+    // show global loading while deleting
+    this.loadingService.show('Deleting...');
   }
   onChangeStatusClick(): void {
     if (this.selectedItems.size === 0) {
@@ -563,7 +549,7 @@ export class EmployeeManagerComponent implements OnInit {
       }
     });
 
-  this.loadingService.show('Updating...');
+    this.loadingService.show('Updating...');
   }
 
   // 10. UI/UX Helpers

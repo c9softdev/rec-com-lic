@@ -125,8 +125,7 @@
                     </span>
                   </h4>
                   <div class="action-buttons">
-                    @if (licenseData && licenseData.int_employee_cnt &&
-                    licenseData.int_employee_cnt <= totalRecords) {
+                    @if (employee_cnt <= totalRecords) {
                     <button
                       class="btn btn-outline-danger btn-round mr-2"
                       disabled
@@ -140,7 +139,7 @@
                       class="btn btn-outline-primary btn-round mr-2"
                       (click)="onShowAddForm()"
                     >
-                      <i class="fas fa-plus mr-1"></i>Add Employee
+                      <i class="fas fa-plus mr-1"></i>Add Employee ({{employee_cnt-totalRecords}})
                     </button>
                     }
 
@@ -155,8 +154,8 @@
                           : ""
                       }}
                     </button>
-                    @if ((deleteOption != '' && deleteOption == '1') || (userId
-                    === '1' && userType == '1')) {
+                    <!-- @if ((deleteOption != '' && deleteOption == '1') || (userId
+                    === '1' && userType == '1')) { -->
                     <button
                       class="btn btn-outline-danger btn-round"
                       (click)="onDeleteClick()"
@@ -168,7 +167,7 @@
                           : ""
                       }}
                     </button>
-                    }
+                    <!-- } -->
                   </div>
                 </div>
               </div>
@@ -195,8 +194,11 @@
                         />
                       </th>
                       <th style="width: 5%">S.NO.</th>
-                      <th><b>Name / Email ID</b></th>
-                      <th style="width: 25%"><b>Login Id / IP</b></th>
+                      <th style="width: 17%"><b>Name / Email ID</b></th>
+                      @if (comp_id === superAdminID) {
+                      <th style="width: 22%">Company</th>
+                      }
+                      <th style="width: 18%"><b>Login Id / IP</b></th>
                       <th style="width: 12%"><b>Password</b></th>
                       <th style="width: 10%"><b>User Type</b></th>
                       <th style="width: 10%"><b>Reg Date</b></th>
@@ -230,6 +232,10 @@
                           {{ emp.email }}
                         </div>
                       </td>
+                      
+                       @if (comp_id === superAdminID) {
+                        <td>{{ emp.company }}</td>
+                       }
                       <td>
                         <div>{{ emp.userName }}</div>
                         <div
@@ -242,6 +248,7 @@
                           <span *ngIf="emp.login_IP2">{{ emp.login_IP2 }}</span>
                         </div>
                       </td>
+                      
                       <td>
                         <span
                           [textContent]="
@@ -335,15 +342,14 @@
           </div>
 
           <!-- Add/Edit Employee Form Section -->
-          @if (licenseData && licenseData.int_employee_cnt &&
-          licenseData.int_employee_cnt <= totalRecords) {
+          @if ((employee_cnt <= totalRecords) && !isEditMode) {
             <div class="alert alert-warning m-4" role="alert">
               <h4 class="alert-heading">
                 <i class="fas fa-exclamation-triangle"></i> Employee Limit Reached
               </h4>
               <p>
                 You have reached the maximum number of employees allowed by your
-                license ({{ licenseData.int_employee_cnt }} employees). To add more
+                license ({{ employee_cnt }} employees). To add more
                 employees, please upgrade your license or contact to support.
               </p>
             </div>
