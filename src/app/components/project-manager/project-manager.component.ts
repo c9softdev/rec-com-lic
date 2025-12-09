@@ -10,6 +10,8 @@ import { CommonService } from '../../core/services/common.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../environments/environment';
+import { SessionService } from '../../core/services/session.service';
 
 @Component({
   selector: 'app-project-manager',
@@ -49,6 +51,9 @@ export class ProjectManagerComponent implements OnInit {
   clientArr: any[] = [];
   projectStatus = [];
 
+  comp_id: any;
+  superAdminID: any;
+
   userId: any;
   userType: any;
   emailId: any;
@@ -65,7 +70,8 @@ export class ProjectManagerComponent implements OnInit {
     private loadingService: LoadingService,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private sessionService: SessionService
 
   ) {
     this.searchForm = this.fb.group({
@@ -104,6 +110,11 @@ export class ProjectManagerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+    // console.log('Session :', sess);
+
     this.listProjects();
     this.clientList();
   }
