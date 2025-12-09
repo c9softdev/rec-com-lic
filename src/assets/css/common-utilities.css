@@ -99,8 +99,8 @@
 .input-group {
   width: 100%;
   font-size: 16px;
-  max-width: 400px;
-  height: 45px;
+  max-width: 450px;
+  /* height: 45px; */
   position: relative;
   /* margin-bottom: 10px; */
   display: flex;

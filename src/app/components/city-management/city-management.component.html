@@ -9,6 +9,9 @@
                         <div class="card-body position-relative" *ngIf="showSearchSection">
                             <!-- Prevent Enter from submitting the form by handling keydown.enter -->
                             <form [formGroup]="CityForm" (ngSubmit)="void 0" (keydown.enter)="$event.preventDefault()">
+                                <button class="btn btn-primary btn-sm search-toggle-btn" type="button" (click)="toggleSearchSection()" title="Hide Search Form">
+                                    Hide
+                                </button>
                                 <div class="row align-items-center">
                                     <div class="col-md-3 col-lg-3">
                                         <div class="input-group">
@@ -46,18 +49,14 @@
                                                     <i class="fas fa-times mr-1"></i>Clear
                                                 </button>
                                             </div>
-                                            <div class="ml-auto mb-2">
-                                                <button class="btn btn-primary btn-sm" type="button"
-                                                    (click)="toggleSearchSection()">
-                                                    <i class="fa fa-chevron-up"></i>
-                                                    Hide
-                                                </button>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </form>
                         </div>
+
+                        <!-- Show button (absolute right) when search is hidden -->
+                        <button class="btn btn-primary btn-sm search-toggle-btn" (click)="toggleSearchSection()" type="button" *ngIf="!showSearchSection" title="Show Search Form">Show</button>
 
                         <!-- Main Card Header with Title and Action Buttons -->
                         <div class="card-header">
@@ -76,11 +75,8 @@
                                         {{ selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
                                     </button>
                                     }
-                                    <button class="btn btn-primary btn-sm ml-2" (click)="toggleSearchSection()" *ngIf="!showSearchSection">
-                                        <i class="fa fa-chevron-down"></i>
-                                        Show
-                                    </button>
-                                </div>
+                                    
+                                    </div>
                             </div>
                         </div>
                     </div>

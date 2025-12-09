@@ -6,10 +6,7 @@
           <div class="sticky-top-section" [ngClass]="{'search-hidden': !showSearchSection}">
             <!-- Search Section with Toggle Button -->
             <div class="card-body position-relative" *ngIf="showSearchSection">
-              <button class="toggle-search-btn-minimal" (click)="toggleSearchSection()" type="button"
-                data-bs-toggle="tooltip" title="Hide search">
-                <i class="fas fa-chevron-up"></i>
-              </button>
+              <button class="btn btn-primary btn-sm search-toggle-btn" (click)="toggleSearchSection()" type="button" title="Hide Search Form">Hide</button>
               <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
                 <div class="row align-items-center">
                   <div class="col-md-3 col-lg-3">
@@ -52,11 +49,8 @@
                 </div>
               </form>
             </div>
-            <!-- Show Search Button (when hidden) -->
-            <button *ngIf="!showSearchSection" class="toggle-search-btn-minimal show-btn"
-              (click)="toggleSearchSection()" type="button" data-bs-toggle="tooltip" title="Show search">
-              <i class="fas fa-chevron-down"></i>
-            </button>
+            <!-- Show button (absolute right) when search is hidden -->
+            <button class="btn btn-primary btn-sm search-toggle-btn" (click)="toggleSearchSection()" type="button" *ngIf="!showSearchSection" title="Show Search Form">Show</button>
 
             <!-- Main Card Header with Title and Action Buttons -->
             <div class="card-header">
@@ -88,6 +82,7 @@
                     </button>
                     <!-- } -->
                   }
+                  
                 </div>
               </div>
             </div>

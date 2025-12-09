@@ -52,7 +52,9 @@ export class GlobalSettingInner {
       email_bcc: [''],
       var_logo_url: [''],
       var_logo_client: [''],
-      var_version: ['']
+      var_version: [''],
+      var_primary_cc: [''],
+      var_secondary_cc: ['']
     });
   }
 
@@ -98,7 +100,9 @@ export class GlobalSettingInner {
             email_bcc: res.data.email_bcc || '',
             var_logo_url: res.data.var_logo_url || '',
             var_logo_client: res.data.var_logo_client || '',
-            var_version: res.data.var_version || ''
+            var_version: res.data.var_version || '',
+            var_primary_cc: res.data.var_primary_cc || '',
+            var_secondary_cc: res.data.var_secondary_cc || ''
           });
           this.updateFloatingLabels();
         } else {
@@ -142,7 +146,9 @@ export class GlobalSettingInner {
         var_logo_client: this.pageForm.controls['var_logo_client'].value,
         emailto: this.pageForm.controls['email_to'].value,
         emailfrom: this.pageForm.controls['email_from'].value,  
-        var_version: this.pageForm.controls['var_version'].value
+        var_version: this.pageForm.controls['var_version'].value,
+        var_primary_cc: this.pageForm.controls['var_primary_cc'].value,
+        var_secondary_cc: this.pageForm.controls['var_secondary_cc'].value
       }]
     };
     console.log('Response:', payload);

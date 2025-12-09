@@ -616,7 +616,7 @@ html, body, .wrapper {
 
 .hamburger {
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
   width: 44px;
   height: 44px;
@@ -696,8 +696,11 @@ html, body, .wrapper {
 
 
 .logo-side {
-  max-height: 32px;
+  // max-height: 60px;
+  // min-height: 100%;
   margin-left: 8px; margin-right: 8px;
+  width: auto;
+  max-width: 170px;
 }
 
 .main-logo { max-height: 40px; max-width: 250px; display: block; margin: 0 auto; }

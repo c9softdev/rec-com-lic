@@ -67,10 +67,10 @@ export interface GlobalSettings {
 export class GlobalSettingsService {
   // Default settings to use if API fails
   private defaultSettings: GlobalSettings = {
-    setting_id: '1',
-    company_id: '11',
-    plan: '1',
-    diffDate: '-5',
+    setting_id: '',
+    company_id: '',
+    plan: '',
+    diffDate: '',
     int_employee_cnt: '5',
     int_jobseeker_cnt: '20000',
     display_errors: '1',

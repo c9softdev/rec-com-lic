@@ -86,7 +86,7 @@
 .input-group input:focus+label,
 .input-group input:not(:placeholder-shown)+label,
 .input-group select:focus+label,
-.input-group select:not([value=""])+label {
+.input-group select:not([value=""]) + label {
   /* left: -4px; */
   font-size: 0.85em;
   color: var(--primary-color);
@@ -95,8 +95,89 @@
   opacity: 1;
 }
 
+/* Ensure labels render nicely for color inputs */
+.input-group input[type="color"] + label {
+  font-size: 0.85em;
+  color: var(--primary-color);
+  background: #fff;
+  z-index: 3;
+  opacity: 1;
+}
+
+.input-group input[type="color"] {
+  height: 38px;
+  padding: 0 6px;
+}
+
+.theme-color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.theme-color-picker .picker-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+  margin-top: 10px;
+}
+
+.theme-color-picker .color-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: -8px;
+}
+
+.theme-color-picker .swatch-wrapper {
+  position: relative;
+  width: 40px;
+  height: 32px;
+}
+
+.theme-color-picker .color-swatch {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.theme-color-picker .color-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.theme-color-picker .hex-display {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9rem;
+  color: #555;
+  padding: 6px 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.theme-color-picker .hex-input {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9rem;
+  color: #555;
+  padding: 6px 10px;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  background: #fff;
+  width: 140px;
+}
+
 .sticky-top-section.search-hidden .action-buttons {
-  margin-right: 50px !important;
+  margin-right: 63px !important;
+}
+
+/* Ensure absolute toggles position relative to sticky section */
+.sticky-top-section {
+  position: relative !important;
 }
 
 .table-section {
@@ -144,6 +225,14 @@
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
+}
+
+/* Global search toggle button placement */
+.search-toggle-btn {
+  position: absolute !important;
+  top: 8px !important;
+  right: 5px !important;
+  z-index: 30 !important;
 }
 
 .table-responsive {
