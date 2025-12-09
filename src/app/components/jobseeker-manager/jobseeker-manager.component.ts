@@ -17,6 +17,8 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { QuillModule } from 'ngx-quill';
 import { LicenseStateService } from '../../core/services/license-state.service';
+import { environment } from '../../../environments/environment';
+import { SessionService } from '../../core/services/session.service';
 
 declare const bootstrap: any;
 
@@ -80,6 +82,9 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
   editresumechk: any;
   viewresumechk: any;
   deleteOption: any;
+
+  comp_id: any;
+  superAdminID: any;
 
   /**
    * Quick search by passport number
@@ -238,7 +243,8 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     public authService: AuthService,
     public downloadService: DownloadService,
     private globalSettingsService: GlobalSettingsService,
-    private licenseState: LicenseStateService 
+    private licenseState: LicenseStateService,
+    private sessionService: SessionService
   ) {
     // Initialize debounce subscription
     this.searchSubject.pipe(
@@ -349,6 +355,11 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
   // }
 
   ngOnInit(): void {
+
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.licenseState.licenseData$
     .pipe(takeUntil(this.destroy$))
     .subscribe(data => {
@@ -930,6 +941,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     // Enable Session values
     // const session = this.authService.getSession ? this.authService.getSession() : this.authService.currentUserValue;
     const session = this.authService.currentUserValue;
+    
     console.log('Session data-1:', session);
 
     this.userId = session?.userId || '0';
@@ -1537,7 +1549,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
   onViewClick(item: any): void {
     // Check view privilege
-    if (this.viewresumechk !== '1' && !(this.userId === '1' && this.userType === '1')) {
+    if (this.viewresumechk !== '1') {
       this.sweetAlert.showToast('You do not have permission to view resumes.', 'error');
       return;
     }

@@ -84,7 +84,7 @@
                       <label for="sgender">Gender</label>
                     </div>
                   </div>
-                  @if (userId === '1' && userType == '1') {
+                  @if (comp_id === superAdminID) {
                   <div class="col-md-3 col-lg-3">
                     <div class="input-group">
                       <select class="form-control" id="sempl" formControlName="sempl"
@@ -213,7 +213,7 @@
                     <button class="btn btn-outline-dark btn-round mr-2" type="button" (click)="onClearSearch()">
                       <i class="fas fa-times mr-1"></i>Clear
                     </button>
-                    @if (userId === '1' && userType == '1') {
+                    @if (comp_id === superAdminID) {
                     <button class="btn btn-outline-success btn-round export-btn" type="button"
                       [disabled]="!exportEnabled || isExporting || isInCooldown" (click)="onExport()"
                       [title]="exportTooltip">
@@ -339,8 +339,7 @@
                       </button>
                   }
                   
-                  @if ((deleteOption != '' && deleteOption == '1') || (userId
-                  === '1' && userType == '1')) {
+                  @if ((deleteOption != '' && deleteOption == '1') || (comp_id === superAdminID)) {
                   <button class="btn btn-outline-info btn-round mr-2" (click)="onChangeVisibilityClick()"
                     [disabled]="selectedItems.size === 0" *ngIf="!assignCvMode">
                     <i class="fas fa-eye mr-1"></i>Change Visibility{{
@@ -443,6 +442,9 @@
                               <strong class="text-muted small">REGIS. ID:&nbsp;</strong>
                               <span class="text-primary fw-bold" (click)="onViewClick(item)">{{
                                 item.job_seeker_id || "" }}
+                                 @if (comp_id === superAdminID) {
+                                   ({{ item.company || "" }})
+                                  }
                               </span>
                             </div>
 
@@ -610,23 +612,22 @@
                           <i class="fas fa-times-circle text-danger status-icon"></i>
                         </span>
                         } @if ((viewresumechk != '' && viewresumechk == '1') ||
-                        (userId === '1' && userType == '1')) {
+                        (comp_id === superAdminID)) {
                         <button class="btn p-0 icon-wrapper" (click)="onViewClick(item)" title="View Jobseeker">
                           <i class="fa fa-eye text-primary status-icon"></i>
                         </button>
                         } @if ((printresumechk != '' && printresumechk == '1')
-                        || (userId === '1' && userType == '1')) {
+                        || (comp_id === superAdminID)) {
                         <button class="btn p-0 icon-wrapper" (click)="onPrintClick(item)" title="Print Jobseeker">
                           <i class="fa fa-print text-secondary status-icon"></i>
                         </button>
-                        } @if ((editresumechk != '' && editresumechk == '1') ||
-                        (userId === '1' && userType == '1')) {
+                        } @if ((editresumechk != '' && editresumechk == '1') ) {
                         <button class="btn p-0 icon-wrapper" (click)="onEditClick(item)" title="Edit Jobseeker"
                           *ngIf="!assignCvMode">
                           <i class="fa fa-edit text-success status-icon"></i>
                         </button>
                         } @if ((archivalchk != '' && archivalchk == '1') ||
-                        (userId === '1' && userType == '1')) {
+                        (comp_id === superAdminID)) {
                         <button class="btn p-0 icon-wrapper" (click)="onUploadClick(item)" title="Upload Archive">
                           @if (item.total_arch !== '' && item.total_arch > 0) {
                           <i class="fa fa-upload text-warning status-icon"></i>
