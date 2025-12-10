@@ -90,7 +90,10 @@
                       <select class="form-control" id="sempl" formControlName="sempl"
                         (blur)="checkInput($event.target)">
                         <option *ngFor="let emp of employees" [value]="emp.id">
-                          {{ emp.fullName }}
+                          {{ emp.fullName }} 
+                           @if (comp_id === superAdminID) {
+                            - {{ emp.company}}
+                           }
                         </option>
                       </select>
                       <label for="sempl">Employee</label>
@@ -295,6 +298,7 @@
                       </select>
                       <label>Assign Project</label>
                     </div>
+                    @if (comp_id !== superAdminID) {
                     <button class="btn btn-outline-success btn-round" style="padding-left: 10px;" (click)="onAssignCvsToProject()" [disabled]="
                         selectedItems.size === 0 || !selectedProjectId
                       ">
@@ -302,6 +306,7 @@
                       selectedItems.size
                       }})
                     </button>
+                    }
                   </div>
                   <div class="quick-search-container mr-2">
                     <div class="input-group">
