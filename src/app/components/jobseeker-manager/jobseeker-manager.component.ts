@@ -903,8 +903,10 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
       console.log('Submitting jobseeker payload with files:', formValue);
       console.log('formdata payload', formData);
+      this.loadingService.show('Saving jobseeker...');
       this.commonService.postWithFiles(formData).subscribe(res => {
         if (res?.status === 'success') {
+          this.loadingService.hide();
           this.sweetAlert.showToast(res.message || 'Jobseeker saved.', 'success');
           // If opened as standalone popup/window, notify opener and close
           if (this.notifyOpenerAndClose('saved', this.editJobseekerId || (res?.data && res.data.id) || '')) return;
