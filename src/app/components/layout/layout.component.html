@@ -54,6 +54,7 @@
       </div>
       <!-- Center: main client/company logo always centered -->
       <div class="center-logo d-flex justify-content-center align-items-center">
+        <span *ngIf="config"><b>comp_id:</b>{{config.company_id}}</span>
         <img *ngIf="config && config.var_logo_url" [src]="config.var_logo_url" alt="Main Logo" class="main-logo" />
         <img *ngIf="!configLoading && (!config || !config.var_logo_url)" src="/assets/img/logo.jpg" alt="Main Logo" class="main-logo" />
       </div>
@@ -157,6 +158,7 @@
       <div class="footer-version text-muted small" *ngIf="globalSettings?.var_version">
         {{ globalSettings?.var_version }}
       </div>
+      <span *ngIf="config"><b>company_sec_id:</b>{{config.company_sec_id}}</span>
       <div class="copyright ml-auto">
         {{currentYear || ''}},
         <span *ngIf="globalSettings?.footer_txt">{{globalSettings?.footer_txt}}</span>
