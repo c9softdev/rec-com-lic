@@ -210,7 +210,7 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         this.loadingService.hide();
         this.totalCandidates = Number(res?.data?.totalCvTotal ?? 0);
-        this.totalTodayCandidate = Number(res?.data?.totalCvWeek ?? 0);
+        this.totalTodayCandidate = Number(res?.data?.totalCvtoday ?? 0);
         this.totalCvByCategory = res.data.totalCVbyCategory || [];
         this.totalCVbyLastMonths = res.data.totalCVbyLastMonths || [];
 
