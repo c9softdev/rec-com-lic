@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { User } from '../../core/models/auth.model';
 import { MenuService } from '../../core/services/menu.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, interval } from 'rxjs';
 import { ConfigService } from '../../core/services/config.service';
 import { GlobalSettingsService, GlobalSettings } from '../../core/services/global-settings.service';
 import { SweetAlertService } from '../../core/services/sweet-alert.service';
@@ -37,6 +37,13 @@ export class LayoutComponent implements OnInit, OnDestroy {
   readonly SUBMENU_EXPAND_TITLE = 'Expand Submenu';
   readonly SUBMENU_COLLAPSE_TITLE = 'Collapse Submenu';
 
+  // Header widgets data
+  currentTimeIST: string = '';
+  currentTimeDubai: string = '';
+  sessionTimeRemaining: string = '';
+  loginTimestamp: number = 0;
+  readonly SESSION_TIMEOUT_MS = 60 * 60 * 1000; // 1 hour
+
   // Data
   currentUser: User | null = null;
   menuList: any[] = [];
@@ -51,6 +58,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   configError = '';
 
   private destroy$ = new Subject<void>();
+  private clockInterval: any = null;
 
   private router = inject(Router);
 
@@ -78,11 +86,80 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     this.fetchConfig();
     this.loadGlobalSettings();
+
+    // Initialize clock and session timer
+    this.initializeClock();
+    this.initializeSessionTimer();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.clockInterval) {
+      clearInterval(this.clockInterval);
+    }
+  }
+
+  /**
+   * Initialize live clock showing IST and Dubai time
+   */
+  private initializeClock(): void {
+    this.updateClock();
+    this.clockInterval = setInterval(() => {
+      this.updateClock();
+    }, 1000); // Update every second
+  }
+
+  /**
+   * Update current time display for IST and Dubai
+   */
+  private updateClock(): void {
+    const now = new Date();
+    
+    // IST (UTC+5:30)
+    const istTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    this.currentTimeIST = istTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+
+    // Dubai Time (UTC+4)
+    const dubaiTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' }));
+    this.currentTimeDubai = dubaiTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+  }
+
+  /**
+   * Initialize and update session timer
+   */
+  private initializeSessionTimer(): void {
+    this.loginTimestamp = Date.now();
+    this.updateSessionTimer();
+    
+    // Update every second
+    interval(1000).pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.updateSessionTimer();
+    });
+  }
+
+  /**
+   * Update session time remaining display
+   */
+  private updateSessionTimer(): void {
+    const elapsed = Date.now() - this.loginTimestamp;
+    const remaining = Math.max(0, this.SESSION_TIMEOUT_MS - elapsed);
+    
+    const hours = Math.floor(remaining / (1000 * 60 * 60));
+    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+    this.sessionTimeRemaining = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
   // --- Data Fetching ---

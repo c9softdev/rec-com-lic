@@ -54,6 +54,209 @@
       max-height: 40px;
     }
   }
+
+  /* Professional Header Widgets - Center Section */
+  .header-center {
+    flex: 1;
+    min-height: 63px;
+    padding: 0 24px;
+    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+    border-left: 1px solid #e6e8e9;
+    border-right: 1px solid #e6e8e9;
+
+    .header-widgets {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+      flex-wrap: wrap;
+
+      .widget {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-1px);
+        }
+      }
+
+      /* Site Name Widget */
+      .site-name-widget {
+        background: linear-gradient(135deg, rgba(var(--primary-color-rgb, 92,6,50), 0.08) 0%, rgba(var(--primary-color-rgb, 92,6,50), 0.04) 100%);
+        border: 1px solid rgba(var(--primary-color-rgb, 92,6,50), 0.15);
+        padding: 8px 14px;
+
+        .site-name-text {
+          color: var(--primary-color, #5C0632);
+          font-weight: 600;
+          font-size: 14px;
+          letter-spacing: 0.3px;
+          text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+        }
+      }
+
+      /* Clock Widget */
+      .clock-widget {
+        background: linear-gradient(135deg, #f0f4ff 0%, #f8faff 100%);
+        border: 1px solid #d4e0ff;
+        padding: 8px 14px;
+        border-radius: 6px;
+
+        .time-display {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-weight: 500;
+          color: #2c3e50;
+
+          .timezone-time {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .timezone-label {
+              font-size: 11px;
+              font-weight: 600;
+              color: var(--primary-color, #5C0632);
+              letter-spacing: 0.5px;
+              min-width: 28px;
+              text-align: center;
+              background: rgba(var(--primary-color-rgb, 92,6,50), 0.08);
+              padding: 2px 4px;
+              border-radius: 3px;
+            }
+
+            .time-value {
+              font-family: 'Monaco', 'Courier New', monospace;
+              font-size: 12px;
+              color: #34495e;
+              letter-spacing: 0.5px;
+              min-width: 70px;
+              text-align: center;
+            }
+          }
+
+          .time-separator {
+            color: #bdc3c7;
+            font-weight: 300;
+            margin: 0 4px;
+          }
+        }
+      }
+
+      /* Session Timer Widget */
+      .session-timer-widget {
+        background: linear-gradient(135deg, #fff5f5 0%, #fffbfb 100%);
+        border: 1px solid #ffe0e0;
+        padding: 8px 14px;
+        border-radius: 6px;
+
+        .session-label {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-weight: 500;
+          color: #555;
+          font-size: 12px;
+
+          i {
+            font-size: 13px;
+            color: #ff6b6b;
+          }
+        }
+
+        .session-time {
+          font-family: 'Monaco', 'Courier New', monospace;
+          font-size: 13px;
+          font-weight: 600;
+          color: #2c3e50;
+          letter-spacing: 0.5px;
+          min-width: 55px;
+          text-align: right;
+          transition: color 0.3s ease;
+
+          &.warning {
+            color: #dc3545;
+            animation: pulse-warning 1s infinite;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Pulse animation for session timer warning */
+@keyframes pulse-warning {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Responsive: hide widgets on very small screens */
+@media (max-width: 1200px) {
+  .main-header .header-center {
+    .header-widgets {
+      gap: 16px;
+
+      .widget {
+        padding: 6px 10px;
+        font-size: 12px;
+
+        .timezone-label {
+          font-size: 10px;
+          min-width: 24px;
+        }
+
+        .time-value {
+          font-size: 11px;
+          min-width: 65px;
+        }
+      }
+
+      .site-name-widget {
+        padding: 6px 10px;
+        .site-name-text { font-size: 12px; }
+      }
+
+      .session-time {
+        font-size: 12px;
+        min-width: 50px;
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .main-header .header-center {
+    padding: 0 16px;
+    .header-widgets {
+      gap: 12px;
+      .widget { padding: 4px 8px; font-size: 11px; }
+      .site-name-widget { padding: 4px 8px; .site-name-text { font-size: 11px; } }
+      .clock-widget {
+        .time-display .timezone-time { gap: 4px; }
+        .timezone-label { font-size: 9px; min-width: 22px; padding: 1px 3px; }
+        .time-value { font-size: 10px; min-width: 60px; }
+        .time-separator { margin: 0 3px; }
+      }
+      .session-timer-widget { padding: 4px 8px; .session-time { font-size: 11px; min-width: 48px; } }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .main-header .header-center {
+    .header-widgets {
+      gap: 8px;
+      flex-direction: column;
+      .widget { padding: 3px 6px; font-size: 10px; }
+    }
+  }
 }
 
 /* Adjust main-panel top margin to account for fixed header height */
@@ -523,6 +726,116 @@ html, body {
   overflow-x: hidden;
 }
 
+// Sidebar Footer: Logout button and company logo
+.sidebar-footer {
+  position: absolute;
+  bottom: 62px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  // background: #f8f9fa;
+  // border-top: 1px solid #f5f9fa;
+  // padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  height: 37px;
+  min-height: 37px;
+  transition: all 0.3s ease;
+
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(220, 53, 69, 0.1);
+      color: #c82333;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    i {
+      font-size: 20px;
+    }
+
+    .logout-text {
+      white-space: nowrap;
+    }
+  }
+
+  .sidebar-logo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+
+    .company-logo-sidebar {
+      max-height: 48px;
+      max-width: 140px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+}
+
+// When sidebar is collapsed
+.sidebar.collapsed {
+  .sidebar-footer {
+    padding: 8px;
+    // min-height: 60px;
+
+    .logout-btn {
+      padding: 10px;
+      gap: 0;
+      width: 100%;
+      justify-content: center;
+
+      .logout-text {
+        display: none;
+      }
+
+      i {
+        margin-right: 0;
+      }
+    }
+
+    .sidebar-logo {
+      display: none;
+    }
+  }
+}
+
+// Adjust sidebar-content height to account for footer
+.sidebar .sidebar-wrapper {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 60px; // Space for footer
+  }
+}
+
 // Ensure main-panel and footer are offset by sidebar width
 .main-panel {
   margin-left: 250px;
@@ -540,6 +853,29 @@ html, body {
   margin-left: 250px;
   width: calc(100% - 250px);
   transition: all 0.3s ease;
+  
+  // Footer logo styling when sidebar collapsed
+  .footer-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+
+    .company-logo-footer {
+      // max-height: 100%;
+      // max-width: 150px;
+      width: auto;
+      max-height: 48px;
+      object-fit: contain;
+      margin-top: -16px;
+      margin-bottom: -16px;
+    }
+  }
+
+  &.collapsed {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
 }
 
 .sidebar.collapsed ~ .main-panel,
