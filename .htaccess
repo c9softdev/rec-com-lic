@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteBase /apk/rec/
+RewriteBase /apk/recLic/
 
 # Allow existing files
 RewriteCond %{REQUEST_FILENAME} -f [OR]

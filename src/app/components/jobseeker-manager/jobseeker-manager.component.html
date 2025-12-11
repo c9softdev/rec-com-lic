@@ -331,8 +331,7 @@
                     (click)="onShowEmailForm()">
                     <i class="fas fa-envelope mr-1"></i>Send Email
                   </button>
-                  @if (licenseData && licenseData.int_jobseeker_cnt &&
-                  licenseData.int_jobseeker_cnt <= totalRecords) {
+                  @if (jobseeker_cnt <= totalRecords) {
                      <button class="btn btn-outline-danger btn-round mr-2">
                         <i class="fas fa-exclamation-triangle"></i>CV Limit Reached
                       </button>
@@ -668,8 +667,7 @@
       <div class="col-md-12">
         <div class="card">
           <form [formGroup]="jobseekerForm" (ngSubmit)="onSubmitJobseeker()" enctype="multipart/form-data">
-            @if (licenseData && licenseData.int_jobseeker_cnt &&
-            licenseData.int_jobseeker_cnt <= totalRecords) {
+            @if (jobseeker_cnt <= totalRecords && !isEditMode) {
               <div class="alert alert-warning m-4" role="alert">
                 <h4 class="alert-heading">
                   <i class="fas fa-exclamation-triangle"></i> CVs/Jobseekers Limit Reached

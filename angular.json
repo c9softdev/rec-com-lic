@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "C9Web-UI": {
+    "rec-com-lic": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -49,8 +49,8 @@
               ],
               "allowedCommonJsDependencies": ["sweetalert2"],
               "outputHashing": "all",
-              "baseHref": "/apk/rec/",
-              "deployUrl": "/apk/rec/"
+              "baseHref": "/apk/recLic/",
+              "deployUrl": "/apk/recLic/"
             },
             "development": {
               "optimization": false,
@@ -67,10 +67,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "C9Web-UI:build:production"
+              "buildTarget": "rec-com-lic:build:production"
             },
             "development": {
-              "buildTarget": "C9Web-UI:build:development"
+              "buildTarget": "rec-com-lic:build:development"
             }
           },
           "defaultConfiguration": "development"

@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { DownloadService } from '../../core/services/download.service';
-import { GlobalSettingsService } from '../../core/services/global-settings.service';
+import { GlobalSettingsService, GlobalSettings } from '../../core/services/global-settings.service';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { QuillModule } from 'ngx-quill';
@@ -85,6 +85,9 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
   comp_id: any;
   superAdminID: any;
+  globalSettings: any;
+  employee_cnt: any;
+  jobseeker_cnt: any;
 
   /**
    * Quick search by passport number
@@ -244,7 +247,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     public downloadService: DownloadService,
     private globalSettingsService: GlobalSettingsService,
     private licenseState: LicenseStateService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
   ) {
     // Initialize debounce subscription
     this.searchSubject.pipe(
@@ -359,6 +362,18 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     this.superAdminID = environment.superAdminID;
     const sess = this.sessionService.getSession();
     this.comp_id = sess?.comp_id || '';
+
+    this.globalSettingsService.getSettings$().subscribe(settings => {
+      if (settings) {
+        this.globalSettings = settings;
+        // this.employee_cnt = Number(this.globalSettings.int_employee_cnt) || 0;
+        this.jobseeker_cnt = Number(this.globalSettings.int_jobseeker_cnt) || 0;
+        console.log("Jobseeker Count:", this.jobseeker_cnt);
+
+        // 🔥 Now safe to load employees or apply settings
+        // this.loadEmployees();
+      }
+    });
 
     this.licenseState.licenseData$
     .pipe(takeUntil(this.destroy$))
