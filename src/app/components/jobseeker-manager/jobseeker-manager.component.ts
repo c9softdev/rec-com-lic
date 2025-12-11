@@ -368,7 +368,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
         this.globalSettings = settings;
         // this.employee_cnt = Number(this.globalSettings.int_employee_cnt) || 0;
         this.jobseeker_cnt = Number(this.globalSettings.int_jobseeker_cnt) || 0;
-        console.log("Jobseeker Count:", this.jobseeker_cnt);
+        // console.log("Jobseeker Count:", this.jobseeker_cnt);
 
         // 🔥 Now safe to load employees or apply settings
         // this.loadEmployees();
