@@ -61,129 +61,187 @@
     min-height: 63px;
     padding: 0 24px;
     background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
-    border-left: 1px solid #e6e8e9;
-    border-right: 1px solid #e6e8e9;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    /* Timezones Section (Left) */
+    .timezones-widget {
+      order: 0;
+      flex-shrink: 0;
+      justify-content: flex-start;
+      gap: 10px;
+      flex: 0 1 auto;
+    }
+
+    /* Stats Section (Center) */
+    .stats-widget {
+      order: 1;
+      flex: 1;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+
+      .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #f3f4f6 100%);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        cursor: pointer;
+
+        &:hover {
+          background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          transform: translateY(-2px);
+        }
+
+        i {
+          font-size: 18px;
+          min-width: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .stat-content {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+
+          .stat-value {
+            font-weight: 700;
+            font-size: 16px;
+            color: #1f2937;
+            line-height: 1;
+          }
+
+          .stat-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+          }
+        }
+
+        .notification-badge {
+          position: absolute;
+          top: -6px;
+          right: -6px;
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+          color: white;
+          font-size: 10px;
+          font-weight: 700;
+          min-width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 2px solid #fff;
+          box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Color-coded icons for different stats */
+        &.job-openings i {
+          color: #3b82f6;
+        }
+
+        &.applications i {
+          color: #8b5cf6;
+        }
+
+        &.interviews i {
+          color: #10b981;
+        }
+
+        &.notifications i {
+          color: #f59e0b;
+        }
+      }
+    }
+
+    /* Site Name Section (Right) */
+    .site-name-widget {
+      order: 2;
+      flex-shrink: 0;
+      padding: 10px 18px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(var(--primary-color-rgb, 92,6,50), 0.12) 0%, rgba(var(--primary-color-rgb, 92,6,50), 0.06) 100%);
+      box-shadow: 0 2px 8px rgba(var(--primary-color-rgb, 92,6,50), 0.12);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      &:hover {
+        background: linear-gradient(135deg, rgba(var(--primary-color-rgb, 92,6,50), 0.15) 0%, rgba(var(--primary-color-rgb, 92,6,50), 0.08) 100%);
+        box-shadow: 0 4px 12px rgba(var(--primary-color-rgb, 92,6,50), 0.16);
+        transform: translateY(-2px);
+      }
+
+      .site-name-text {
+        color: var(--primary-color, #5C0632);
+        font-weight: 700;
+        font-size: 15px;
+        letter-spacing: 0.4px;
+        text-shadow: 0 1px 3px rgba(255, 255, 255, 0.6);
+        display: block;
+        white-space: nowrap;
+      }
+    }
 
     .header-widgets {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 24px;
-      width: 100%;
-      flex-wrap: wrap;
+      gap: 12px;
 
       .widget {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding: 6px 12px;
+        padding: 8px 12px;
         border-radius: 6px;
         font-size: 13px;
         transition: all 0.3s ease;
+        background: transparent;
 
         &:hover {
           transform: translateY(-1px);
         }
       }
 
-      /* Site Name Widget */
-      .site-name-widget {
-        background: linear-gradient(135deg, rgba(var(--primary-color-rgb, 92,6,50), 0.08) 0%, rgba(var(--primary-color-rgb, 92,6,50), 0.04) 100%);
-        border: 1px solid rgba(var(--primary-color-rgb, 92,6,50), 0.15);
-        padding: 8px 14px;
-
-        .site-name-text {
-          color: var(--primary-color, #5C0632);
-          font-weight: 600;
-          font-size: 14px;
-          letter-spacing: 0.3px;
-          text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
-        }
-      }
-
       /* Clock Widget */
       .clock-widget {
         background: linear-gradient(135deg, #f0f4ff 0%, #f8faff 100%);
-        border: 1px solid #d4e0ff;
-        padding: 8px 14px;
+        padding: 8px 12px;
         border-radius: 6px;
 
-        .time-display {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          font-weight: 500;
-          color: #2c3e50;
-
-          .timezone-time {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-
-            .timezone-label {
-              font-size: 11px;
-              font-weight: 600;
-              color: var(--primary-color, #5C0632);
-              letter-spacing: 0.5px;
-              min-width: 28px;
-              text-align: center;
-              background: rgba(var(--primary-color-rgb, 92,6,50), 0.08);
-              padding: 2px 4px;
-              border-radius: 3px;
-            }
-
-            .time-value {
-              font-family: 'Monaco', 'Courier New', monospace;
-              font-size: 12px;
-              color: #34495e;
-              letter-spacing: 0.5px;
-              min-width: 70px;
-              text-align: center;
-            }
-          }
-
-          .time-separator {
-            color: #bdc3c7;
-            font-weight: 300;
-            margin: 0 4px;
-          }
-        }
-      }
-
-      /* Session Timer Widget */
-      .session-timer-widget {
-        background: linear-gradient(135deg, #fff5f5 0%, #fffbfb 100%);
-        border: 1px solid #ffe0e0;
-        padding: 8px 14px;
-        border-radius: 6px;
-
-        .session-label {
+        .timezone-time {
           display: flex;
           align-items: center;
           gap: 6px;
-          font-weight: 500;
-          color: #555;
-          font-size: 12px;
+          flex-direction: column;
 
-          i {
-            font-size: 13px;
-            color: #ff6b6b;
+          .timezone-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary-color, #5C0632);
+            letter-spacing: 0.5px;
+            text-align: center;
+            white-space: nowrap;
           }
-        }
 
-        .session-time {
-          font-family: 'Monaco', 'Courier New', monospace;
-          font-size: 13px;
-          font-weight: 600;
-          color: #2c3e50;
-          letter-spacing: 0.5px;
-          min-width: 55px;
-          text-align: right;
-          transition: color 0.3s ease;
-
-          &.warning {
-            color: #dc3545;
-            animation: pulse-warning 1s infinite;
+          .time-value {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            color: #34495e;
+            letter-spacing: 0.5px;
+            text-align: center;
           }
         }
       }
@@ -197,64 +255,239 @@
   50% { opacity: 0.7; }
 }
 
-/* Responsive: hide widgets on very small screens */
-@media (max-width: 1200px) {
+/* Responsive Design - Cards hide from right to left starting with Alerts */
+@media (max-width: 1600px) {
   .main-header .header-center {
-    .header-widgets {
-      gap: 16px;
+    padding: 0 20px;
+    gap: 14px;
 
-      .widget {
-        padding: 6px 10px;
-        font-size: 12px;
+    /* Hide Alerts card first (rightmost in stats-widget) */
+    .stats-widget .stat-card.notifications {
+      display: none;
+    }
 
-        .timezone-label {
-          font-size: 10px;
-          min-width: 24px;
+    .site-name-widget {
+      padding: 8px 16px;
+      .site-name-text { font-size: 15px; }
+    }
+
+    .stats-widget .stat-card {
+      padding: 8px 12px;
+      .stat-content .stat-value { font-size: 15px; }
+      .stat-content .stat-label { font-size: 10px; }
+      i { font-size: 16px; }
+    }
+
+    .timezones-widget {
+      gap: 8px;
+      .clock-widget {
+        padding: 7px 10px;
+        .timezone-time {
+          .timezone-label { font-size: 10px; }
+          .time-value { font-size: 11px; }
         }
+      }
+    }
+  }
+}
 
-        .time-value {
-          font-size: 11px;
-          min-width: 65px;
+@media (max-width: 1450px) {
+  .main-header .header-center {
+    padding: 0 16px;
+    gap: 12px;
+
+    /* Hide Alerts and Interviews */
+    .stats-widget .stat-card.notifications,
+    .stats-widget .stat-card.interviews {
+      display: none;
+    }
+
+    .site-name-widget {
+      padding: 8px 14px;
+      .site-name-text { font-size: 14px; }
+    }
+
+    .stats-widget .stat-card {
+      padding: 8px 12px;
+      .stat-content .stat-value { font-size: 15px; }
+      .stat-content .stat-label { font-size: 10px; }
+      i { font-size: 16px; }
+    }
+
+    .timezones-widget {
+      gap: 8px;
+      .clock-widget {
+        padding: 7px 10px;
+        .timezone-time {
+          .timezone-label { font-size: 10px; }
+          .time-value { font-size: 11px; }
         }
       }
+    }
+  }
+}
 
-      .site-name-widget {
-        padding: 6px 10px;
-        .site-name-text { font-size: 12px; }
-      }
+@media (max-width: 1300px) {
+  .main-header .header-center {
+    padding: 0 14px;
+    gap: 10px;
 
-      .session-time {
-        font-size: 12px;
-        min-width: 50px;
+    /* Hide Alerts, Interviews, and Applications */
+    .stats-widget .stat-card.notifications,
+    .stats-widget .stat-card.interviews,
+    .stats-widget .stat-card.applications {
+      display: none;
+    }
+
+    .site-name-widget {
+      padding: 7px 12px;
+      .site-name-text { font-size: 13px; }
+    }
+
+    .stats-widget {
+      gap: 8px;
+      .stat-card {
+        padding: 7px 10px;
+        .stat-content .stat-value { font-size: 14px; }
+        .stat-content .stat-label { font-size: 9px; }
+        i { font-size: 15px; }
       }
+    }
+
+    .timezones-widget {
+      gap: 6px;
+      .clock-widget {
+        padding: 6px 9px;
+        .timezone-time {
+          .timezone-label { font-size: 9px; }
+          .time-value { font-size: 10px; }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1100px) {
+  .main-header .header-center {
+    padding: 0 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    /* Hide Alerts, Interviews, Applications, and Open Jobs */
+    .stats-widget .stat-card.notifications,
+    .stats-widget .stat-card.interviews,
+    .stats-widget .stat-card.applications,
+    .stats-widget .stat-card.job-openings {
+      display: none;
+    }
+
+    .site-name-widget {
+      padding: 7px 12px;
+      .site-name-text { font-size: 13px; }
+    }
+
+    .timezones-widget {
+      gap: 6px;
+      order: 0;
+      .clock-widget {
+        padding: 6px 9px;
+        .timezone-time {
+          .timezone-label { font-size: 9px; }
+          .time-value { font-size: 10px; }
+        }
+      }
+    }
+
+    .stats-widget {
+      order: 1;
+      display: none;
     }
   }
 }
 
 @media (max-width: 900px) {
   .main-header .header-center {
-    padding: 0 16px;
-    .header-widgets {
-      gap: 12px;
-      .widget { padding: 4px 8px; font-size: 11px; }
-      .site-name-widget { padding: 4px 8px; .site-name-text { font-size: 11px; } }
+    padding: 0 10px;
+    gap: 6px;
+
+    /* Only show timezones and site-name */
+    .stats-widget {
+      display: none;
+    }
+
+    .site-name-widget {
+      padding: 6px 10px;
+      order: 2;
+      .site-name-text { font-size: 12px; }
+    }
+
+    .timezones-widget {
+      gap: 5px;
+      width: auto;
+      order: 0;
       .clock-widget {
-        .time-display .timezone-time { gap: 4px; }
-        .timezone-label { font-size: 9px; min-width: 22px; padding: 1px 3px; }
-        .time-value { font-size: 10px; min-width: 60px; }
-        .time-separator { margin: 0 3px; }
+        padding: 5px 8px;
+        .timezone-time {
+          .timezone-label { font-size: 8px; }
+          .time-value { font-size: 9px; }
+        }
       }
-      .session-timer-widget { padding: 4px 8px; .session-time { font-size: 11px; min-width: 48px; } }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .main-header .header-center {
+    padding: 0 10px;
+    gap: 6px;
+
+    /* Hide everything except site name */
+    .stats-widget {
+      display: none;
+    }
+
+    .timezones-widget {
+      /* Hide Dubai, London, New York - keep only India Time */
+      .clock-widget {
+        &:nth-child(2),
+        &:nth-child(3),
+        &:nth-child(4) {
+          display: none;
+        }
+
+        padding: 5px 8px;
+        .timezone-time {
+          .timezone-label { font-size: 8px; }
+          .time-value { font-size: 9px; }
+        }
+      }
+    }
+
+    .site-name-widget {
+      padding: 6px 10px;
+      .site-name-text { font-size: 11px; }
     }
   }
 }
 
 @media (max-width: 600px) {
   .main-header .header-center {
-    .header-widgets {
-      gap: 8px;
-      flex-direction: column;
-      .widget { padding: 3px 6px; font-size: 10px; }
+    padding: 8px 8px;
+    gap: 4px;
+
+    /* Hide all widgets except site-name */
+    .stats-widget {
+      display: none;
+    }
+
+    .timezones-widget {
+      display: none;
+    }
+
+    .site-name-widget {
+      padding: 5px 8px;
+      .site-name-text { font-size: 10px; }
     }
   }
 }

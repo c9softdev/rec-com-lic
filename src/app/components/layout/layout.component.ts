@@ -37,9 +37,20 @@ export class LayoutComponent implements OnInit, OnDestroy {
   readonly SUBMENU_EXPAND_TITLE = 'Expand Submenu';
   readonly SUBMENU_COLLAPSE_TITLE = 'Collapse Submenu';
 
-  // Header widgets data
-  currentTimeIST: string = '';
+  // Header widgets data - Timezones
+  currentTimeIndia: string = '';
   currentTimeDubai: string = '';
+  currentTimeLondon: string = '';
+  currentTimeNewYork: string = '';
+  userCountry: string = 'India'; // User's country, default to India
+
+  // Header widgets data - Recruitment Stats
+  activeJobOpenings: number = 0;
+  pendingApplications: number = 0;
+  scheduledInterviews: number = 0;
+  unreadNotifications: number = 0;
+  
+  // Session data
   sessionTimeRemaining: string = '';
   loginTimestamp: number = 0;
   readonly SESSION_TIMEOUT_MS = 60 * 60 * 1000; // 1 hour
@@ -86,6 +97,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     this.fetchConfig();
     this.loadGlobalSettings();
+    this.initializeRecruitmentStats();
 
     // Initialize clock and session timer
     this.initializeClock();
@@ -111,14 +123,14 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Update current time display for IST and Dubai
+   * Update current time display for India, Dubai, London, and New York
    */
   private updateClock(): void {
     const now = new Date();
     
-    // IST (UTC+5:30)
-    const istTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-    this.currentTimeIST = istTime.toLocaleTimeString('en-US', {
+    // India Time (UTC+5:30)
+    const indiaTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    this.currentTimeIndia = indiaTime.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
@@ -128,6 +140,24 @@ export class LayoutComponent implements OnInit, OnDestroy {
     // Dubai Time (UTC+4)
     const dubaiTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Dubai' }));
     this.currentTimeDubai = dubaiTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+
+    // London Time (UTC+0/+1)
+    const londonTime = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/London' }));
+    this.currentTimeLondon = londonTime.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    });
+
+    // New York Time (UTC-5/-4)
+    const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    this.currentTimeNewYork = nyTime.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
@@ -149,17 +179,29 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Update session time remaining display
+   * Update session time elapsed (logged in since) display
    */
   private updateSessionTimer(): void {
     const elapsed = Date.now() - this.loginTimestamp;
-    const remaining = Math.max(0, this.SESSION_TIMEOUT_MS - elapsed);
     
-    const hours = Math.floor(remaining / (1000 * 60 * 60));
-    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+    const hours = Math.floor(elapsed / (1000 * 60 * 60));
+    const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
 
     this.sessionTimeRemaining = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  /**
+   * Initialize recruitment stats - these are sample values
+   * In production, fetch from actual APIs
+   */
+  private initializeRecruitmentStats(): void {
+    // TODO: Replace with actual API calls to fetch real data
+    // These are placeholder values for demonstration
+    this.activeJobOpenings = 12;
+    this.pendingApplications = 45;
+    this.scheduledInterviews = 8;
+    this.unreadNotifications = 3;
   }
 
   // --- Data Fetching ---

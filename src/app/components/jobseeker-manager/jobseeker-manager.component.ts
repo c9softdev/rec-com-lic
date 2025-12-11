@@ -1551,7 +1551,8 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
   onViewClick(item: any): void {
     // Check view privilege
-    if (this.viewresumechk !== '1') {
+    // Super admin (comp_id === superAdminID) bypasses this check
+    if (this.comp_id !== this.superAdminID && this.viewresumechk !== '1') {
       this.sweetAlert.showToast('You do not have permission to view resumes.', 'error');
       return;
     }
@@ -1578,7 +1579,8 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
   onPrintClick(item: any): void {
     // Check print privilege
-    if (this.printresumechk !== '1' && !(this.userId === '1' && this.userType === '1')) {
+    // Super admin (comp_id === superAdminID) bypasses this check
+    if (this.comp_id !== this.superAdminID && this.printresumechk !== '1') {
       this.sweetAlert.showToast('You do not have permission to print resumes.', 'error');
       return;
     }

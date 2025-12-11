@@ -7,6 +7,8 @@ import { ConfigService } from '../../../core/services/config.service';
 import { LoadingService } from '../../../core/services/loading.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { SweetAlertService } from '../../../core/services/sweet-alert.service';
+import { SessionService } from '../../../core/services/session.service';
+import { environment } from '../../../../environments/environment';
 
 interface EducationRow { degree: string; year: string; }
 
@@ -35,16 +37,19 @@ export class PrintJobseekerComponent implements OnInit {
     private configService: ConfigService,
     private loadingService: LoadingService,
     private authService: AuthService,
-    private sweetAlert: SweetAlertService
+    private sweetAlert: SweetAlertService,
+    private sessionService: SessionService
   ) {}
 
   ngOnInit(): void {
     // Privilege check: restrict direct view if user lacks viewresume privilege
-    const session = this.authService.currentUserValue;
-    const userId = session?.userId || '0';
-    const userType = session?.empType || '0';
+    // Super admin (comp_id === superAdminID) bypasses this check
+    const session = this.sessionService.getSession();
+    const comp_id = session?.comp_id || '';
     const viewresumechk = session?.viewresumechk || '';
-    if (viewresumechk !== '1' && !(userId === '1' && userType === '1')) {
+    
+    // If NOT super admin AND does NOT have viewresume privilege, deny access
+    if (comp_id !== environment.superAdminID && viewresumechk !== '1') {
       this.loadingService.hide();
       this.loading = false;
       this.sweetAlert.showToast('You do not have permission to view resumes.', 'error');

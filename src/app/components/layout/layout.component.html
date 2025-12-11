@@ -52,37 +52,86 @@
           </button>
         </ng-template>
       </div>
-      <!-- Center: Professional widgets - Site Name, Date/Time, Session Timer -->
-      <div class="header-center d-flex justify-content-center align-items-center">
-        <div class="header-widgets">
-          <!-- Site Name with Primary Color -->
-          <div class="widget site-name-widget" *ngIf="globalSettings?.site_name">
-            <span class="site-name-text">{{ globalSettings?.site_name }}</span>
-          </div>
-
-          <!-- Live Clock Widget -->
+      <!-- Center: Professional widgets - Timezones and Stats -->
+      <div class="header-center d-flex justify-content-between align-items-center">
+        <!-- Timezones (Left) -->
+        <div class="header-widgets timezones-widget">
+          <!-- India Time Widget -->
           <div class="widget clock-widget">
-            <div class="time-display">
-              <div class="timezone-time">
-                <span class="timezone-label">IST</span>
-                <span class="time-value">{{ currentTimeIST }}</span>
-              </div>
-              <span class="time-separator">•</span>
-              <div class="timezone-time">
-                <span class="timezone-label">Dubai</span>
-                <span class="time-value">{{ currentTimeDubai }}</span>
-              </div>
+            <div class="timezone-time">
+              <span class="timezone-label">{{ userCountry }}(You)</span>
+              <span class="time-value">{{ currentTimeIndia }}</span>
             </div>
           </div>
 
-          <!-- Session Timer Widget -->
-          <div class="widget session-timer-widget">
-            <span class="session-label">
-              <i class="fas fa-hourglass-end"></i>
-              Session:
-            </span>
-            <span class="session-time" [class.warning]="sessionTimeRemaining.startsWith('00')">{{ sessionTimeRemaining }}</span>
+          <!-- Dubai Time Widget -->
+          <div class="widget clock-widget">
+            <div class="timezone-time">
+              <span class="timezone-label">Dubai</span>
+              <span class="time-value">{{ currentTimeDubai }}</span>
+            </div>
           </div>
+
+          <!-- London Time Widget -->
+          <div class="widget clock-widget">
+            <div class="timezone-time">
+              <span class="timezone-label">London</span>
+              <span class="time-value">{{ currentTimeLondon }}</span>
+            </div>
+          </div>
+
+          <!-- New York Time Widget -->
+          <div class="widget clock-widget">
+            <div class="timezone-time">
+              <span class="timezone-label">New York</span>
+              <span class="time-value">{{ currentTimeNewYork }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recruitment Stats (Center) -->
+        <div class="header-widgets stats-widget">
+          <!-- Active Job Openings -->
+          <div class="stat-card job-openings">
+            <i class="fas fa-briefcase"></i>
+            <div class="stat-content">
+              <span class="stat-value">{{ activeJobOpenings }}</span>
+              <span class="stat-label">Open Jobs</span>
+            </div>
+          </div>
+
+          <!-- Pending Applications -->
+          <div class="stat-card applications">
+            <i class="fas fa-file-alt"></i>
+            <div class="stat-content">
+              <span class="stat-value">{{ pendingApplications }}</span>
+              <span class="stat-label">Applications</span>
+            </div>
+          </div>
+
+          <!-- Scheduled Interviews -->
+          <div class="stat-card interviews">
+            <i class="fas fa-calendar-check"></i>
+            <div class="stat-content">
+              <span class="stat-value">{{ scheduledInterviews }}</span>
+              <span class="stat-label">Interviews</span>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="stat-card notifications">
+            <i class="fas fa-bell"></i>
+            <div class="stat-content">
+              <span class="stat-value">{{ unreadNotifications }}</span>
+              <span class="stat-label">Alerts</span>
+            </div>
+            <span class="notification-badge" *ngIf="unreadNotifications > 0">{{ unreadNotifications }}</span>
+          </div>
+        </div>
+
+        <!-- Site Name (Right, before Profile) -->
+        <div class="site-name-widget" *ngIf="globalSettings?.site_name">
+          <span class="site-name-text">{{ globalSettings?.site_name }}</span>
         </div>
       </div>
       <!-- Right: Topbar/account actions -->

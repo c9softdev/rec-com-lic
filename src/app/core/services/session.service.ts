@@ -1,5 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 export interface UserSession {
   userId: string;
@@ -58,6 +59,12 @@ export class SessionService {
 
   hasPrivilege(flagName: string): boolean {
     if (!flagName) return false;
+    
+    // Super admin (comp_id === superAdminID) has all privileges
+    if (this.session?.comp_id === environment.superAdminID) {
+      return true;
+    }
+    
     const val = (this.session as any)?.[flagName];
     return val === '1' || val === 1 || val === true;
   }

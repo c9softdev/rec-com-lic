@@ -7,11 +7,13 @@ export const authGuard: CanActivateFn = (route, state) => {
   const sessionService = inject(SessionService);
 
   const session = sessionService.getSession();
-  if (session) {
+  if (session && session.userId && session.comp_id) {
+    // Session is valid, initialize activity tracking
     sessionService.init();
     return true;
   }
 
+  // No valid session found, redirect to login
   router.navigate(['/login'], { queryParams: { unauth: '1' }, replaceUrl: true });
   return false;
 };
