@@ -959,7 +959,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     // const session = this.authService.getSession ? this.authService.getSession() : this.authService.currentUserValue;
     const session = this.authService.currentUserValue;
     
-    console.log('Session data-1:', session);
+    // console.log('Session data-1:', session);
 
     this.userId = session?.userId || '0';
     this.userType = session?.empType || '0';

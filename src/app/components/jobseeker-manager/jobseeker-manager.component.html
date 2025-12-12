@@ -258,6 +258,10 @@
                     ? "0 record"
                     : totalRecords + " records"
                     }})
+                    @if(jobseeker_cnt>0)
+                    {
+                      out of ({{jobseeker_cnt}})
+                    }
                   </span>
                   <!-- Filter icon (icon-only) with custom dropdown to avoid Bootstrap JS dependency -->
                   <div class="d-inline-block ml-2 position-relative">
@@ -339,7 +343,7 @@
                   @else{
                       <button *ngIf="!assignCvMode" class="btn btn-outline-primary btn-round mr-2"
                         (click)="onShowAddForm()">
-                        <i class="fas fa-plus mr-1"></i>Add CV
+                        <i class="fas fa-plus mr-1"></i>Add CV  
                       </button>
                   }
                   
@@ -674,7 +678,7 @@
                 </h4>
                 <p>
                   You have reached the maximum number of CVs/Jobseekers allowed by your
-                  license ({{ licenseData.int_jobseeker_cnt }} CVs/Jobseekers). <br/>
+                  license ({{ jobseeker_cnt }} CVs/Jobseekers). <br/>
                   To add more, please upgrade your license or contact to support.
                 </p>
               </div>

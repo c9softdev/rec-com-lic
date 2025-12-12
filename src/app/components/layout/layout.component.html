@@ -56,13 +56,6 @@
       <div class="header-center d-flex justify-content-between align-items-center">
         <!-- Timezones (Left) -->
         <div class="header-widgets timezones-widget">
-          <!-- India Time Widget -->
-          <div class="widget clock-widget">
-            <div class="timezone-time">
-              <span class="timezone-label">{{ userCountry }}(You)</span>
-              <span class="time-value">{{ currentTimeIndia }}</span>
-            </div>
-          </div>
 
           <!-- Dubai Time Widget -->
           <div class="widget clock-widget">
@@ -95,38 +88,23 @@
           <div class="stat-card job-openings">
             <i class="fas fa-briefcase"></i>
             <div class="stat-content">
-              <span class="stat-value">{{ activeJobOpenings }}</span>
-              <span class="stat-label">Open Jobs</span>
+              <span class="stat-value">{{ globalSettings?.int_employee_cnt }}</span>
+              <span class="stat-label">Employees</span>
             </div>
           </div>
 
-          <!-- Pending Applications -->
-          <div class="stat-card applications">
-            <i class="fas fa-file-alt"></i>
-            <div class="stat-content">
-              <span class="stat-value">{{ pendingApplications }}</span>
-              <span class="stat-label">Applications</span>
-            </div>
-          </div>
-
+         
           <!-- Scheduled Interviews -->
           <div class="stat-card interviews">
-            <i class="fas fa-calendar-check"></i>
+            <i class="fas fa-calendar-check"></i> 
             <div class="stat-content">
-              <span class="stat-value">{{ scheduledInterviews }}</span>
-              <span class="stat-label">Interviews</span>
+              <span class="stat-value">{{ globalSettings?.int_jobseeker_cnt }}</span>
+              <span class="stat-label">Jobseekers</span>
             </div>
           </div>
 
           <!-- Notifications -->
-          <div class="stat-card notifications">
-            <i class="fas fa-bell"></i>
-            <div class="stat-content">
-              <span class="stat-value">{{ unreadNotifications }}</span>
-              <span class="stat-label">Alerts</span>
-            </div>
-            <span class="notification-badge" *ngIf="unreadNotifications > 0">{{ unreadNotifications }}</span>
-          </div>
+          
         </div>
 
         <!-- Site Name (Right, before Profile) -->
@@ -164,7 +142,7 @@
                     </li>
                     <li>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item disabled" tabindex="-1" aria-disabled="true" style="pointer-events:none;opacity:0.6;">My Profile</a>
+                      <a class="dropdown-item disabled" tabindex="-1" aria-disabled="true" style="pointer-events:none;opacity:0.6;">My Account</a>
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" routerLink="/change-password" (click)="closeProfileDropdown()">Change Password</a>
                       <div class="dropdown-divider"></div>

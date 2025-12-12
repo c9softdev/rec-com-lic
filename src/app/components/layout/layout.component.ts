@@ -42,6 +42,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   currentTimeDubai: string = '';
   currentTimeLondon: string = '';
   currentTimeNewYork: string = '';
+  username: string = '';
   userCountry: string = 'India'; // User's country, default to India
 
   // Header widgets data - Recruitment Stats
@@ -92,6 +93,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     const session = this.sessionService.getSession();
     const userId = session?.userId || '0';
     const userType = session?.empType || '0';
+    // this.username = session?.username || '0';
     // console.log('Session Data:', session);
     this.fetchMenu(userId, userType);
 
