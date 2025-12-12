@@ -1294,8 +1294,12 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
   // Email form methods
   onShowEmailForm(): void {
-    this.showEmailForm = true;
-    this.emailForm.reset();
+    if (this.showEmailForm) {
+      this.onCancelEmailForm();
+    } else {
+      this.showEmailForm = true;
+      this.emailForm.reset();
+    }
   }
 
   onCancelEmailForm(): void {

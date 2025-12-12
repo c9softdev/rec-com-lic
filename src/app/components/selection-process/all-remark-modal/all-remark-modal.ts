@@ -29,7 +29,7 @@ export class AllRemarkModal {
   @Input() userType: string = '';
   @Input() userId: string = '';
   @Input() parentComponent!: SelectionProcess;
-  
+
   readonly Math = Math;
   readonly Number = Number;
   currentPage: number = paginationProperties.currentPage;
@@ -53,7 +53,7 @@ export class AllRemarkModal {
     private authService: AuthService,
     private loadingService: LoadingService,
     private sessionService: SessionService
-  ) {}
+  ) { }
 
   open() {
     this.modalInstance = new bootstrap.Modal(this.modal.nativeElement, {
@@ -69,7 +69,7 @@ export class AllRemarkModal {
   }
 
   loadRemarks() {
-    
+
     this.superAdminID = environment.superAdminID;
     const sess = this.sessionService.getSession();
     this.comp_id = sess?.comp_id || '';
@@ -100,10 +100,11 @@ export class AllRemarkModal {
       next: (res: any) => {
         this.loadingService.hide();
         // console.log("REsponse",res);
-    // return;
+        // return;
         if (res?.status == 'success' && Array.isArray(res?.data?.listArr)) {
           // Use backend-provided page results; modal body scrolls within page
           this.remarksList = res.data.listArr;
+          this.selectedItems.clear();
           this.totalRecords = res.data.total_records || res.data.listArr.length;
           this.totalPages = Math.ceil(Number(this.totalRecords) / this.pageSize);
         } else {
@@ -137,19 +138,16 @@ export class AllRemarkModal {
 
   onItemSelect(itemId: string, event: Event): void {
     const checkbox = event.target as HTMLInputElement;
-    if (checkbox.checked) {
-      this.selectedItems.add(itemId);
-    } else {
-      this.selectedItems.delete(itemId);
-    }
+    const id = this.getRemarkIdByValue(itemId);
+    if (!id) return;
+    if (checkbox.checked) this.selectedItems.add(id);
+    else this.selectedItems.delete(id);
   }
-
 
   onSelectAll(event: Event) {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
-      // Select all items visible on the current page
-      this.remarksList.forEach(item => this.selectedItems.add(item.reid));
+      this.remarksList.forEach(item => this.selectedItems.add(item.id));
     } else {
       this.selectedItems.clear();
     }
@@ -202,7 +200,7 @@ export class AllRemarkModal {
         {
           userId: idsToDelete,
           sprojrct: sprojrct,
-          page:this.currentPage
+          page: this.currentPage
         }
       ]
     };
@@ -230,11 +228,23 @@ export class AllRemarkModal {
           this.sweetAlert.showError('Failed to Remove Record. Please try again.');
         }
       });
-      this.loadingService.show('Removing...');
+    this.loadingService.show('Removing...');
   }
 
   isMaximized = false;
   toggleMaximize() {
     this.isMaximized = !this.isMaximized;
+  }
+
+  // Ensure consistent ID handling between API shapes
+  getRemarkId(item: any): string {
+    if (!item) return '';
+    const raw = item.reid ?? item.id ?? item.recId ?? item.sno ?? '';
+    return raw !== undefined && raw !== null ? String(raw) : '';
+  }
+
+  private getRemarkIdByValue(val: string | number): string {
+    if (val === undefined || val === null) return '';
+    return String(val);
   }
 }

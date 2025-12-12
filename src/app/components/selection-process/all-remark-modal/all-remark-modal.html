@@ -1,12 +1,5 @@
-<div
-  class="modal fade"
-  #allRemarkModal
-  id="allRemarkModal"
-  tabindex="-1"
-  aria-hidden="true"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
->
+<div class="modal fade" #allRemarkModal id="allRemarkModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+  data-bs-keyboard="false">
   <!-- Changed modal-lg to modal-xl for more width -->
   <div class="modal-dialog modal-lg modal-dialog-centered" [ngClass]="{ 'modal-fullscreen': isMaximized }">
     <div class="modal-content">
@@ -16,7 +9,8 @@
           All Remarks — {{ jobseekerName }} <span class="ms-1">[{{ jobseekerId }}]</span>
         </h5>
         <div class="d-flex align-items-center ms-auto gap-2">
-          <button type="button" class="btn btn-sm btn-outline-light" (click)="toggleMaximize()" [attr.aria-label]="isMaximized ? 'Restore' : 'Maximize'">
+          <button type="button" class="btn btn-sm btn-outline-light" (click)="toggleMaximize()"
+            [attr.aria-label]="isMaximized ? 'Restore' : 'Maximize'">
             <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
           </button>
           <button type="button" class="btn-close btn-close-white" (click)="close()"></button>
@@ -24,15 +18,12 @@
       </div>
 
       <!-- Table Header Row -->
-      <div class="remarks-header px-3 pt-2 pb-1 fw-semibold border-bottom small text-secondary d-flex align-items-center">
+      <div
+        class="remarks-header px-3 pt-2 pb-1 fw-semibold border-bottom small text-secondary d-flex align-items-center">
         <div class="text-center" style="width:6%">
-          <input
-              type="checkbox"
-              class="custom-checkbox-modern"
-              style="margin-top: 13px"
-              [checked]="selectedItems.size === remarksList.length"
-              (change)="onSelectAll($event)"
-            />
+          <input type="checkbox" class="custom-checkbox-modern" style="margin-top: 13px"
+            [checked]="selectedItems.size === remarksList.length"
+            (change)="onSelectAll($event)" />
         </div>
         <div class="text-center" style="width:6%">Sr</div>
         <div style="width:28%">Remark / By / Project (Date)</div>
@@ -42,70 +33,63 @@
       <!-- Table Body -->
       <div class="modal-body p-2">
         @if (remarksList.length > 0) {
-          @for (remark of remarksList; track remark.reid) {
-            <div class="remark-row d-flex border-bottom py-2 align-items-start small bg-white rounded-2 mt-1 mx-2 shadow-sm">
-              <div class="text-center" style="width:6%">
-                <input
+        @for (remark of remarksList; track remark.reid) {
+        <div
+          class="remark-row d-flex border-bottom py-2 align-items-start small bg-white rounded-2 mt-1 mx-2 shadow-sm">
+          <div class="text-center" style="width:6%">
+            <!-- <input
                     type="checkbox"
                     class="custom-checkbox-modern"
-                    [checked]="selectedItems.has(remark.reid)"
-                    (change)="onItemSelect(remark.reid, $event)"
-                  />
-              </div>
-              <div class="text-center" style="width:6%">
-                {{ remark.sno }}
-              </div>
-              <div style="width:28%">
-                <div>
-                  <span class="badge bg-primary-theme">{{ remark.remark_type || 'N/A' }}</span>
-                </div>
-                <div class="text-muted">
-                  {{ remark.emplType }} / {{ remark.cdate || '—' }}
-                </div>
-              </div>
-              <div style="width:60%">
-                <span title="{{ remark.remarks }}">{{ remark.remarks || '—' }}</span>
-                @if (remark.intv_date) {
-                  <b>[Date: {{ remark.intv_date }}]</b>
-                }
-              </div>
+                    [checked]="selectedItems.has(getRemarkId(remark))"
+                    (change)="onItemSelect(getRemarkId(remark), $event)"
+                  /> -->
+            <input type="checkbox" class="custom-checkbox-modern" [checked]="selectedItems.has(remark.id)"
+              (change)="onItemSelect(remark.id, $event)">
+          </div>
+          <div class="text-center" style="width:6%">
+            {{ remark.sno }}
+          </div>
+          <div style="width:28%">
+            <div>
+              <span class="badge bg-primary-theme">{{ remark.remark_type || 'N/A' }}</span>
             </div>
-         }
-       } @else {
-         <div class="text-center text-muted py-3">No remarks found.</div>
-       }
-     </div>
+            <div class="text-muted">
+              {{ remark.emplType }} / {{ remark.cdate || '—' }}
+            </div>
+          </div>
+          <div style="width:60%">
+            <span title="{{ remark.remarks }}">{{ remark.remarks || '—' }}</span>
+            @if (remark.intv_date) {
+            <b>[Date: {{ remark.intv_date }}]</b>
+            }
+          </div>
+        </div>
+        }
+        } @else {
+        <div class="text-center text-muted py-3">No remarks found.</div>
+        }
+      </div>
       <!-- Pagination Section (Sticky Footer) -->
-      <app-pagination
-        class="pagination-section sticky-table-footer"
-        [currentPage]="currentPage"
-        [pageSize]="pageSize"
-        [totalRecords]="Number(totalRecords)"
-        [totalPages]="totalPages"
-        [jumpToPage]="jumpToPage"
-        (pageChange)="onPageChange($event)"
-        (jumpToPageChange)="onJumpToPage($event)"
-      ></app-pagination>
+      <app-pagination class="pagination-section sticky-table-footer" [currentPage]="currentPage" [pageSize]="pageSize"
+        [totalRecords]="Number(totalRecords)" [totalPages]="totalPages" [jumpToPage]="jumpToPage"
+        (pageChange)="onPageChange($event)" (jumpToPageChange)="onJumpToPage($event)"></app-pagination>
       <!-- Footer -->
       <div class="modal-footer d-flex justify-content-between py-2 border-top border-2 border-secondary-subtle">
         @if (comp_id !== superAdminID) {
-          @if(totalRecords > 0) {
-            <button
-              class="btn btn-outline-danger d-flex align-items-center"
-              (click)="onDeleteClick()"
-              [disabled]="selectedItems.size === 0"
-            >
-              <i class="fa fa-trash me-2"></i> Remove From List {{
-              selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
-            </button>
-          }
+        @if(totalRecords > 0) {
+        <button class="btn btn-outline-danger d-flex align-items-center" (click)="onDeleteClick()"
+          [disabled]="selectedItems.size === 0">
+          <i class="fa fa-trash me-2"></i> Remove From List {{
+          selectedItems.size > 0 ? ' (' + selectedItems.size + ')' : '' }}
+        </button>
+        }
         }
         @else {
-            <button type="button" class="btn btn-outline-danger" disabled>
-              Delete not Allowed
-            </button>
-          }
-        
+        <button type="button" class="btn btn-outline-danger" disabled>
+          Delete not Allowed
+        </button>
+        }
+
         <button class="btn btn-outline-dark px-4 py-2 fw-semibold" (click)="close()">
           <i class="fa fa-times me-2"></i> Close
         </button>

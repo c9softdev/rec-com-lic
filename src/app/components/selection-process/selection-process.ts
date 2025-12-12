@@ -19,13 +19,14 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { SessionService } from '../../core/services/session.service';
+import { QuillModule } from 'ngx-quill';
 
 @Component({
   selector: 'app-selection-process',
   standalone: true,
   imports: [InterviewSchedulerModal, InterviewManagerModal, VisaProcessModal,
     EmigrationModal, DepartureDetailsModal, JobProcessModal,
-    PaginationComponent, ReactiveFormsModule, AllRemarkModal, FormsModule, CommonModule],
+    PaginationComponent, ReactiveFormsModule, AllRemarkModal, FormsModule, CommonModule, QuillModule],
   templateUrl: './selection-process.html',
   styleUrls: ['./selection-process.scss']
 })
@@ -58,6 +59,7 @@ export class SelectionProcess {
   showSearchSection = false;
   searchForm!: FormGroup;
   submitted = false;
+  sendEmailForm!: FormGroup;
 
   // Expose loading state to template via getter
   public get isLoading$() {
@@ -75,6 +77,24 @@ export class SelectionProcess {
   generatedEmail = "";
   comp_id: any;
   superAdminID: any;
+  quillConfig = {
+    toolbar: [
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'],
+      [{ 'header': 1 }, { 'header': 2 }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'script': 'sub' }, { 'script': 'super' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+      ['clean'],
+      ['link', 'image']
+    ]
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -97,6 +117,12 @@ export class SelectionProcess {
       sfdate: [''],
       stodate: [''],
       sgender: ['']
+    });
+
+    this.sendEmailForm = this.fb.group({
+      additionalEmails: [''],
+      emailSubject: [''],
+      emailMessage: ['', Validators.required]
     });
   }
 
@@ -447,6 +473,7 @@ export class SelectionProcess {
     this.showSendEmailForm = !this.showSendEmailForm;
     if (this.showSendEmailForm) {
       this.showProjectDetails = false;
+      this.sendEmailForm.reset();
     }
   }
 
@@ -645,6 +672,59 @@ export class SelectionProcess {
         // Accessing win.closed can throw in some cross-origin scenarios; ignore
       }
     }, 500);
+  }
+
+  /**
+   * Send email to selected candidates from Selection Manager.
+   */
+  onSendEmail(): void {
+    if (this.sendEmailForm.invalid) {
+      this.sendEmailForm.markAllAsTouched();
+      this.sweetAlert.showToast('Please enter an email message.', 'warning');
+      return;
+    }
+
+    if (this.selectedItems.size === 0) {
+      this.sweetAlert.showToast('Please select at least one jobseeker to send email.', 'warning');
+      return;
+    }
+
+    const formValue = this.sendEmailForm.value;
+    const artId = Array.from(this.selectedItems).map(id => Number(id));
+    const currUser = this.authService.currentUserValue;
+    const fromEmail = currUser?.emailId || currUser?.email || '';
+
+    const payload = {
+      event: 'jobseeker',
+      mode: 'smail',
+      InputData: [
+        {
+          artId,
+          fromEmail,
+          subject: formValue.emailSubject || '',
+          emaildesc: formValue.emailMessage || '',
+          additionalEmails: (formValue.additionalEmails || '').trim()
+        }
+      ]
+    };
+
+    this.loadingService.show('Sending email...');
+    this.commonService.post(payload).subscribe({
+      next: (res: any) => {
+        this.loadingService.hide();
+        if (res?.status === 'success') {
+          this.sweetAlert.showToast(res.message || 'Email sent successfully.', 'success');
+          this.sendEmailForm.reset();
+          this.showSendEmailForm = false;
+        } else {
+          this.sweetAlert.showError(res?.message || 'Failed to send email.');
+        }
+      },
+      error: () => {
+        this.loadingService.hide();
+        this.sweetAlert.showError('Failed to send email. Please try again.');
+      }
+    });
   }
 
 }

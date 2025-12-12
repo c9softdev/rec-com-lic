@@ -86,6 +86,13 @@ export class DepartureDetailsModal {
 
   open() {
     this.modalInstance = new bootstrap.Modal(this.modal.nativeElement);
+    this.submitted = false;
+    this.editMode = false;
+    this.currentEditId = '';
+    this.selectedIds.clear();
+    this.form.reset();
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
     this.modalInstance.show();
     this.loadFlightList();
   }
@@ -166,6 +173,9 @@ export class DepartureDetailsModal {
         if (res?.status === 'success') {
           this.sweetAlert.showToast(res.message || (this.editMode ? 'Record(s) updated successfully.' : 'Information saved successfully.'), 'success');
           this.form.reset();
+          this.form.markAsPristine();
+          this.form.markAsUntouched();
+          this.submitted = false;
           this.editMode = false;
           this.currentEditId = '';
           this.loadFlightList();
@@ -292,6 +302,9 @@ export class DepartureDetailsModal {
           const e = res.data.editRec;
           this.editMode = true;
           this.currentEditId = String(e.recId || reid);
+          this.submitted = false;
+          this.form.markAsPristine();
+          this.form.markAsUntouched();
           this.form.patchValue({
             positionNo: e.positionNo || '',
             flightNo: e.filght_no || '',
