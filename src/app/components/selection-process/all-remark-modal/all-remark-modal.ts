@@ -7,6 +7,8 @@ import { paginationProperties } from '../../../app.config';
 import { LoadingService } from '../../../core/services/loading.service';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { SelectionProcess } from '../selection-process';
+import { environment } from '../../../../environments/environment';
+import { SessionService } from '../../../core/services/session.service';
 
 declare var bootstrap: any;
 
@@ -40,6 +42,8 @@ export class AllRemarkModal {
 
   remarksList: any[] = [];
   isLoading: boolean = false;
+  comp_id: any;
+  superAdminID: any;
 
   private modalInstance: any;
 
@@ -48,6 +52,7 @@ export class AllRemarkModal {
     private sweetAlert: SweetAlertService,
     private authService: AuthService,
     private loadingService: LoadingService,
+    private sessionService: SessionService
   ) {}
 
   open() {
@@ -65,6 +70,10 @@ export class AllRemarkModal {
 
   loadRemarks() {
     
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     const session = this.authService.currentUserValue;
 
     this.userId = session?.userId || '0';
@@ -98,6 +107,9 @@ export class AllRemarkModal {
           this.totalRecords = res.data.total_records || res.data.listArr.length;
           this.totalPages = Math.ceil(Number(this.totalRecords) / this.pageSize);
         } else {
+          this.remarksList = []; // Clear the list
+          this.totalRecords = 0;
+          this.totalPages = 0;
           this.sweetAlert.showToast('No remarks found.', 'info');
         }
       },

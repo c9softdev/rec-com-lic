@@ -6,6 +6,8 @@ import { SelectionProcess } from '../selection-process';
 import { CommonService } from '../../../core/services/common.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoadingService } from '../../../core/services/loading.service';
+import { environment } from '../../../../environments/environment';
+import { SessionService } from '../../../core/services/session.service';
 
 declare var bootstrap: any;
 
@@ -35,6 +37,8 @@ export class InterviewSchedulerModal {
   schedulerForm!: FormGroup;
   private modalInstance: any; 
   submitted = false;
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
@@ -42,12 +46,17 @@ export class InterviewSchedulerModal {
     private commonService: CommonService,
     private authService: AuthService,
     private loadingService: LoadingService,
+    private sessionService: SessionService
   ) {
     this.initializeForm();
   }
 
   ngOnInit(): void {
     // Any initialization logic can go here
+
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
    
   }
 

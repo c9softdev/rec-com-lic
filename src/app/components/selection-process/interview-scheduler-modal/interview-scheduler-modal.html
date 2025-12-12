@@ -106,9 +106,16 @@
           }
 
           <div class="d-flex justify-content-between mt-3">
+            @if (comp_id !== superAdminID) {
             <button type="submit" class="btn btn-outline-primary">
               <i class="fas fa-save me-2"></i> Submit
             </button>
+            }
+            @else {
+              <button type="button" class="btn btn-outline-danger" disabled>
+                Submit not Allowed
+              </button>
+            }
             <button type="button" class="btn btn-outline-danger" (click)="close()">
               <i class="fas fa-times me-2"></i> Cancel
             </button>

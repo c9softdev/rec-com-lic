@@ -6,6 +6,8 @@ import { SelectionProcess } from '../selection-process';
 import { CommonService } from '../../../core/services/common.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoadingService } from '../../../core/services/loading.service';
+import { environment } from '../../../../environments/environment';
+import { SessionService } from '../../../core/services/session.service';
 
 declare var bootstrap: any;
 
@@ -16,7 +18,6 @@ declare var bootstrap: any;
   templateUrl: './visa-process-modal.html',
   styleUrls: ['./visa-process-modal.scss']
 })
-
 
 
 export class VisaProcessModal {
@@ -40,6 +41,8 @@ export class VisaProcessModal {
   private modalInstance: any;
   submitted = false;
   medicalArr: Array<{ id: string; name: string }> = [];
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
@@ -47,9 +50,15 @@ export class VisaProcessModal {
     private commonService: CommonService,
     private authService: AuthService,
     private loadingService: LoadingService,
+    private sessionService: SessionService
   ) { }
 
   ngOnInit() {
+
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.visaForm = this.fb.group({
       mofaNo: ['', []],
       visaStampedDate: ['', []],

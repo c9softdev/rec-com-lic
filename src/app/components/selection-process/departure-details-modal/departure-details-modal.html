@@ -79,9 +79,16 @@
           <!-- Footer Buttons -->
           <div class="d-flex justify-content-end mt-2 gap-2">
             <button type="button" class="btn btn-outline-dark btn-sm" (click)="close()">Cancel</button>
+            @if (comp_id !== superAdminID) {
             <button type="submit" class="btn btn-outline-primary btn-sm" [disabled]="loading">
-              <i *ngIf="loading" class="fas fa-spinner fa-spin me-1"></i> Save Details
+              <i *ngIf="loading" class="fas fa-spinner fa-spin me-1"></i> Submit Details
             </button>
+            }
+            @else{
+              <button type="button" class="btn btn-outline-danger" disabled>
+                Submit not Allowed
+              </button>
+            }
           </div>
         </form>
 
@@ -102,9 +109,17 @@
             </div>
 
             <div>
+              @if (comp_id !== superAdminID) {
               <button class="btn btn-sm btn-outline-danger" [disabled]="selectedIds.size === 0" (click)="deleteSelected()">
                 <i class="fas fa-trash-alt me-1"></i> Delete Selected
               </button>
+              }
+              @else {
+                <button type="button" class="btn btn-outline-danger" disabled>
+                  Delete not Allowed
+                </button>
+              }
+
             </div>
           </div>
 

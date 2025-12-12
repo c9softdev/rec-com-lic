@@ -490,14 +490,14 @@
                   <!-- Row 5: Last Remarks + Offer Letter + Download + Specialization -->
                   <div class="row mb-2">
                     <!-- Remarks -->
-                    <div class="col-md-4 d-flex align-items-center">
+                    <div class="col-md-5 d-flex align-items-center">
                       <i class="fa fa-comments text-info me-2"></i>
                       Last Remarks: {{ candidate.remarks_typeExp || '--' }}
                       <b class="ms-2">[ {{ candidate.emplName || '--' }} ]</b>
                     </div>
 
                     <!-- Offer Letter + Download -->
-                    <div class="col-md-4 d-flex align-items-center">
+                    <div class="col-md-3 d-flex align-items-center">
                       <i class="fa fa-briefcase text-success me-2"></i>
                       Offer: {{ candidate.offer_letter || '--' }} @if
                       (candidate.fileExists === 'YES') {

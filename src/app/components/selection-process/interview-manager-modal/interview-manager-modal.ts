@@ -6,6 +6,8 @@ import { SelectionProcess } from '../selection-process';
 import { CommonService } from '../../../core/services/common.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoadingService } from '../../../core/services/loading.service';
+import { environment } from '../../../../environments/environment';
+import { SessionService } from '../../../core/services/session.service';
 
 declare var bootstrap: any;
 
@@ -42,6 +44,8 @@ export class InterviewManagerModal {
   submitted = false;
   showOfferFields = false;
   selectedFile: File | null = null;
+  comp_id: any;
+  superAdminID: any;
 
   // private modalInstance: any; 
 
@@ -51,9 +55,15 @@ export class InterviewManagerModal {
     private commonService: CommonService,
     private authService: AuthService,
     private loadingService: LoadingService,
+    private sessionService: SessionService
   ) { }
 
   ngOnInit(): void {
+    
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     // Any initialization logic can go here
     this.managerForm = this.fb.group({
       interviewStatus: ['', Validators.required],

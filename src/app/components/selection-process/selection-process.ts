@@ -17,6 +17,8 @@ import { FormGroup, FormBuilder, ReactiveFormsModule, Validators, FormsModule } 
 import { EmailWriterService } from '../../core/services/email-writer.service';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { environment } from '../../../environments/environment';
+import { SessionService } from '../../core/services/session.service';
 
 @Component({
   selector: 'app-selection-process',
@@ -71,6 +73,8 @@ export class SelectionProcess {
 
   emailPrompt = "";
   generatedEmail = "";
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,7 +84,8 @@ export class SelectionProcess {
     private authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
-    private emailWriterService: EmailWriterService
+    private emailWriterService: EmailWriterService,
+    private sessionService: SessionService
   ) {
     this.searchForm = this.fb.group({
       passport_no: [''],
@@ -97,6 +102,11 @@ export class SelectionProcess {
 
   ngOnInit() {
     // Ensure loading is active before first render to avoid empty-state flash
+
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.loadingService.show('Loading...');
     // console.log('Field Value:', sprojrct);
     this.loadAllDropdownData(); // All Drop Down Data
@@ -551,7 +561,7 @@ export class SelectionProcess {
 
   openViewJobseeker(item: any): void {
     // Check view permission
-    if (this.viewresumechk !== '1' && !(this.userId === '1' && this.userType === '1')) {
+    if (this.viewresumechk !== '1') {
       this.sweetAlert.showToast('You do not have permission to view resumes.', 'error');
       return;
     }

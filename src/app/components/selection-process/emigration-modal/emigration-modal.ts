@@ -6,6 +6,8 @@ import { LoadingService } from '../../../core/services/loading.service';
 import { SweetAlertService } from '../../../core/services/sweet-alert.service';
 import { SelectionProcess } from '../selection-process';
 import { DownloadService } from '../../../core/services/download.service';
+import { environment } from '../../../../environments/environment';
+import { SessionService } from '../../../core/services/session.service';
 
 declare var bootstrap: any;
 
@@ -39,6 +41,8 @@ export class EmigrationModal {
   emigrationForm!: FormGroup;
   hasEmigrationDocument = false;
   private modalInstance: any;
+  comp_id: any;
+  superAdminID: any;
 
   private resetFileSelection() {
     this.selectedDocFile = null;
@@ -50,10 +54,15 @@ export class EmigrationModal {
     private commonService: CommonService,
     private loadingService: LoadingService,
     private sweetAlert: SweetAlertService,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private sessionService: SessionService
   ) { }
 
   ngOnInit() {
+    this.superAdminID = environment.superAdminID;
+        const sess = this.sessionService.getSession();
+        this.comp_id = sess?.comp_id || '';
+
     this.initForm();
   }
 

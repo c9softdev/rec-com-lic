@@ -6,6 +6,8 @@ import { LoadingService } from '../../../core/services/loading.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonService } from '../../../core/services/common.service';
 import { SweetAlertService } from '../../../core/services/sweet-alert.service';
+import { environment } from '../../../../environments/environment';
+import { SessionService } from '../../../core/services/session.service';
 
 declare var bootstrap: any;
 
@@ -45,6 +47,9 @@ export class JobProcessModal {
   userId: any;
   userType: any;
   emailId: any;
+  comp_id: any;
+  superAdminID: any;
+
 
   toggleMaximize() {
     this.isMaximized = !this.isMaximized;
@@ -57,9 +62,15 @@ export class JobProcessModal {
     private authService: AuthService,
     private loadingService: LoadingService,
     private commonService: CommonService,
+    private sessionService: SessionService
   ) { }
 
   ngOnInit() {
+    
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.currentForm = this.fb.group({
       currentStatus: ['', Validators.required],
       currentDate: [''],

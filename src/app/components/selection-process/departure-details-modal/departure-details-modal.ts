@@ -7,6 +7,9 @@ import { AuthService } from '../../../core/services/auth.service';
 import { LoadingService } from '../../../core/services/loading.service';
 import { PaginationComponent } from '../../pagination/pagination.component';
 import { paginationProperties } from '../../../app.config';
+import { environment } from '../../../../environments/environment';
+import { SessionService } from '../../../core/services/session.service';
+
 
 declare var bootstrap: any;
 
@@ -47,6 +50,8 @@ export class DepartureDetailsModal {
   totalPages: number = paginationProperties.totalPages;
   jumpToPage: number = paginationProperties.jumpToPage;
   private serverPaging: boolean = false;
+  comp_id: any;
+  superAdminID: any;
 
   constructor(
     private fb: FormBuilder,
@@ -54,10 +59,16 @@ export class DepartureDetailsModal {
     private sweetAlert: SweetAlertService,
     private authService: AuthService,
     private loadingService: LoadingService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private sessionService: SessionService
   ) { }
 
   ngOnInit() {
+    
+    this.superAdminID = environment.superAdminID;
+    const sess = this.sessionService.getSession();
+    this.comp_id = sess?.comp_id || '';
+
     this.form = this.fb.group({
       positionNo: [''],
       flightNo: [''],
