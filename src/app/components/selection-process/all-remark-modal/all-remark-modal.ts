@@ -94,15 +94,11 @@ export class AllRemarkModal {
         }
       ]
     };
-    // console.log("PayLoad",payload);
-    // return; 
+
     this.commonService.post(payload).subscribe({
       next: (res: any) => {
         this.loadingService.hide();
-        // console.log("REsponse",res);
-        // return;
         if (res?.status == 'success' && Array.isArray(res?.data?.listArr)) {
-          // Use backend-provided page results; modal body scrolls within page
           this.remarksList = res.data.listArr;
           this.selectedItems.clear();
           this.totalRecords = res.data.total_records || res.data.listArr.length;
@@ -138,16 +134,17 @@ export class AllRemarkModal {
 
   onItemSelect(itemId: string, event: Event): void {
     const checkbox = event.target as HTMLInputElement;
-    const id = this.getRemarkIdByValue(itemId);
-    if (!id) return;
-    if (checkbox.checked) this.selectedItems.add(id);
-    else this.selectedItems.delete(id);
+    if (checkbox.checked) {
+      this.selectedItems.add(itemId);
+    } else {
+      this.selectedItems.delete(itemId);
+    }
   }
 
   onSelectAll(event: Event) {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
-      this.remarksList.forEach(item => this.selectedItems.add(item.id));
+      this.remarksList.forEach(item => this.selectedItems.add(String(item.sno)));
     } else {
       this.selectedItems.clear();
     }
@@ -188,7 +185,6 @@ export class AllRemarkModal {
   }
 
   private confirmDelete() {
-
     const sprojrct = this.projectId;
     const idsToDelete = Array.from(this.selectedItems);
     this.loadingService.show('Removing...');
@@ -204,31 +200,25 @@ export class AllRemarkModal {
         }
       ]
     };
-    // console.log('Payload for deletion:', payload);
-    //     return
-    this.commonService.post(payload)
-      .subscribe({
 
-        next: (response: any) => {
-          this.loadingService.hide();
-
-          if (response.status === 'success') {
-            this.sweetAlert.showToast(response.message || 'CVs have been Removed now.', 'success');
-            this.selectedItems.clear();
-            this.loadRemarks();
-            this.parentComponent.loadAllDropdownData?.();
-            this.parentComponent.loadAllSelectionCV?.();
-
-          } else {
-            this.sweetAlert.showError(response.message || 'Failed to Remove records');
-          }
-        },
-        error: () => {
-          this.loadingService.hide();
-          this.sweetAlert.showError('Failed to Remove Record. Please try again.');
+    this.commonService.post(payload).subscribe({
+      next: (response: any) => {
+        this.loadingService.hide();
+        if (response.status === 'success') {
+          this.sweetAlert.showToast(response.message || 'CVs have been Removed now.', 'success');
+          this.selectedItems.clear();
+          this.loadRemarks();
+          this.parentComponent.loadAllDropdownData?.();
+          this.parentComponent.loadAllSelectionCV?.();
+        } else {
+          this.sweetAlert.showError(response.message || 'Failed to Remove records');
         }
-      });
-    this.loadingService.show('Removing...');
+      },
+      error: () => {
+        this.loadingService.hide();
+        this.sweetAlert.showError('Failed to Remove Record. Please try again.');
+      }
+    });
   }
 
   isMaximized = false;
@@ -236,11 +226,9 @@ export class AllRemarkModal {
     this.isMaximized = !this.isMaximized;
   }
 
-  // Ensure consistent ID handling between API shapes
+  // Get unique ID using serial number (sno)
   getRemarkId(item: any): string {
-    if (!item) return '';
-    const raw = item.reid ?? item.id ?? item.recId ?? item.sno ?? '';
-    return raw !== undefined && raw !== null ? String(raw) : '';
+    return item?.sno ? String(item.sno) : '';
   }
 
   private getRemarkIdByValue(val: string | number): string {

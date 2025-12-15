@@ -131,10 +131,10 @@
             <div *ngIf="!listLoading && totalRecords === 0" class="text-center py-3 text-muted small">
               No flight records found.
             </div>
-            <ng-container *ngFor="let f of flightList; trackBy: trackByFlight">
+            <ng-container *ngFor="let f of flightList; let i = index; trackBy: trackByFlight">
                 <div class="border rounded p-2 mb-2 d-flex align-items-center justify-content-between flex-wrap small bg-white shadow-sm flight-row">
                   <div class="d-flex align-items-center col-12 col-md-3">
-                    <input type="checkbox" class="custom-checkbox-modern me-2" [checked]="selectedIds.has(f.reid)" (change)="toggleSelect(f.reid, $event.target.checked)" aria-label="Select flight record" />
+                    <input type="checkbox" class="custom-checkbox-modern me-2" [checked]="selectedIds.has(getFlightId(f, i))" (change)="toggleSelect(getFlightId(f, i), $event.target.checked)" aria-label="Select flight record" />
                     <div>
                       <strong>{{ f.positionNo }}</strong><br />
                       <span class="text-muted">{{ f.filght_no }} / {{ f.ticketNo }}</span>

@@ -259,9 +259,21 @@ export class DepartureDetailsModal {
     });
   }
 
-  toggleSelect(reid: string, checked: boolean) {
-    if (!reid) return;
-    if (checked) this.selectedIds.add(reid); else this.selectedIds.delete(reid);
+  toggleSelect(id: string, checked: boolean) {
+    if (!id) return;
+    if (checked) {
+      this.selectedIds.add(id);
+    } else {
+      this.selectedIds.delete(id);
+    }
+  }
+
+  getFlightId(flight: any, index: number): string {
+    // Use reid if available and unique, otherwise use index-based identifier
+    if (flight?.reid && flight.reid !== '0' && flight.reid !== 0) {
+      return String(flight.reid);
+    }
+    return `flight-${this.currentPage}-${index}`;
   }
 
   deleteSelected() {
