@@ -20,10 +20,9 @@
       <!-- Table Header Row -->
       <div
         class="remarks-header px-3 pt-2 pb-1 fw-semibold border-bottom small text-secondary d-flex align-items-center">
-        <div class="text-center" style="width:6%; padding-left: 1rem;">
+        <div class="text-center" style="width:6%">
           <input type="checkbox" class="custom-checkbox-modern" style="margin-top: 13px"
-            [checked]="selectedItems.size === remarksList.length"
-            (change)="onSelectAll($event)" />
+            [checked]="selectedItems.size === remarksList.length" (change)="onSelectAll($event)" />
         </div>
         <div class="text-center" style="width:6%">Sr</div>
         <div style="width:28%">Remark / By / Project (Date)</div>
@@ -33,12 +32,12 @@
       <!-- Table Body -->
       <div class="modal-body p-2">
         @if (remarksList.length > 0) {
-        @for (remark of remarksList; track remark.sno) {
+        @for (remark of remarksList; track remark.reid) {
         <div
           class="remark-row d-flex border-bottom py-2 align-items-start small bg-white rounded-2 mt-1 mx-2 shadow-sm">
-          <div class="text-center" style="width:6%; padding-left: 1rem; " >
-            <input type="checkbox" class="custom-checkbox-modern" style="margin-top: 13px" [checked]="selectedItems.has(getRemarkId(remark))"
-              (change)="onItemSelect(getRemarkId(remark), $event)">
+          <div class="text-center" style="width:6%">
+            <input type="checkbox" class="custom-checkbox-modern" [checked]="selectedItems.has(remark.reid)"
+              (change)="onItemSelect(remark.reid, $event)" />
           </div>
           <div class="text-center" style="width:6%">
             {{ remark.sno }}

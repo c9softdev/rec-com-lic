@@ -7,7 +7,8 @@
           <i class="fas fa-plane-departure me-2 text-white"></i> Departure
           Details — {{ jobseekerName }} [{{ jobseekerId }}]
         </h5>
-        <button type="button" class="btn btn-sm btn-outline-light ms-auto" (click)="toggleMaximize()" [attr.aria-pressed]="isMaximized" title="{{ isMaximized ? 'Restore' : 'Maximize' }}">
+        <button type="button" class="btn btn-sm btn-outline-light ms-auto" (click)="toggleMaximize()"
+          [attr.aria-pressed]="isMaximized" title="{{ isMaximized ? 'Restore' : 'Maximize' }}">
           <i class="fas" [ngClass]="isMaximized ? 'fa-compress' : 'fa-expand'"></i>
         </button>
         <button type="button" class="btn-close btn-close-white ms-2" (click)="close()"></button>
@@ -40,12 +41,14 @@
             </div>
             <div class="col-md-4">
               <label class="form-label form-label-sm">Departure City <span class="text-danger">*</span></label>
-              <input type="text" class="form-control form-control-sm" formControlName="depcity" [class.is-invalid]="isFieldInvalid('depcity')" />
+              <input type="text" class="form-control form-control-sm" formControlName="depcity"
+                [class.is-invalid]="isFieldInvalid('depcity')" />
               <div class="invalid-feedback">{{ getValidationMessage('depcity') }}</div>
             </div>
             <div class="col-md-4">
               <label class="form-label form-label-sm">Destination City <span class="text-danger">*</span></label>
-              <input type="text" class="form-control form-control-sm" formControlName="arricity" [class.is-invalid]="isFieldInvalid('arricity')" />
+              <input type="text" class="form-control form-control-sm" formControlName="arricity"
+                [class.is-invalid]="isFieldInvalid('arricity')" />
               <div class="invalid-feedback">{{ getValidationMessage('arricity') }}</div>
             </div>
           </div>
@@ -56,12 +59,14 @@
             </div>
             <div class="col-md-4">
               <label class="form-label form-label-sm">Departure Date <span class="text-danger">*</span></label>
-              <input type="date" class="form-control form-control-sm" formControlName="depdate" [class.is-invalid]="isFieldInvalid('depdate')" />
+              <input type="date" class="form-control form-control-sm" formControlName="depdate"
+                [class.is-invalid]="isFieldInvalid('depdate')" />
               <div class="invalid-feedback">{{ getValidationMessage('depdate') }}</div>
             </div>
             <div class="col-md-4">
               <label class="form-label form-label-sm">Departure Time <span class="text-danger">*</span></label>
-              <input type="text" class="form-control form-control-sm" placeholder="e.g. 10 AM" formControlName="depatime" [class.is-invalid]="isFieldInvalid('depatime')" />
+              <input type="text" class="form-control form-control-sm" placeholder="e.g. 10 AM"
+                formControlName="depatime" [class.is-invalid]="isFieldInvalid('depatime')" />
               <div class="invalid-feedback">{{ getValidationMessage('depatime') }}</div>
             </div>
           </div>
@@ -73,7 +78,8 @@
             </div>
             <div class="col-md-6">
               <label class="form-label form-label-sm">Arrival Time</label>
-              <input type="text" class="form-control form-control-sm" placeholder="e.g. 12 PM" formControlName="arrivaltime" />
+              <input type="text" class="form-control form-control-sm" placeholder="e.g. 12 PM"
+                formControlName="arrivaltime" />
             </div>
           </div>
           <!-- Footer Buttons -->
@@ -85,9 +91,9 @@
             </button>
             }
             @else{
-              <button type="button" class="btn btn-outline-danger" disabled>
-                Submit not Allowed
-              </button>
+            <button type="button" class="btn btn-outline-danger" disabled>
+              Submit not Allowed
+            </button>
             }
           </div>
         </form>
@@ -97,9 +103,7 @@
 
         <!-- Flight Listing -->
         <div class="card shadow-sm mt-3">
-          <div
-            class="card-header bg-light d-flex justify-content-between align-items-center py-2 px-3"
-          >
+          <div class="card-header bg-light d-flex justify-content-between align-items-center py-2 px-3">
             <div class="d-flex align-items-center">
               <h6 class="mb-0 text-secondary">
                 <i class="fas fa-plane-departure me-2 text-primary"></i> Flight
@@ -110,14 +114,15 @@
 
             <div>
               @if (comp_id !== superAdminID) {
-              <button class="btn btn-sm btn-outline-danger" [disabled]="selectedIds.size === 0" (click)="deleteSelected()">
+              <button class="btn btn-sm btn-outline-danger" [disabled]="selectedIds.size === 0"
+                (click)="deleteSelected()">
                 <i class="fas fa-trash-alt me-1"></i> Delete Selected
               </button>
               }
               @else {
-                <button type="button" class="btn btn-outline-danger" disabled>
-                  Delete not Allowed
-                </button>
+              <button type="button" class="btn btn-outline-danger" disabled>
+                Delete not Allowed
+              </button>
               }
 
             </div>
@@ -131,49 +136,44 @@
             <div *ngIf="!listLoading && totalRecords === 0" class="text-center py-3 text-muted small">
               No flight records found.
             </div>
-            <ng-container *ngFor="let f of flightList; let i = index; trackBy: trackByFlight">
-                <div class="border rounded p-2 mb-2 d-flex align-items-center justify-content-between flex-wrap small bg-white shadow-sm flight-row">
-                  <div class="d-flex align-items-center col-12 col-md-3">
-                    <input type="checkbox" class="custom-checkbox-modern me-2" [checked]="selectedIds.has(getFlightId(f, i))" (change)="toggleSelect(getFlightId(f, i), $event.target.checked)" aria-label="Select flight record" />
-                    <div>
-                      <strong>{{ f.positionNo }}</strong><br />
-                      <span class="text-muted">{{ f.filght_no }} / {{ f.ticketNo }}</span>
-                    </div>
-                  </div>
-
-                  <div class="col-12 col-md-3">
-                    <strong>Departure:</strong> {{ f.depart_city }}<br />
-                    <span class="text-muted">{{ f.depart_date }} • {{ f.depart_time }}</span>
-                  </div>
-
-                  <div class="col-12 col-md-4">
-                    <strong>Destination:</strong> {{ f.arrival_city }}<br />
-                    <span class="text-muted">{{ f.arrival_date || '-' }} • {{ f.arrival_time || '-' }}</span>
-                    <span *ngIf="f.region" class="badge bg-secondary ms-1" title="Region">{{ f.region }}</span>
-                  </div>
-
-                  <div class="col-12 col-md-2 text-end mt-2 mt-md-0">
-                    <button class="btn btn-sm primary" title="Edit" (click)="onEditClick(f.reid)">
-                      <i class="fa fa-edit status-icon"></i>
-                    </button>
+            <ng-container *ngFor="let f of flightList; trackBy: trackByFlight">
+              <div
+                class="border rounded p-2 mb-2 d-flex align-items-center justify-content-between flex-wrap small bg-white shadow-sm flight-row">
+                <div class="d-flex align-items-center col-12 col-md-3">
+                  <input type="checkbox" class="custom-checkbox-modern me-2" [checked]="selectedIds.has(f.reid)"
+                    (change)="toggleSelect(f.reid, $event.target.checked)" aria-label="Select flight record" />
+                  <div>
+                    <strong>{{ f.positionNo }}</strong><br />
+                    <span class="text-muted">{{ f.filght_no }} / {{ f.ticketNo }}</span>
                   </div>
                 </div>
-              </ng-container>
+
+                <div class="col-12 col-md-3">
+                  <strong>Departure:</strong> {{ f.depart_city }}<br />
+                  <span class="text-muted">{{ f.depart_date }} • {{ f.depart_time }}</span>
+                </div>
+
+                <div class="col-12 col-md-4">
+                  <strong>Destination:</strong> {{ f.arrival_city }}<br />
+                  <span class="text-muted">{{ f.arrival_date || '-' }} • {{ f.arrival_time || '-' }}</span>
+                  <span *ngIf="f.region" class="badge bg-secondary ms-1" title="Region">{{ f.region }}</span>
+                </div>
+
+                <div class="col-12 col-md-2 text-end mt-2 mt-md-0">
+                  <button class="btn btn-sm primary" title="Edit" (click)="onEditClick(f.reid)">
+                    <i class="fa fa-edit status-icon"></i>
+                  </button>
+                </div>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>
 
       <!-- Pagination Section (Sticky Footer) -->
-      <app-pagination
-        class="pagination-section sticky-table-footer"
-        [currentPage]="currentPage"
-        [pageSize]="pageSize"
-        [totalRecords]="totalRecords"
-        [totalPages]="totalPages"
-        [jumpToPage]="jumpToPage"
-        (pageChange)="onPageChange($event)"
-        (jumpToPageChange)="onJumpToPage($event)"
-      ></app-pagination>
+      <app-pagination class="pagination-section sticky-table-footer" [currentPage]="currentPage" [pageSize]="pageSize"
+        [totalRecords]="totalRecords" [totalPages]="totalPages" [jumpToPage]="jumpToPage"
+        (pageChange)="onPageChange($event)" (jumpToPageChange)="onJumpToPage($event)"></app-pagination>
 
       <!-- Footer -->
       <!-- <div class="modal-footer py-2">

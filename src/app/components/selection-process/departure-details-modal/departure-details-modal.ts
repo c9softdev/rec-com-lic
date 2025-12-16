@@ -64,7 +64,7 @@ export class DepartureDetailsModal {
   ) { }
 
   ngOnInit() {
-    
+
     this.superAdminID = environment.superAdminID;
     const sess = this.sessionService.getSession();
     this.comp_id = sess?.comp_id || '';
@@ -161,8 +161,8 @@ export class DepartureDetailsModal {
     };
 
     const payload = this.editMode
-      ? { event: 'astsk', mode: 'updFlight', InputData: [ baseInput ] }
-      : { event: 'astsk', mode: 'flghshedule', InputData: [ baseInput ] };
+      ? { event: 'astsk', mode: 'updFlight', InputData: [baseInput] }
+      : { event: 'astsk', mode: 'flghshedule', InputData: [baseInput] };
 
     this.loading = true;
     this.loadingService.show(this.editMode ? 'Updating flight details...' : 'Saving flight details...');
@@ -212,12 +212,12 @@ export class DepartureDetailsModal {
     const payload = {
       event: 'astsk',
       mode: 'flschdList',
-      InputData: [ {
+      InputData: [{
         id: this.candidateId,
         prjId: this.projectId,
         page: String(this.currentPage),
         pageSize: String(this.pageSize)
-      } ]
+      }]
     };
     this.commonService.post(payload).subscribe({
       next: (res: any) => {
@@ -259,21 +259,9 @@ export class DepartureDetailsModal {
     });
   }
 
-  toggleSelect(id: string, checked: boolean) {
-    if (!id) return;
-    if (checked) {
-      this.selectedIds.add(id);
-    } else {
-      this.selectedIds.delete(id);
-    }
-  }
-
-  getFlightId(flight: any, index: number): string {
-    // Use reid if available and unique, otherwise use index-based identifier
-    if (flight?.reid && flight.reid !== '0' && flight.reid !== 0) {
-      return String(flight.reid);
-    }
-    return `flight-${this.currentPage}-${index}`;
+  toggleSelect(reid: string, checked: boolean) {
+    if (!reid) return;
+    if (checked) this.selectedIds.add(reid); else this.selectedIds.delete(reid);
   }
 
   deleteSelected() {
@@ -281,7 +269,7 @@ export class DepartureDetailsModal {
       this.sweetAlert.showToast('Select records to delete.', 'info');
       return;
     }
-    const payload = { event: 'astsk', mode: 'delFlight', InputData: [ { infoId: Array.from(this.selectedIds) } ] };
+    const payload = { event: 'astsk', mode: 'delFlight', InputData: [{ infoId: Array.from(this.selectedIds) }] };
     this.loadingService.show('Deleting selected records...');
     this.commonService.post(payload).subscribe({
       next: (res: any) => {
@@ -305,7 +293,7 @@ export class DepartureDetailsModal {
 
   onEditClick(reid: string) {
     if (!reid) return;
-    const payload = { event: 'astsk', mode: 'edFlight', InputData: [ { id: reid } ] };
+    const payload = { event: 'astsk', mode: 'edFlight', InputData: [{ id: reid }] };
     this.loadingService.show('Fetching record...');
     this.commonService.post(payload).subscribe({
       next: (res: any) => {
