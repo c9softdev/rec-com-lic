@@ -1,6 +1,9 @@
 <div class="wrapper">
-
-  <div class="overlay" [class.show]="sidebarOpen" (click)="closeSidebar()"></div>
+  <div
+    class="overlay"
+    [class.show]="sidebarOpen"
+    (click)="closeSidebar()"
+  ></div>
   <div class="main-header">
     <div class="header-inner">
       <!-- Left: Hamburger always visible, side logo only if expanded -->
@@ -12,73 +15,107 @@
             [class.active]="isHamburgerActive"
             [attr.aria-expanded]="sidebarOpen"
             aria-controls="sidebar"
-            [attr.aria-label]="isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE"
-            [title]="isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE"
+            [attr.aria-label]="
+              isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE
+            "
+            [title]="
+              isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE
+            "
             type="button"
-            (click)="toggleSidebar()">
+            (click)="toggleSidebar()"
+          >
             <span class="hamburger-icon" *ngIf="!isHamburgerActive">
               <span></span>
               <span></span>
               <span></span>
             </span>
-            <i class="fas fa-angles-left collapse-icon" *ngIf="isHamburgerActive"></i>
+            <i
+              class="fas fa-angles-left collapse-icon"
+              *ngIf="isHamburgerActive"
+            ></i>
           </button>
-          <a routerLink="/dashboard" class="logo d-flex align-items-center ms-2">
-            <img *ngIf="config && config.var_logo_client" [src]="config.var_logo_client" class="logo-side" alt="Logo" />
-            <img *ngIf="!configLoading && (!config || !config.var_logo_client)" src="/assets/img/c9client-logo.png" class="logo-side" alt="Default Logo" />
+          <a
+            routerLink="/dashboard"
+            class="logo d-flex align-items-center ms-2"
+          >
+            <img
+              *ngIf="config && config.var_logo_client"
+              [src]="config.var_logo_client"
+              class="logo-side"
+              alt="Logo"
+            />
+            <img
+              *ngIf="!configLoading && (!config || !config.var_logo_client)"
+              src="/assets/img/c9client-logo.png"
+              class="logo-side"
+              alt="Default Logo"
+            />
           </a>
         </ng-container>
         <!-- Expanded: Logo left, hamburger right -->
         <ng-template #expandedHeader>
-          <a routerLink="/dashboard" class="logo d-flex align-items-center ms-2 me-2">
-            <img *ngIf="config && config.var_logo_client" [src]="config.var_logo_client" class="logo-side" alt="Logo" />
-            <img *ngIf="!configLoading && (!config || !config.var_logo_client)" src="/assets/img/c9client-logo.png" class="logo-side" alt="Default Logo" />
+          <a
+            routerLink="/dashboard"
+            class="logo d-flex align-items-center ms-2 me-2"
+          >
+            <img
+              *ngIf="config && config.var_logo_client"
+              [src]="config.var_logo_client"
+              class="logo-side"
+              alt="Logo"
+            />
+            <img
+              *ngIf="!configLoading && (!config || !config.var_logo_client)"
+              src="/assets/img/c9client-logo.png"
+              class="logo-side"
+              alt="Default Logo"
+            />
           </a>
           <button
             class="hamburger"
             [class.active]="isHamburgerActive"
             [attr.aria-expanded]="sidebarOpen"
             aria-controls="sidebar"
-            [attr.aria-label]="isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE"
-            [title]="isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE"
+            [attr.aria-label]="
+              isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE
+            "
+            [title]="
+              isHamburgerActive ? MENU_COLLAPSE_TITLE : MENU_EXPAND_TITLE
+            "
             type="button"
-            (click)="toggleSidebar()">
+            (click)="toggleSidebar()"
+          >
             <span class="hamburger-icon" *ngIf="!isHamburgerActive">
               <span></span>
               <span></span>
               <span></span>
             </span>
-            <i class="fas fa-angles-left collapse-icon" *ngIf="isHamburgerActive"></i>
+            <i
+              class="fas fa-angles-left collapse-icon"
+              *ngIf="isHamburgerActive"
+            ></i>
           </button>
         </ng-template>
       </div>
       <!-- Center: Professional widgets - Timezones and Stats -->
-      <div class="header-center d-flex justify-content-between align-items-center">
+      <div
+        class="header-center d-flex justify-content-between align-items-center"
+      >
         <!-- Timezones (Left) -->
         <div class="header-widgets timezones-widget">
-
-          <!-- Dubai Time Widget -->
-          <div class="widget clock-widget">
-            <div class="timezone-time">
-              <span class="timezone-label">Dubai</span>
-              <span class="time-value">{{ currentTimeDubai }}</span>
-            </div>
+          <div class="timezone-card">
+            <div class="city">Dubai</div>
+            <div class="time">{{ currentTimeDubai }}</div>
           </div>
 
-          <!-- London Time Widget -->
-          <div class="widget clock-widget">
-            <div class="timezone-time">
-              <span class="timezone-label">London</span>
-              <span class="time-value">{{ currentTimeLondon }}</span>
-            </div>
+          <div class="timezone-card">
+            <div class="city">London</div>
+            <div class="time">{{ currentTimeLondon }}</div>
           </div>
 
-          <!-- New York Time Widget -->
-          <div class="widget clock-widget">
-            <div class="timezone-time">
-              <span class="timezone-label">New York</span>
-              <span class="time-value">{{ currentTimeNewYork }}</span>
-            </div>
+          <div class="timezone-card">
+            <div class="city">New York</div>
+            <div class="time">{{ currentTimeNewYork }}</div>
           </div>
         </div>
 
@@ -88,23 +125,25 @@
           <div class="stat-card job-openings">
             <i class="fas fa-briefcase"></i>
             <div class="stat-content">
-              <span class="stat-value">{{ globalSettings?.int_employee_cnt }}</span>
+              <span class="stat-value">{{
+                globalSettings?.int_employee_cnt
+              }}</span>
               <span class="stat-label">Employees</span>
             </div>
           </div>
 
-         
           <!-- Scheduled Interviews -->
           <div class="stat-card interviews">
-            <i class="fas fa-calendar-check"></i> 
+            <i class="fas fa-calendar-check"></i>
             <div class="stat-content">
-              <span class="stat-value">{{ globalSettings?.int_jobseeker_cnt }}</span>
+              <span class="stat-value">{{
+                globalSettings?.int_jobseeker_cnt
+              }}</span>
               <span class="stat-label">Jobseekers</span>
             </div>
           </div>
 
           <!-- Notifications -->
-          
         </div>
 
         <!-- Site Name (Right, before Profile) -->
@@ -114,39 +153,83 @@
       </div>
       <!-- Right: Topbar/account actions -->
       <div class="header-right">
-        <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
+        <nav
+          class="navbar navbar-header navbar-expand-lg"
+          data-background-color="blue2"
+        >
           <div class="d-flex align-items-center">
             <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
               <li class="nav-item toggle-nav-search hidden-caret">
-                <a class="nav-link" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false" aria-controls="search-nav">
+                <a
+                  class="nav-link"
+                  data-toggle="collapse"
+                  href="#search-nav"
+                  role="button"
+                  aria-expanded="false"
+                  aria-controls="search-nav"
+                >
                   <i class="fa fa-search"></i>
                 </a>
               </li>
               <li class="nav-item dropdown hidden-caret" #profileDropdownRef>
-                <a class="dropdown-toggle profile-pic" href="#" (click)="toggleProfileDropdown($event)">
+                <a
+                  class="dropdown-toggle profile-pic"
+                  href="#"
+                  (click)="toggleProfileDropdown($event)"
+                >
                   <div class="avatar-sm">
-                    <img [src]="(config?.app_root_url || '') + '/assets/img/employe.jpg'" alt="..." class="avatar-img rounded-circle">
+                    <img
+                      [src]="
+                        (config?.app_root_url || '') + '/assets/img/employe.jpg'
+                      "
+                      alt="..."
+                      class="avatar-img rounded-circle"
+                    />
                   </div>
                 </a>
-                <ul class="dropdown-menu dropdown-user animated fadeIn" [class.show]="isProfileDropdownOpen">
+                <ul
+                  class="dropdown-menu dropdown-user animated fadeIn"
+                  [class.show]="isProfileDropdownOpen"
+                >
                   <div class="dropdown-user-scroll">
                     <li>
                       <div class="user-box">
                         <div class="avatar-lg">
-                          <img [src]="(config?.app_root_url) + 'assets/img/employe.jpg'" alt="Profile Image" class="avatar-img rounded">
+                          <img
+                            [src]="
+                              config?.app_root_url + 'assets/img/employe.jpg'
+                            "
+                            alt="Profile Image"
+                            class="avatar-img rounded"
+                          />
                         </div>
                         <div class="u-text">
-                          <h4>{{currentUser?.username || 'User'}}</h4>
+                          <h4>{{ currentUser?.username || "User" }}</h4>
                         </div>
                       </div>
                     </li>
                     <li>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item disabled" tabindex="-1" aria-disabled="true" style="pointer-events:none;opacity:0.6;">My Account</a>
+                      <a
+                        class="dropdown-item disabled"
+                        tabindex="-1"
+                        aria-disabled="true"
+                        style="pointer-events: none; opacity: 0.6"
+                        >My Account</a
+                      >
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" routerLink="/change-password" (click)="closeProfileDropdown()">Change Password</a>
+                      <a
+                        class="dropdown-item"
+                        routerLink="/change-password"
+                        (click)="closeProfileDropdown()"
+                        >Change Password</a
+                      >
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" (click)="logout(); closeProfileDropdown()">Logout</a>
+                      <a
+                        class="dropdown-item"
+                        (click)="logout(); closeProfileDropdown()"
+                        >Logout</a
+                      >
                     </li>
                   </div>
                 </ul>
@@ -158,38 +241,91 @@
     </div>
   </div>
 
-  <div id="sidebar" class="sidebar sidebar-style-2" [class.collapsed]="isSidebarCollapsed" [attr.aria-hidden]="!sidebarOpen">
+  <div
+    id="sidebar"
+    class="sidebar sidebar-style-2"
+    [class.collapsed]="isSidebarCollapsed"
+    [attr.aria-hidden]="!sidebarOpen"
+  >
     <div class="sidebar-wrapper">
       <div class="sidebar-content">
         <ul class="nav nav-primary">
-          <li *ngIf="menuLoading" class="nav-item"><span>Loading menu...</span></li>
-          <li *ngIf="menuError" class="nav-item text-danger"><span>{{ menuError }}</span></li>
+          <li *ngIf="menuLoading" class="nav-item">
+            <span>Loading menu...</span>
+          </li>
+          <li *ngIf="menuError" class="nav-item text-danger">
+            <span>{{ menuError }}</span>
+          </li>
           <ng-container *ngIf="!menuLoading && !menuError">
             <ng-container *ngFor="let menu of menuList">
-              <li class="nav-item" [class.expanded]="expandedMenuId === menu.id">
-                <a href="javascript:void(0)" 
-                   (click)="onMenuItemClick(menu, $event)"
-                   [title]="getMenuItemTitle(menu)"
-                   [attr.aria-expanded]="expandedMenuId === menu.id"
-                   [attr.aria-label]="menu.submenuArr?.length ? (expandedMenuId === menu.id ? SUBMENU_COLLAPSE_TITLE : SUBMENU_EXPAND_TITLE) + ' ' + menu.title : menu.title">
-                  <span [innerHTML]="getSafeIcon(menu.icon)" aria-hidden="true"></span>
+              <li
+                class="nav-item"
+                [class.expanded]="expandedMenuId === menu.id"
+              >
+                <a
+                  href="javascript:void(0)"
+                  (click)="onMenuItemClick(menu, $event)"
+                  [title]="getMenuItemTitle(menu)"
+                  [attr.aria-expanded]="expandedMenuId === menu.id"
+                  [attr.aria-label]="
+                    menu.submenuArr?.length
+                      ? (expandedMenuId === menu.id
+                          ? SUBMENU_COLLAPSE_TITLE
+                          : SUBMENU_EXPAND_TITLE) +
+                        ' ' +
+                        menu.title
+                      : menu.title
+                  "
+                >
+                  <span
+                    [innerHTML]="getSafeIcon(menu.icon)"
+                    aria-hidden="true"
+                  ></span>
                   <p>{{ menu.title }}</p>
-                  <span *ngIf="menu.submenuArr && menu.submenuArr.length" 
-                        class="arrow"
-                        [class.expanded]="expandedMenuId === menu.id"
-                        aria-hidden="true">&#9660;</span>
+                  <span
+                    *ngIf="menu.submenuArr && menu.submenuArr.length"
+                    class="arrow"
+                    [class.expanded]="expandedMenuId === menu.id"
+                    aria-hidden="true"
+                    >&#9660;</span
+                  >
                 </a>
-                <ul class="submenu" *ngIf="menu.submenuArr && menu.submenuArr.length && expandedMenuId === menu.id">
+                <ul
+                  class="submenu"
+                  *ngIf="
+                    menu.submenuArr &&
+                    menu.submenuArr.length &&
+                    expandedMenuId === menu.id
+                  "
+                >
                   <ng-container *ngFor="let sub of menu.submenuArr">
                     <li [class.expanded]="sub.expanded">
-                      <a href="javascript:void(0)" (click)="onMenuItemClick(sub, $event)">
+                      <a
+                        href="javascript:void(0)"
+                        (click)="onMenuItemClick(sub, $event)"
+                      >
                         {{ sub.title }}
-                        <span *ngIf="sub.submenuArr2 && sub.submenuArr2.length" class="arrow sub-arrow"
-                          [class.expanded]="sub.expanded">&#9658;</span>
+                        <span
+                          *ngIf="sub.submenuArr2 && sub.submenuArr2.length"
+                          class="arrow sub-arrow"
+                          [class.expanded]="sub.expanded"
+                          >&#9658;</span
+                        >
                       </a>
-                      <ul class="sub-submenu" *ngIf="sub.submenuArr2 && sub.submenuArr2.length && sub.expanded">
+                      <ul
+                        class="sub-submenu"
+                        *ngIf="
+                          sub.submenuArr2 &&
+                          sub.submenuArr2.length &&
+                          sub.expanded
+                        "
+                      >
                         <li *ngFor="let sub2 of sub.submenuArr2">
-                          <a href="javascript:void(0)" (click)="onMenuItemClick(sub2, $event)">{{ sub2.title }}</a>
+                          <a
+                            href="javascript:void(0)"
+                            (click)="onMenuItemClick(sub2, $event)"
+                            >{{ sub2.title }}</a
+                          >
                         </li>
                       </ul>
                     </li>
@@ -202,12 +338,21 @@
       </div>
       <!-- Sidebar Footer: Logout button and company logo -->
       <div class="sidebar-footer">
-        <button class="logout-btn" (click)="logout()" title="Logout" aria-label="Logout">
+        <button
+          class="logout-btn"
+          (click)="logout()"
+          title="Logout"
+          aria-label="Logout"
+        >
           <i class="fas fa-sign-out-alt"></i>
           <span class="logout-text">Logout</span>
         </button>
         <div class="sidebar-logo" *ngIf="config && config.var_logo_url">
-          <img [src]="config.var_logo_url" alt="Company Logo" class="company-logo-sidebar" />
+          <img
+            [src]="config.var_logo_url"
+            alt="Company Logo"
+            class="company-logo-sidebar"
+          />
         </div>
       </div>
     </div>
@@ -218,18 +363,32 @@
   </div>
 
   <footer class="footer" [class.collapsed]="isSidebarCollapsed">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-      <div class="footer-version text-muted small" *ngIf="globalSettings?.var_version">
+    <div
+      class="container-fluid d-flex justify-content-between align-items-center"
+    >
+      <div
+        class="footer-version text-muted small"
+        *ngIf="globalSettings?.var_version"
+      >
         {{ globalSettings?.var_version }}
       </div>
       <!-- Company logo in footer center when sidebar collapsed -->
-      <div class="footer-logo-container" *ngIf="isSidebarCollapsed && config && config.var_logo_url">
-        <img [src]="config.var_logo_url" alt="Company Logo" class="company-logo-footer" />
+      <div
+        class="footer-logo-container"
+        *ngIf="isSidebarCollapsed && config && config.var_logo_url"
+      >
+        <img
+          [src]="config.var_logo_url"
+          alt="Company Logo"
+          class="company-logo-footer"
+        />
       </div>
       <!-- <span *ngIf="config"><b>company_sec_id:</b>{{config.company_sec_id}}</span> -->
       <div class="copyright ml-auto">
-        {{currentYear || ''}},
-        <span *ngIf="globalSettings?.footer_txt">{{globalSettings?.footer_txt}}</span>
+        {{ currentYear || "" }},
+        <span *ngIf="globalSettings?.footer_txt">{{
+          globalSettings?.footer_txt
+        }}</span>
         <span *ngIf="!globalSettings?.footer_txt">Powered by</span>
       </div>
     </div>

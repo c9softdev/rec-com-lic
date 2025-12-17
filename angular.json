@@ -49,6 +49,8 @@
               ],
               "allowedCommonJsDependencies": ["sweetalert2"],
               "outputHashing": "all",
+              // "baseHref": "/app/",
+              // "deployUrl": "/app/"
               "baseHref": "/apk/recLic/",
               "deployUrl": "/apk/recLic/"
             },
