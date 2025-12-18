@@ -194,8 +194,7 @@ export class GlobalSettingsService {
         // Do not store company_sec_id; always use fresh value from config per request
       }),
       catchError(error => {
-        console.error('Error loading global settings:', error);
-        // Fall back to default settings
+        // Error handled silently, falling back to default settings
         this.settings = this.defaultSettings;
         this.settingsSubject.next(this.defaultSettings);
         this.applySettings(this.defaultSettings);
@@ -204,6 +203,29 @@ export class GlobalSettingsService {
     );
   }
 
+
+  /**
+   * Update specific settings values and emit to all subscribers
+   * This allows partial updates without clearing all caches
+   * @param updates Partial settings object with values to update
+   */
+  updateSettings(updates: Partial<GlobalSettings>): void {
+    if (!this.settings) {
+      this.settings = this.defaultSettings;
+    }
+    
+    // Merge updates into current settings
+    this.settings = {
+      ...this.settings,
+      ...updates
+    };
+    
+    // Emit the updated settings to all subscribers
+    this.settingsSubject.next(this.settings);
+    
+    // Apply theme and other settings if colors changed
+    this.applySettings(this.settings);
+  }
 
   /**
    * Get the current global settings

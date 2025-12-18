@@ -264,7 +264,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           const msg = error?.message || 'An unexpected error occurred';
-          console.error('Login error:', error);
           this.error = msg;
           this.loading = false;
         }
@@ -313,7 +312,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           const msg = error?.message || 'An unexpected error occurred';
-          console.error('Login error:', error);
           this.error = msg;
           this.loading = false;
         }
@@ -397,7 +395,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         first(),
         takeUntil(this.destroy$),
         catchError(err => {
-          console.error('Failed to process forgot password request:', err);
           this.error = 'Failed to process request. Please try again.';
           this.loading = false;
           this.resetRecaptcha();

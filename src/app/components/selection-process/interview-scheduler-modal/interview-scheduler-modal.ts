@@ -134,8 +134,6 @@ export class InterviewSchedulerModal {
       ]
     };
     
-    console.log('Payload to be sent:', payload);
-    
     this.commonService.post(payload).subscribe({
       next: (res: any) => {
         // console.log('Response:', res);

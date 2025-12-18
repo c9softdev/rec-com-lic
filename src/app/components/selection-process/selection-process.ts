@@ -279,7 +279,6 @@ export class SelectionProcess {
           this.projectArr = res.data.projectArr;
           this.totalRecords = res.data.total_records || res.data.listArr.length;
           this.projectName = res.data.parJName;
-          console.log('listRec:', this.listRec);
           this.totalPages = Math.ceil(Number(this.totalRecords) / this.pageSize);
           this.noDataMessage = '';
         } else {
@@ -315,9 +314,6 @@ export class SelectionProcess {
     };
     this.commonService.post(payload).subscribe({
       next: (res) => {
-        console.log('payload:', payload);
-        console.log('Dropdown Value:', res);
-
         if (res?.status === 'success' && res.data) {
           const data = res.data;
           if (Array.isArray(data.gender)) {
@@ -365,9 +361,6 @@ export class SelectionProcess {
       ]
     };
 
-    console.log("Download payload:", payload);
-    // return;
-
     this.loadingService.show('Downloading...');
     this.commonService.postDownload(payload, true).subscribe({
       next: (res: any) => {
@@ -394,7 +387,6 @@ export class SelectionProcess {
       },
       error: (err) => {
         this.loadingService.hide();
-        console.error('Download error:', err);
         this.sweetAlert.showError('Something went wrong while downloading.');
       }
     });

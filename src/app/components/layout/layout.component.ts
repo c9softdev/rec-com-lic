@@ -212,7 +212,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.menuError = '';
     this.menuService.getMenu(userId, userType).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
-        console.log('Menu Response:', res);
         // server returns full menuList plus assignMenuStr (comma separated ids the user has access to)
         const rawMenu = res?.status === 'success' && res.data?.[0]?.menuList ? res.data[0].menuList : [];
         const assignStr = res?.data?.[0]?.assignMenuStr;
@@ -258,7 +257,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.globalSettingsService.getSettings$().pipe(takeUntil(this.destroy$)).subscribe({
       next: (settings) => {
         this.globalSettings = settings;
-        console.log('Layout received settings update:', settings);
       }
     });
   }

@@ -6,6 +6,7 @@ import { LoadingService } from '../../core/services/loading.service';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
 import { SessionService } from '../../core/services/session.service';
+import { GlobalSettingsService } from '../../core/services/global-settings.service';
 import { environment } from '../../../environments/environment';
 
 
@@ -38,7 +39,8 @@ export class GlobalSettingInner {
     private commonService: CommonService,
     private loadingService: LoadingService,
     private authService: AuthService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private globalSettingsService: GlobalSettingsService
   ) {
 
 
@@ -151,14 +153,30 @@ export class GlobalSettingInner {
         var_secondary_cc: this.pageForm.controls['var_secondary_cc'].value
       }]
     };
-    console.log('Response:', payload);
     this.loadingService.show('Updating...');
     this.commonService.post(payload).subscribe({ 
       next: (res) => {
         this.loadingService.hide();
-        console.log('Response:', res);
         if (res && res.status === 'success') {
           this.sweetAlert.showToast(res.message || 'Master Setting has been updated.', 'success');
+          
+          // Update only the changed values in GlobalSettingsService without clearing all caches
+          const currentSettings = this.globalSettingsService.getSettings();
+          const updatedSettings = {
+            ...currentSettings,
+            site_name: this.pageForm.controls['site_name'].value || currentSettings.site_name,
+            var_logo_url: this.pageForm.controls['var_logo_url'].value || currentSettings.var_logo_url,
+            var_logo_client: this.pageForm.controls['var_logo_client'].value || currentSettings.var_logo_client,
+            email_to: this.pageForm.controls['email_to'].value || currentSettings.email_to,
+            email_from: this.pageForm.controls['email_from'].value || currentSettings.email_from,
+            var_version: this.pageForm.controls['var_version'].value || currentSettings.var_version,
+            var_primary_cc: this.pageForm.controls['var_primary_cc'].value || currentSettings.var_primary_cc,
+            var_secondary_cc: this.pageForm.controls['var_secondary_cc'].value || currentSettings.var_secondary_cc
+          };
+          
+          // Emit the updated settings to all subscribers
+          this.globalSettingsService.updateSettings(updatedSettings);
+          
           this.onEditClick({ id: '1' });
         } else {
           this.sweetAlert.showError(res?.message || 'Failed to update record.');

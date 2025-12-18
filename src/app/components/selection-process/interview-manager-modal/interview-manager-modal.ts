@@ -108,7 +108,6 @@ export class InterviewManagerModal {
       },
       error: (err) => {
         this.loadingService.hide();
-        console.error('Upload error:', err);
         this.sweetAlert.showError('Something went wrong while uploading.');
       }
     });
@@ -155,7 +154,6 @@ export class InterviewManagerModal {
         }
       ]
     };
-    console.log("Payload", payload);
 
     this.commonService.post(payload).subscribe({
       next: (res: any) => {

@@ -121,7 +121,6 @@ export class ProjectManagerComponent implements OnInit {
 
   clientList(): void {
     this.selectionId = this.route.snapshot.data['selectionId'];
-    console.log('Selection ID from route data:', this.selectionId);
 
     const session = this.authService.currentUserValue;
     // console.log
@@ -172,7 +171,6 @@ export class ProjectManagerComponent implements OnInit {
         sortby: 'DESC'
       }]
     };
-    console.log("Input", payload);
     this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
@@ -447,7 +445,6 @@ export class ProjectManagerComponent implements OnInit {
 
     this.commonService.post(payload).subscribe({
       next: (res) => {
-        console.log('Payload for saving new record:', res);
         if (res.status === 'success') {
           this.sweetAlert.showToast(res.message || 'Project Details saved.', 'success');
           this.onCancelClick();
@@ -520,11 +517,8 @@ export class ProjectManagerComponent implements OnInit {
       ]
 
     };
-    console.log('Edit Response:', payload);
-    // return;
     this.commonService.post(payload).subscribe({
       next: (res) => {
-        console.log('Edit Response:', res);
         if (res && res.status === 'success' && res.data) {
           this.loadStates();
           this.cityListOnState(res.data.taskDetails.int_state);
@@ -607,8 +601,6 @@ export class ProjectManagerComponent implements OnInit {
     // console.log('Response:', payload);
     this.commonService.post(payload).subscribe({
       next: (res) => {
-
-        console.log('Response:', res);
         this.loadingService.hide();
         if (res && res.status === 'success') {
           this.sweetAlert.showToast(res.message || 'Project updated.', 'success');
@@ -673,7 +665,7 @@ export class ProjectManagerComponent implements OnInit {
     // console.log('Response:', payload);
     this.commonService.post(payload).subscribe({
       next: (res) => {
-        // console.log('Response:', res);
+
         this.loadingService.hide();
         if (res && res.status === 'success') {
           this.sweetAlert.showToast(res.message || 'Project Details updated.', 'success');

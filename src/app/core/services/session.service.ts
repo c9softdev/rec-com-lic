@@ -49,6 +49,7 @@ export class SessionService {
     this.session = null;
     this.menuIdSet.clear();
     try { localStorage.removeItem(SessionService.STORAGE_KEY); } catch {}
+    try { sessionStorage.removeItem('company_sec_id_cache'); } catch {}
     this.stop();
   }
 

@@ -131,6 +131,8 @@ export class AuthService {
               optionN2: String(user.optionN2 || ''),
               emailId: user.emailId || ''
             };
+            // Clear all caches before setting new session (new comp_id = new company_sec_id + responses needed)
+            this.commonService.clearAllCaches();
             this.sessionService.setSession(sess);
             this.sessionService.init();
             this.currentUserSubject.next(user);
@@ -146,18 +148,10 @@ export class AuthService {
    * Uses the company ID provided during login
    */
   private loadGlobalSettingsInBackground(): void {
-    // Use the company_id from login
     const companyId = this.tempCompanyId || '';
-    
     this.globalSettingsService.loadGlobalSettings(companyId).subscribe({
-      next: (settings) => {
-        console.log('Global settings loaded after login for company:', companyId, settings);
-        // Settings are automatically applied by GlobalSettingsService
-      },
-      error: (error) => {
-        console.error('Failed to load global settings after login:', error);
-        // System will continue with default settings
-      }
+      next: () => { },
+      error: () => { }
     });
   }
 

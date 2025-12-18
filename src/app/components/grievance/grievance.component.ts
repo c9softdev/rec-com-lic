@@ -164,7 +164,6 @@ export class GrievanceComponent {
       },
       error: (error: any) => {
         this.sweetAlert.showError('Error retrieving grievance data.');
-        console.error(error);
       }
     });
   }
@@ -218,7 +217,6 @@ export class GrievanceComponent {
       },
       error: (error: any) => {
         this.sweetAlert.showError('Error sending reply.');
-        console.error(error);
       }
     });
   }
@@ -259,7 +257,6 @@ export class GrievanceComponent {
           error: (error: any) => {
             this.loadingService.hide();
             this.sweetAlert.showError('Failed to delete records. Please try again.');
-            console.error(error);
           }
         });
       }
@@ -322,7 +319,6 @@ export class GrievanceComponent {
         this.noDataMessage = 'Error loading data.';
         this.grievances = [];
         this.totalRecords = 0;
-        console.error(error);
       }
     });
   }

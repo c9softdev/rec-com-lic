@@ -40,7 +40,6 @@ export class DownloadService {
       error: (error: any) => {
         this.loadingService.hide();
         this.sweetAlert.showError('Something went wrong while downloading.');
-        console.error('Download error:', error);
       }
     });
   }

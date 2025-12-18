@@ -122,7 +122,6 @@ export class ArchiveManagerComponent implements OnInit, OnDestroy {
     this.commonService.post(payload).subscribe({
       next: (res: any) => {
         if (res?.status === 'success' && res.data?.list) {
-          console.log('Archival types response:', res.data);
           this.archivalTypes = res.data.list;
           
           // If archival types loaded but empty
@@ -131,11 +130,9 @@ export class ArchiveManagerComponent implements OnInit, OnDestroy {
           }
         } else {
           this.sweetAlert.showError('Failed to load archival types.');
-          console.error('Invalid response format:', res);
         }
       },
       error: (error) => {
-        console.error('Error loading archival types:', error);
         this.sweetAlert.showError('Failed to load archival types. Please try again.');
       }
     });
@@ -281,7 +278,6 @@ export class ArchiveManagerComponent implements OnInit, OnDestroy {
       errorMessage = error.message;
     }
 
-    console.error('Archive Manager Error:', error);
     this.sweetAlert.showError(errorMessage);
     
     // Reset data
@@ -373,7 +369,6 @@ export class ArchiveManagerComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.error('Error deleting documents:', error);
         this.loadingService.hide();
         this.sweetAlert.showError('Failed to delete documents. Please try again.');
       }

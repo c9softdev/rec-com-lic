@@ -120,7 +120,6 @@ export class EmployeeManagerComponent implements OnInit {
         this.globalSettings = settings;
         this.employee_cnt = Number(this.globalSettings.int_employee_cnt) || 0;
         // this.jobseeker_cnt = Number(this.globalSettings.int_jobseeker_cnt) || 0;
-        console.log("Countter:", this.employee_cnt);
 
         // 🔥 Now safe to load employees or apply settings
         // this.loadEmployees();
@@ -140,7 +139,6 @@ export class EmployeeManagerComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.licenseData = data;
-        console.log('License Data in Employee Manager:', this.licenseData);
       });
 
   }
@@ -387,7 +385,6 @@ export class EmployeeManagerComponent implements OnInit {
     this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
-        console.log('Save Employee Response:', res);
         this.sweetAlert.showToast(res?.message || 'Employee saved.', 'success');
         this.onCancelClick();
         this.fetchEmployees();

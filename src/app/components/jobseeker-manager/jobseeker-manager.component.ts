@@ -203,6 +203,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
   // Header filter for CV source: 0=All, 1=Self CV, 2=CV by Me
   clickval: string = '0';
   cvFilterOpen = false;
+  isInitialLoad = true;  // Track if this is the first load to suppress 'no data' toast
 
   // Static dropdowns
   genders = GENDERS;
@@ -350,7 +351,6 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
       }
       this.updateFloatingLabels();
     } catch (e) {
-      console.error('Failed to initialize modals:', e);
     }
   }
   // ngOnDestroy(): void {
@@ -396,23 +396,25 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
       if (Object.keys(patch).length > 0) {
         this.searchForm.patchValue(patch);
         this.exportEnabled = true;
-        this.listJobseekers();
-      } else {
-        this.listJobseekers();
       }
+      // Always load jobseekers on init, but suppress toast on initial load without criteria
+      this.listJobseekers();
 
       // If an editId query param is present, navigate to edit after list loads
+      // GUARDED: Only auto-load if company_sec_id is already available to avoid "Missing Company Id" errors
       const editId = params['editId'] || null;
-      if (editId) {
+      if (editId && this.commonService.hasValidCompanySecId()) {
         // call onEditClick with minimal object once list is loaded
         // Use a small timeout to ensure list rendering and services are ready
         setTimeout(() => {
           this.onEditClick({ id: String(editId) });
         }, 200);
       }
+      
       // If route param 'id' present (standalone edit route), show only the add/edit form
+      // GUARDED: Only auto-load if company_sec_id is already available
       const routeParamId = this.route.snapshot.paramMap.get('id');
-      if (routeParamId) {
+      if (routeParamId && this.commonService.hasValidCompanySecId()) {
         // show add/edit area only
         this.addRecdFlg = true;
         this.listRecdFlg = false;
@@ -916,8 +918,6 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
       //   formData.append('id', this.editJobseekerId);
       // }
 
-      console.log('Submitting jobseeker payload with files:', formValue);
-      console.log('formdata payload', formData);
       this.loadingService.show('Saving jobseeker...');
       this.commonService.postWithFiles(formData).subscribe(res => {
         if (res?.status === 'success') {
@@ -936,7 +936,6 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
       });
     } else {
       // No files, use regular JSON payload
-      console.log('Submitting jobseeker payload without files:', formValue);
       this.commonService.post(payload).subscribe(res => {
         if (res?.status === 'success') {
           this.sweetAlert.showToast(res.message || 'Jobseeker saved.', 'success');
@@ -1001,23 +1000,28 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     this.commonService.post(payload).subscribe(res => {
       this.loadingService.hide();
       if (res?.status === 'success' && res.data?.list) {
-        console.log('Jobseekers response data:', res.data);
         this.jobseekers = res.data.list;
         this.totalRecords = res.data.total_records?.toString() || '0';
         this.totalPages = Math.ceil(Number(this.totalRecords) / this.pageSize);
         this.noDataMessage = '';
+        this.isInitialLoad = false;  // Mark as no longer initial load after successful data fetch
       } else {
         this.noDataMessage = res?.message || 'No data found.';
-        this.sweetAlert.showToast('No jobseekers found.', 'info');
+        // Only show toast if not initial load or if user explicitly searched
+        if (!this.isInitialLoad) {
+          this.sweetAlert.showToast('No jobseekers found.', 'info');
+        }
         this.jobseekers = [];
         this.totalRecords = '0';
         this.totalPages = 0;
+        this.isInitialLoad = false;  // Mark as no longer initial load even if no data
       }
     }, () => {
       this.sweetAlert.showError('Failed to load jobseekers. Please try again.');
       this.jobseekers = [];
       this.totalRecords = '0';
       this.totalPages = 0;
+      this.isInitialLoad = false;  // Mark as no longer initial load on error
     });
   }
 
@@ -1143,6 +1147,7 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     if (!hasAnyCriteria) this.sweetAlert.showToast('Please enter/select at least one search criteria', 'warning');
     this.currentPage = 1;
     this.exportEnabled = hasAnyCriteria;
+    this.isInitialLoad = false;  // User has explicitly triggered search
     this.listJobseekers();
   }
 
@@ -1342,12 +1347,10 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
             }
           ]
         };
-        console.log('Email payload:', payload);
 
         this.loadingService.show('Sending email...');
         this.commonService.post(payload).subscribe({
           next: (res: any) => {
-            console.log('Email response:', res);
             this.loadingService.hide();
             if (res?.status === 'success') {
               this.sweetAlert.showToast(res.message || 'Email sent successfully.', 'success');
@@ -1412,7 +1415,6 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
 
     this.commonService.post(payload).subscribe({
       next: (res: any) => {
-        console.log('Edit fetch response:', res);
         this.loadingService.hide();
         if (res?.status === 'success' && res.data) {
           const data = res.data;
@@ -1887,12 +1889,10 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
           }
         },
         (error) => {
-          console.error('Error fetching resume log:', error);
           this.sweetAlert.showError('Failed to fetch resume log history.');
         }
       );
     } catch (error) {
-      console.error('Error in openResumeLogModal:', error);
       this.sweetAlert.showError('An error occurred while showing resume log.');
       this.loadingService.hide();
     }

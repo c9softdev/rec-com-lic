@@ -116,7 +116,6 @@ export class VisaProcessModal {
     setTimeout(() => {
       const modalEl = document.getElementById('visaProcessModal');
       if (!modalEl) {
-        console.error('VisaProcessModal element not found.');
         return;
       }
 

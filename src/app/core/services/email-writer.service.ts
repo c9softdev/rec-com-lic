@@ -31,7 +31,6 @@ export class EmailWriterService {
 
       return "Could not generate email.";
     } catch (err) {
-      console.error(err);
       return "Error connecting to AI service.";
     }
   }

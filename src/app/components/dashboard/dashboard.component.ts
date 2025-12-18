@@ -139,10 +139,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.currentUser = this.authService.currentUserValue;
-    // console.log('Current User:', this.currentUser);
     const sess = this.sessionService.getSession();
-    console.log('Session Data in Dashboard:', sess);
     if (this.useDummyData) {
       this.fillDummyData();
     } else {
@@ -197,8 +194,6 @@ export class DashboardComponent implements OnInit {
     this.userId = session?.userId || '0';
     this.userType = session?.empType || '0';
     this.emailId = session?.emailId || '';
-    // console.log('Email Id Data:', this.emailId);
-    console.log('Session Data:', session);
 
     // Total candidates (fetch only total_records)
     const totalPayload = {
@@ -219,7 +214,6 @@ export class DashboardComponent implements OnInit {
         this.totalWeekCandidate = res.data?.totalCvWeek ?? 0;;
         this.miniBarData = res.data.totalCVbyRemarks || [];
         this.totalCVsByEmployees = res.data.totalCVbyEmployee || [];
-        console.log('Total Category response:', this.totalCVsByEmployees);
 
         this.animateKpiCounts();
         this.updateCharts();

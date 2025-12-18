@@ -22,18 +22,13 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
-        // Auto logout if 401 response returned from api
         sessionStorage.removeItem('currentUser');
         sessionStorage.removeItem('user_session');
         router.navigate(['/login']);
-      }
-      // Server unavailable (network error or 503)
-      else if (error.status === 0 || error.status === 503) {
+      } else if (error.status === 0 || error.status === 503) {
         router.navigate(['/error'], { queryParams: { type: 'server-down' } });
-      }
-      // Internal server error
-      else if (error.status >= 500) {
-        router.navigate(['/error'], { queryParams: { type: '500' } });
+      } else if (error.status >= 500) {
+        return throwError(() => error);
       }
       
       const errorMessage = error.error?.message || error.statusText;

@@ -166,8 +166,6 @@ export class JobProcessModal {
       payload.InputData[0].grade = formValues.grade;
     }
 
-    console.log('✅ Final Payload', payload);
-  // return;
     // ---- API Call ----
     this.loadingService.show('Saving...');
     this.commonService.post(payload).subscribe({
@@ -235,7 +233,6 @@ export class JobProcessModal {
       next: (res: any) => {
         this.loadingService.hide();
         if (res?.status === 'success') {
-          console.log('SaveCurrentStatus success', res);
           this.sweetAlert.showToast('Current Status saved successfully.');
           this.currentForm.patchValue({
             currentStatus: '',
@@ -249,7 +246,6 @@ export class JobProcessModal {
       },
       error: (err) => {
         this.loadingService.hide();
-        console.error('SaveCurrentStatus error', err);
         this.sweetAlert.showError('Error saving Current Status.');
       }
     });
@@ -269,8 +265,6 @@ export class JobProcessModal {
         }
       ]
     };
-    console.log('LoadProcessDetails payload', payload);
-    // return;
     this.loadingService.show('Loading Job Process...');
       this.commonService.post(payload).subscribe({
       next: (res: any) => {
@@ -280,7 +274,6 @@ export class JobProcessModal {
         if (res?.status === 'success' && res?.data) {
           const detail = res.data.procesDetail ?? {}; // correct spelling
 
-          console.log('Process Detail from API:', detail);
           // ✅ Map API -> Form field names safely
           this.processForm.patchValue({
             visaIssued: detail.visa || '',
@@ -297,13 +290,11 @@ export class JobProcessModal {
           // console.log('✅ Process Details Loaded:', detail);
         } else {
           this.sweetAlert.showError(res?.message || 'No process data found.');
-          console.warn('⚠️ Invalid or empty process data:', res);
         }
       },
       error: (err) => {
         this.loadingService.hide();
         this.sweetAlert.showError('Failed to load job process details.');
-        console.error('❌ API Error (Process Details):', err);
       }
     });
   }
@@ -345,7 +336,9 @@ export class JobProcessModal {
           // });
         }
       },
-      error: (err) => console.error('Dropdown load failed', err)
+      error: (err) => {
+        // Error handled silently
+      }
     });
 }
 
