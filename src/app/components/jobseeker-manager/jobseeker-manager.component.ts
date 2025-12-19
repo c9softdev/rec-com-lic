@@ -957,17 +957,27 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
     // Enable Session values
     // const session = this.authService.getSession ? this.authService.getSession() : this.authService.currentUserValue;
     const session = this.authService.currentUserValue;
-    
-    // console.log('Session data-1:', session);
 
-    this.userId = session?.userId || '0';
-    this.userType = session?.empType || '0';
-    this.emailId = session?.emailId || '';
-    this.archivalchk = session?.archivalchk || '';
-    this.printresumechk = session?.printresumechk || '';
-    this.editresumechk = session?.editresumechk || '';
-    this.viewresumechk = session?.viewresumechk || '';
-    this.deleteOption = session?.deleteOption || '';
+    // If there is no active user session (e.g. during/after logout navigation),
+    // skip loading jobseekers to avoid showing misleading "No jobseekers found" alerts.
+    if (!session) {
+      this.jobseekers = [];
+      this.totalRecords = '0';
+      this.totalPages = 0;
+      this.noDataMessage = '';
+      this.isInitialLoad = true;
+      this.loadingService.hide();
+      return;
+    }
+
+    this.userId = session.userId || '0';
+    this.userType = session.empType || '0';
+    this.emailId = session.emailId || '';
+    this.archivalchk = session.archivalchk || '';
+    this.printresumechk = session.printresumechk || '';
+    this.editresumechk = session.editresumechk || '';
+    this.viewresumechk = session.viewresumechk || '';
+    this.deleteOption = session.deleteOption || '';
     // End Enable Session values
 
     this.loadingService.show('Loading jobseekers...');
@@ -1007,8 +1017,10 @@ export class JobseekerManagerComponent implements OnInit, OnDestroy, AfterViewIn
         this.isInitialLoad = false;  // Mark as no longer initial load after successful data fetch
       } else {
         this.noDataMessage = res?.message || 'No data found.';
-        // Only show toast if not initial load or if user explicitly searched
-        if (!this.isInitialLoad) {
+        // Only show toast if not initial load AND user has applied some search criteria.
+        // This prevents a confusing "No jobseekers found" message right after login
+        // or when simply landing on the listing without any filters.
+        if (!this.isInitialLoad && this.exportEnabled) {
           this.sweetAlert.showToast('No jobseekers found.', 'info');
         }
         this.jobseekers = [];

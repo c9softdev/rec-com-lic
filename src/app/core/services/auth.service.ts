@@ -26,7 +26,7 @@ export class AuthService {
       JSON.parse(localStorage.getItem('currentUser') || 'null')
     );
     this.currentUser = this.currentUserSubject.asObservable();
-    // Hydrate currentUser from persisted app_session on hard refresh
+    // Hydrate currentUser and global settings from persisted app_session on hard refresh
     if (!this.currentUserSubject.value) {
       try {
         const raw = localStorage.getItem('app_session');
@@ -48,6 +48,15 @@ export class AuthService {
           this.currentUserSubject.next(hydrated);
           // ensure activity timer is alive
           this.sessionService.init();
+          // Reload global settings for this company so that a hard refresh
+          // restores all session-scoped configuration before any components use it.
+          const compId = String(s.comp_id || '');
+          if (compId) {
+            this.globalSettingsService.loadGlobalSettings(compId).subscribe({
+              next: () => {},
+              error: () => {}
+            });
+          }
         }
       } catch {}
     }
