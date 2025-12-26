@@ -62,6 +62,8 @@ export class ProjectManagerComponent implements OnInit {
   deleteOption: any;
   selectionId: string | undefined;
   additionalInterviewDates: { value: string }[] = [];
+  isSaving = false;
+  isUpdating = false;
 
   constructor(
     private fb: FormBuilder,
@@ -352,19 +354,79 @@ export class ProjectManagerComponent implements OnInit {
     this.additionalInterviewDates = [];
   }
 
+  // onSaveNewRecord(): void {
+
+  //   const session = this.authService.currentUserValue;
+
+  //   this.userId = session?.userId || '0';
+  //   this.userType = session?.empType || '0';
+
+  //   this.submitted = true;
+  //   if (this.projectForm.invalid) {
+  //     this.projectForm.markAllAsTouched();
+  //     this.sweetAlert.showToast('Please fill in all required fields.', 'warning');
+  //     return;
+  //   }
+  //   const payload = {
+  //     event: 'task',
+  //     mode: 'sv',
+  //     InputData: [{
+  //       task_name: this.projectForm.controls['task_name'].value,
+  //       task_status: this.projectForm.controls['task_status'].value,
+  //       chrType: this.userType,
+  //       sessionUser: this.userId,
+  //       cintactNo: this.projectForm.controls['cintactNo'].value,
+  //       intvTime: this.projectForm.controls['intvTime'].value,
+  //       cont_person: this.projectForm.controls['cont_person'].value,
+  //       IdNo: this.projectForm.controls['IdNo'].value,
+  //       client_name: this.projectForm.controls['client_name'].value,
+  //       requirment: this.projectForm.controls['requirment'].value,
+  //       hod: this.projectForm.controls['hod'].value,
+  //       publishOnline: this.projectForm.controls['publishOnline'].value ? '1' : '0',
+  //       publishtask: this.projectForm.controls['publishtask'].value ? '1' : '0'
+  //     }]
+  //   };
+  //   this.loadingService.show();
+  //   this.commonService.post(payload).subscribe({
+  //     next: (res) => {
+  //       this.loadingService.hide();
+  //       if (res.status === 'success') {
+  //         this.sweetAlert.showToast(res.message || 'Project saved.', 'success');
+  //         this.onCancelClick();
+  //         this.listProjects();
+  //       } else {
+  //         this.sweetAlert.showError(res.message || 'Failed to save project.');
+  //       }
+  //     },
+  //     error: () => {
+  //       this.loadingService.hide();
+  //       this.sweetAlert.showError('Failed to save project. Please try again.');
+  //     }
+  //   });
+  // }
+
   onSaveNewRecord(): void {
 
-    const session = this.authService.currentUserValue;
+    // 🔒 Prevent multiple submissions
+    if (this.isSaving) {
+      return;
+    }
 
+    const session = this.authService.currentUserValue;
     this.userId = session?.userId || '0';
     this.userType = session?.empType || '0';
 
     this.submitted = true;
+
     if (this.projectForm.invalid) {
       this.projectForm.markAllAsTouched();
       this.sweetAlert.showToast('Please fill in all required fields.', 'warning');
       return;
     }
+
+    this.isSaving = true; // 🔐 LOCK
+    this.loadingService.show('Saving...');
+
     const payload = {
       event: 'task',
       mode: 'sv',
@@ -384,10 +446,12 @@ export class ProjectManagerComponent implements OnInit {
         publishtask: this.projectForm.controls['publishtask'].value ? '1' : '0'
       }]
     };
-    this.loadingService.show();
+
     this.commonService.post(payload).subscribe({
       next: (res) => {
         this.loadingService.hide();
+        this.isSaving = false; // 🔓 UNLOCK
+
         if (res.status === 'success') {
           this.sweetAlert.showToast(res.message || 'Project saved.', 'success');
           this.onCancelClick();
@@ -398,30 +462,99 @@ export class ProjectManagerComponent implements OnInit {
       },
       error: () => {
         this.loadingService.hide();
+        this.isSaving = false; // 🔓 UNLOCK
         this.sweetAlert.showError('Failed to save project. Please try again.');
       }
     });
   }
 
-  onSaveNewRecord2(): void {
-    const session = this.authService.currentUserValue;
+  // onSaveNewRecord2(): void {
+  //   const session = this.authService.currentUserValue;
 
-    this.userId = session?.userId || '0';
-    this.userType = session?.empType || '0';
+  //   this.userId = session?.userId || '0';
+  //   this.userType = session?.empType || '0';
+
+  //   this.submitted = true;
+  //   if (this.projectDtlForm.invalid) {
+  //     this.projectDtlForm.markAllAsTouched();
+  //     this.sweetAlert.showToast('Please fill in all required fields.', 'warning');
+  //     return;
+  //   }
+    
+  //   // Validate interview dates
+  //   const allDates = this.getAllInterviewDates();
+  //   if (!allDates || allDates.trim() === '') {
+  //     this.sweetAlert.showToast('Please provide at least one interview date.', 'warning');
+  //     return;
+  //   }
+  //   const payload = {
+  //     event: 'task',
+  //     mode: 'svd',
+  //     InputData: [{
+  //       prjId: this.projectId,
+  //       state: this.projectDtlForm.controls['state'].value,
+  //       currLocCity: this.projectDtlForm.controls['currLocCity'].value,
+  //       chrType: this.userType,
+  //       sessionUser: this.userId,
+  //       interviewVenu: this.projectDtlForm.controls['interviewVenu'].value,
+  //       splCat: this.projectDtlForm.controls['splCat'].value,
+  //       cintactNo: this.projectDtlForm.controls['cintactNo'].value,
+  //       intvDate: this.getAllInterviewDates(),
+  //       intvTime: this.projectDtlForm.controls['intvTime'].value,
+  //       remarks: this.projectDtlForm.controls['remarks'].value,
+  //       cont_person: this.projectDtlForm.controls['cont_person'].value,
+  //       publish: '1'
+  //     }]
+  //   };
+  //   // console.log('Payload for saving new record:', payload);
+
+  //   this.commonService.post(payload).subscribe({
+  //     next: (res) => {
+  //       if (res.status === 'success') {
+  //         this.sweetAlert.showToast(res.message || 'Project Details saved.', 'success');
+  //         this.onCancelClick();
+  //         this.listProjects();
+  //         this.projectForm.reset();
+  //       } else {
+  //         this.sweetAlert.showError(res.message || 'Failed to save Project Details.');
+  //       }
+  //     },
+  //     error: () => {
+  //       this.sweetAlert.showError('Failed to save Project Details. Please try again.');
+  //     }
+  //   });
+  // }
+
+  onSaveNewRecord2(): void {
+
+    // 🔒 Prevent duplicate submit
+    if (this.isSaving) {
+      return;
+    }
 
     this.submitted = true;
+
+    // Form validation
     if (this.projectDtlForm.invalid) {
       this.projectDtlForm.markAllAsTouched();
       this.sweetAlert.showToast('Please fill in all required fields.', 'warning');
       return;
     }
-    
+
     // Validate interview dates
     const allDates = this.getAllInterviewDates();
     if (!allDates || allDates.trim() === '') {
-      this.sweetAlert.showToast('Please provide at least one interview date.', 'warning');
+      this.sweetAlert.showToast(
+        'Please provide at least one interview date.',
+        'warning'
+      );
       return;
     }
+
+    const session = this.authService.currentUserValue;
+    this.userId = session?.userId || '0';
+    this.userType = session?.empType || '0';
+
     const payload = {
       event: 'task',
       mode: 'svd',
@@ -434,28 +567,46 @@ export class ProjectManagerComponent implements OnInit {
         interviewVenu: this.projectDtlForm.controls['interviewVenu'].value,
         splCat: this.projectDtlForm.controls['splCat'].value,
         cintactNo: this.projectDtlForm.controls['cintactNo'].value,
-        intvDate: this.getAllInterviewDates(),
+        intvDate: allDates,
         intvTime: this.projectDtlForm.controls['intvTime'].value,
         remarks: this.projectDtlForm.controls['remarks'].value,
         cont_person: this.projectDtlForm.controls['cont_person'].value,
         publish: '1'
       }]
     };
-    // console.log('Payload for saving new record:', payload);
+
+    this.isSaving = true;
+    this.loadingService.show('Saving...');
 
     this.commonService.post(payload).subscribe({
       next: (res) => {
-        if (res.status === 'success') {
-          this.sweetAlert.showToast(res.message || 'Project Details saved.', 'success');
+        this.isSaving = false;
+        if (res?.status === 'success') {
+
+          this.sweetAlert.showToast(
+            res.message || 'Project Details saved.',
+            'success'
+          );
+
           this.onCancelClick();
           this.listProjects();
           this.projectForm.reset();
+
         } else {
-          this.sweetAlert.showError(res.message || 'Failed to save Project Details.');
+          this.sweetAlert.showError(
+            res?.message || 'Failed to save Project Details.'
+          );
         }
       },
       error: () => {
-        this.sweetAlert.showError('Failed to save Project Details. Please try again.');
+        this.isSaving = false;
+        this.sweetAlert.showError(
+          'Failed to save Project Details. Please try again.'
+        );
+      },
+      complete: () => {
+        this.isSaving = false;
+        this.loadingService.hide();
       }
     });
   }
@@ -623,6 +774,7 @@ export class ProjectManagerComponent implements OnInit {
     this.loadingService.show('Updating...');
   }
 
+  
   onUpdateRecord2(): void {
     const session = this.authService.currentUserValue;
 

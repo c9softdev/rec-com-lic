@@ -362,9 +362,17 @@
 
               </div>
               <div class="form-group mt-3">
-                <button type="button" class="btn btn-outline-primary btn-round mr-2"
+                <!-- <button type="button" class="btn btn-outline-primary btn-round mr-2"
                   (click)="isEditMode ? onUpdateRecord() : onSaveNewRecord()">
                   <i class="fas fa-save mr-1"></i>{{ isEditMode ? 'Update' : 'Save' }}
+                </button> -->
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-round mr-2"
+                  [disabled]="isSaving"
+                  (click)="isEditMode ? onUpdateRecord() : onSaveNewRecord()">
+                  <i class="fas fa-save mr-1"></i>
+                  {{ isSaving ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
                 </button>
                 <button type="button" class="btn btn-outline-info btn-round mr-2" (click)="onCancelClick()">
                   <i class="fas fa-times mr-1"></i>Cancel
@@ -507,9 +515,13 @@
 
               </div>
               <div class="form-group mt-3">
-                <button type="button" class="btn btn-outline-primary btn-round mr-2"
+                <button 
+                  type="button" 
+                  class="btn btn-outline-primary btn-round mr-2"
+                  [disabled]="isSaving"
                   (click)="isEditMode ? onUpdateRecord2() : onSaveNewRecord2()">
-                  <i class="fas fa-save mr-1"></i>{{ isEditMode ? 'Update Details' : 'Save Details' }}
+                  <i class="fas fa-save mr-1"></i>
+                  {{ isSaving ? (isEditMode ? 'Updating...' : 'Saving...') : (isEditMode ? 'Update Details' : 'Save Details') }}
                 </button>
                 <button type="button" class="btn btn-outline-info btn-round mr-2" (click)="onCancelClick()">
                   <i class="fas fa-times mr-1"></i>Cancel
