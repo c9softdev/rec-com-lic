@@ -54,7 +54,9 @@ export class EmployeeManagerComponent implements OnInit {
   isEditMode = false;
   submitted = false;
   employeeForm: FormGroup;
-  accessOptionsList = ['Print Resume', 'Edit Record', 'View Resume', 'Archival File', 'Delete Record'];
+  // accessOptionsList = ['Print Resume', 'Edit Record', 'View Resume', 'Archival File', 'Delete Record'];
+  accessOptionsList = ['Print Resume', 'Edit Record', 'View Resume', 'Archival File', 'Delete Record', 'Interview Scheduler', 'Interview Manager', 'Job Process Manager', 'Visa Process','Emigration Process', 'Departure Details'];
+
   selectedMenuKeys: Set<string> = new Set();
   menuList: any[] = [];
   emailCheckMessage = '';
@@ -372,6 +374,12 @@ export class EmployeeManagerComponent implements OnInit {
       viewresumechk: access('View Resume'),
       archivalchk: access('Archival File'),
       deleteOption: access('Delete Record'),
+      intrv_scheduler_chk: access('Interview Scheduler'),
+      intrv_manager_chk: access('Interview Manager'),
+      job_process_chk: access('Job Process Manager'),
+      visa_process_chk: access('Visa Process'),
+      emigra_process_chk: access('Emigration Process'),
+      departure_chk: access('Departure Details'),
       email: this.employeeForm.controls['email'].value
     };
 
@@ -427,6 +435,12 @@ export class EmployeeManagerComponent implements OnInit {
       viewresumechk: access('View Resume'),
       archivalchk: access('Archival File'),
       deleteOption: access('Delete Record'),
+      intrv_scheduler_chk: access('Interview Scheduler'),
+      intrv_manager_chk: access('Interview Manager'),
+      job_process_chk: access('Job Process Manager'),
+      visa_process_chk: access('Visa Process'),
+      emigra_process_chk: access('Emigration Process'),
+      departure_chk: access('Departure Details'), 
       email: this.employeeForm.controls['email'].value,
       semail: this.searchForm.controls['email'].value || '',
       sempname: this.searchForm.controls['name'].value || '',
@@ -779,6 +793,12 @@ export class EmployeeManagerComponent implements OnInit {
     if (employeeData.deleteOption === '1') accessOptions.push('Delete Record');
     // if (employeeData.optionN1 === '1') accessOptions.push('Option 1');
     // if (employeeData.optionN1 === '1') accessOptions.push('Option 2');
+    if (employeeData.intrv_scheduler_chk === '1') accessOptions.push('Interview Scheduler');
+    if (employeeData.intrv_manager_chk === '1') accessOptions.push('Interview Manager');
+    if (employeeData.job_process_chk === '1') accessOptions.push('Job Process Manager');
+    if (employeeData.visa_process_chk === '1') accessOptions.push('Visa Process');
+    if (employeeData.emigra_process_chk === '1') accessOptions.push('Emigration Process');
+    if (employeeData.departure_chk === '1') accessOptions.push('Departure Details'); 
     return accessOptions;
   }
   get selectableEmployeeCount(): number {

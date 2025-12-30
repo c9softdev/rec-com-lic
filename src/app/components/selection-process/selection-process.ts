@@ -72,6 +72,14 @@ export class SelectionProcess {
   editresumechk: any;
   viewresumechk: any;
   deleteOption: any;
+  archivalchk: any;
+
+  intrv_scheduler_chk: any;
+  intrv_manager_chk: any;
+  job_process_chk: any;
+  visa_process_chk: any;
+  emigra_process_chk: any;
+  departure_chk: any;
 
   emailPrompt = "";
   generatedEmail = "";
@@ -247,7 +255,15 @@ export class SelectionProcess {
     this.editresumechk = session?.editresumechk || '';
     this.viewresumechk = session?.viewresumechk || '';
     this.deleteOption = session?.deleteOption || '';
+    this.archivalchk = session?.archivalchk || '';
 
+    this.intrv_scheduler_chk = session?.intrv_scheduler_chk || '';
+    this.intrv_manager_chk = session?.intrv_manager_chk || '';
+    this.job_process_chk = session?.job_process_chk || '';
+    this.visa_process_chk = session?.visa_process_chk || '';
+    this.emigra_process_chk = session?.emigra_process_chk || '';
+    this.departure_chk = session?.departure_chk || '';
+    console.log('User Session:', session);
     // Project ID from query param (From Select Prcess)
     const sprojrct = this.route.snapshot.queryParamMap.get('sprojrct');
     this.loadingService.show('Loading...');

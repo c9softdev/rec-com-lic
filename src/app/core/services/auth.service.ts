@@ -42,8 +42,12 @@ export class AuthService {
             viewresumechk: String(s.viewresumechk || ''),
             archivalchk: String(s.archivalchk || ''),
             deleteOption: String(s.deleteOption || ''),
-            optionN1: String(s.optionN1 || ''),
-            optionN2: String(s.optionN2 || '')
+            intrv_scheduler_chk: String(s.intrv_scheduler_chk || ''),
+            intrv_manager_chk: String(s.intrv_manager_chk || ''),
+            job_process_chk: String(s.job_process_chk || ''),
+            visa_process_chk: String(s.visa_process_chk || ''),
+            emigra_process_chk: String(s.emigra_process_chk || ''),
+            departure_chk: String(s.departure_chk || '')
           };
           this.currentUserSubject.next(hydrated);
           // ensure activity timer is alive
@@ -120,8 +124,12 @@ export class AuthService {
               editresumechk: this.empResponse.editresumechk,
               viewresumechk: this.empResponse.viewresumechk,
               deleteOption: this.empResponse.deleteOption,              
-              optionN1: this.empResponse.optionN1,
-              optionN2: this.empResponse.optionN2,
+              intrv_scheduler_chk: this.empResponse.intrv_scheduler_chk,
+              intrv_manager_chk: this.empResponse.intrv_manager_chk,
+              job_process_chk: this.empResponse.job_process_chk,
+              visa_process_chk: this.empResponse.visa_process_chk,
+              emigra_process_chk: this.empResponse.emigra_process_chk,
+              departure_chk: this.empResponse.departure_chk,
               archivalchk: this.empResponse.archivalchk,
               emailId: this.empResponse.EmailId || this.empResponse.emailId || this.empResponse.email || ''
             };
@@ -136,8 +144,12 @@ export class AuthService {
               printresumechk: String(user.printresumechk || ''),
               viewresumechk: String(user.viewresumechk || ''),
               deleteOption: String(user.deleteOption || ''),
-              optionN1: String(user.optionN1 || ''),
-              optionN2: String(user.optionN2 || ''),
+              intrv_scheduler_chk: String(user.intrv_scheduler_chk || ''),
+              intrv_manager_chk: String(user.intrv_manager_chk || ''),
+              job_process_chk: String(user.job_process_chk || ''),
+              visa_process_chk: String(user.visa_process_chk || ''),
+              emigra_process_chk: String(user.emigra_process_chk || ''),
+              departure_chk: String(user.departure_chk || ''),
               emailId: user.emailId || ''
             };
             // Clear all caches before setting new session (new comp_id = new company_sec_id + responses needed)

@@ -316,15 +316,24 @@
                   <i class="fa fa-comments text-success"
                     (click)="openAllRemarks(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)"
                     title="All Remarks"></i>
+                  @if ((viewresumechk != '' && viewresumechk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <i class="fa fa-eye text-success" title="View Resume" role="button" tabindex="0"
                     style="cursor: pointer" (click)="openViewJobseeker(candidate)"
                     (keydown.enter)="openViewJobseeker(candidate)"></i>
+                    }
+                    @if ((editresumechk != '' && editresumechk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <i class="fa fa-edit text-success" title="Edit Resume" role="button" tabindex="0"
                     style="cursor: pointer" (click)="openEditJobseeker(candidate)"
                     (keydown.enter)="openEditJobseeker(candidate)"></i>
+                      }
+                  @if ((archivalchk != '' && archivalchk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <i class="fa fa-upload text-success" title="Upload Archive" role="button" tabindex="0"
                     style="cursor: pointer" (click)="openArchiveManager(candidate)"
                     (keydown.enter)="openArchiveManager(candidate)"></i>
+                      }
                 </div>
               </div>
 
@@ -544,35 +553,48 @@
 
               <div class="row g-2">
                 <div class="col-12 d-flex flex-wrap mx-2">
+                  @if ((intrv_scheduler_chk != '' && intrv_scheduler_chk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <button class="btn btn-outline-secondary btn-round me-2 mb-2"
                     (click)="openScheduler(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
                     <i class="fas fa-calendar-alt"></i> Interview Scheduler
                   </button>
-
+                }
+                @if ((intrv_manager_chk != '' && intrv_manager_chk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <button class="btn btn-outline-primary btn-round me-2 mb-2"
                     (click)="openInterviewManager(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
                     <i class="fas fa-user-tie"></i> Interview Manager
                   </button>
-
+                }
+                @if ((job_process_chk != '' && job_process_chk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <button class="btn btn-outline-success btn-round me-2 mb-2"
                     (click)="openJobProcess(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
                     <i class="fas fa-briefcase"></i> Job Process
                   </button>
-
+                }
+                @if ((visa_process_chk != '' && visa_process_chk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <button class="btn btn-outline-success btn-round me-2 mb-2"
                     (click)="openVisaProcess(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
                     <i class="fas fa-passport"></i> Visa Process
                   </button>
-
+                }
+                @if ((emigra_process_chk != '' && emigra_process_chk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <button class="btn btn-outline-danger btn-round me-2 mb-2"
                     (click)="openEmigration(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
                     <i class="fas fa-plane-departure"></i> Emigration
                   </button>
-
+                }
+                @if ((departure_chk != '' && departure_chk == '1') ||
+                      (userId === '1' && userType == '1')) {
                   <button class="btn btn-outline-secondary btn-round me-2 mb-2"
                     (click)="openDepartureDetails(candidate.job_seeker_id, candidate.id, candidate.project_id, candidate.first_name + ' ' + candidate.last_name)">
                     <i class="fas fa-plane"></i> Departure Details
                   </button>
+                    }
                 </div>
               </div>
             </div>
