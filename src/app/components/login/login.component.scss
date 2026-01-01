@@ -1,212 +1,215 @@
 @import '../../../assets/css/commonstyles.css';
 
-/* Host element styles */
+/* ===========================
+   Host / Root – remove gaps
+=========================== */
 :host {
   --bs-primary: var(--primary-color);
   --bs-primary-rgb: var(--primary-color-rgb);
   display: block;
   height: 100vh;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.login-container {
-  height: 100vh;
   width: 100vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: url('../../../assets/img/login-background.svg') no-repeat center center;
-  background-size: cover;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  background-color: #eef2f6;
 }
 
-/* Card styling */
+/* ===========================
+   Main Container – NO top gap
+=========================== */
+.login-container {
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;     /* vertical center */
+  justify-content: center; /* horizontal center */
+  background: url('../../../assets/img/login-background.svg') no-repeat center;
+  background-size: cover;
+}
+
+/* ===========================
+   Login Card
+=========================== */
 .auth-card {
-  background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   width: 100%;
   max-width: 1100px;
-  position: relative;
-  height: 400px !important;
+  min-height: 420px;
+  margin: 0;
+  background-color: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+  overflow: hidden;                 /* REQUIRED */
+  border-radius: 12px;              /* main rounding */
+  display: flex;
 }
 
-/* Brand section */
+/* ===========================
+   Branding Section (LEFT)
+=========================== */
 .brand-section {
-  background-color: #fff;
-  padding: 2rem;
-  height: 100%;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e6ea;
+  padding: 0rem 0.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  position: relative;
-
-  .client-logo {
-    max-width: 90%;
-    height: auto;
-  }
-
-  .company-logo {
-    position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    max-width: 240px;
-    opacity: 0.92;
-    transition: opacity 0.3s ease;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
 }
 
-/* Form section */
+/* Client logo (top) */
+.brand-section .client-logo {
+  max-width: 500px;
+  margin-top: 6.5rem;
+  object-fit: contain;
+}
+
+/* Company logo (bottom-right) */
+.brand-section .company-logo {
+  align-self: flex-end;
+  max-width: 180px;
+  opacity: 0.85;
+}
+
+/* ===========================
+   Form Section (RIGHT)
+=========================== */
 .form-section {
-  background: var(--primary-color);
-  padding: 2rem;
-  height: 100%;
+  background-color: #204a7a;
+  padding: 2.75rem 3rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
-  .auth-header {
-    font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-    color: #fff;
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
+  /* MATCH card rounding */
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
-/* Form controls */
-.form-control {
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
-
-  &:focus {
-    background-color: #fff;
-    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
-  }
-
-  &.is-invalid {
-    border-color: var(--error-color);
-    box-shadow: none;
-  }
+/* Headings */
+.form-section h1 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
 }
 
-/* Error message */
+.form-section .text-uppercase {
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ===========================
+   Alerts / Errors (Readable)
+=========================== */
 .error-message {
-  color: var(--error-color, #dc3545);
-  font-size: 0.875rem;
-  text-align: center;
-  margin: 0.25rem 0 0.5rem;
-  padding: 0.25rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background-color: rgba(220, 53, 69, 0.18);
+  color: #ffe1e1;
+  border-left: 4px solid #dc3545;
+  padding: 0.55rem 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
 }
 
-/* Success message */
-.success-message {
-  background-color: rgba(25, 135, 84, 0.1);
-  color: #fff;
-  font-size: 0.875rem;
-  text-align: center;
-  margin: 0.25rem 0 0.5rem;
-  padding: 0.5rem;
-  border-radius: 4px;
+/* ===========================
+   Inputs – slightly rounded
+=========================== */
+.form-control {
+  background-color: #ffffff;
+  border-radius: 6px;  /* subtle rounding */
+  border: 1px solid #ced4da;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
 }
 
-/* Buttons */
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+/* ===========================
+   Buttons – subtle rounding
+=========================== */
 .btn {
-  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
   font-weight: 500;
-  transition: all 0.3s ease;
-
-  &.btn-light {
-    color: var(--primary-color);
-    &:hover {
-      background-color: #e9ecef;
-    }
-  }
-
-  &.btn-outline-light {
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-  }
 }
 
-/* Links */
-.auth-link {
-  color: rgba(255, 255, 255, 0.8);
+.btn-light {
+  background-color: #ffffff;
+  color: #204a7a;
+}
+
+.btn-light:hover {
+  background-color: #f1f3f5;
+}
+
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+}
+
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===========================
+   Links
+=========================== */
+a {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: #fff;
-  }
 }
 
-/* reCAPTCHA responsive scaling */
+a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* ===========================
+   reCAPTCHA
+=========================== */
 .recaptcha-wrapper {
   display: flex;
   justify-content: center;
   margin: 1rem 0;
 }
 
-@media (max-width: 576px) {
-  .recaptcha-wrapper {
-    transform: scale(0.9);
-    transform-origin: center;
-  }
-}
-
-/* Responsive adjustments */
-@media (max-width: 991.98px) {
+/* ===========================
+   Responsive
+=========================== */
+@media (max-width: 991px) {
   .auth-card {
-    max-height: none;
+    flex-direction: column;
   }
 
   .brand-section {
-    min-height: 200px;
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
+  }
 
-    .company-logo {
-      max-width: 180px;
-    }
+  .company-logo {
+    align-self: center;
+    margin-top: 1rem;
   }
 
   .form-section {
-    padding: 1.5rem;
-  }
-}
-
-.otp-inputs {
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.otp-box {
-  width: 50px;
-  height: 48px;
-  font-size: 22px;
-  text-align: center;
-}
-
-@media (max-width: 576px) {
-  .otp-box {
-    width: 38px;
-    height: 44px;
-    font-size: 20px;
+    padding: 2rem 1.5rem;
   }
 }
