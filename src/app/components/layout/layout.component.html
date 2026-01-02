@@ -148,7 +148,9 @@
 
         <!-- Site Name (Right, before Profile) -->
         <div class="site-name-widget" *ngIf="globalSettings?.site_name">
-          <span class="site-name-text">{{ globalSettings?.site_name }}, [ Expiry: 2026-01-29 ]</span>
+          <span class="site-name-text">{{
+            globalSettings?.site_name}}, [ Support Expiry:
+            {{ globalSettings?.dtm_expiry | date: 'mediumDate' }} ]</span>
         </div>
       </div>
       <!-- Right: Topbar/account actions -->

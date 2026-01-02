@@ -93,6 +93,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     const session = this.sessionService.getSession();
     const userId = session?.userId || '0';
     const userType = session?.empType || '0';
+    const dtm_expiry = session?.dtm_expiry || '';
     // this.username = session?.username || '0';
     // console.log('Session Data:', session);
     this.fetchMenu(userId, userType);

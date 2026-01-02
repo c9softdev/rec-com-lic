@@ -59,6 +59,7 @@ export interface GlobalSettings {
   export_excel_limit?: string;
   var_foot_email: string;
   google_analytics?: string;
+  dtm_expiry?: string;
 }
 
 @Injectable({
