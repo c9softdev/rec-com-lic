@@ -148,7 +148,7 @@
 
         <!-- Site Name (Right, before Profile) -->
         <div class="site-name-widget" *ngIf="globalSettings?.site_name">
-          <span class="site-name-text">{{ globalSettings?.site_name }}</span>
+          <span class="site-name-text">{{ globalSettings?.site_name }}, [ Expiry: 2026-01-29 ]</span>
         </div>
       </div>
       <!-- Right: Topbar/account actions -->
@@ -204,7 +204,7 @@
                           />
                         </div>
                         <div class="u-text">
-                          <h4>{{ currentUser?.username || "User" }}</h4>
+                          <h4>{{ currentUser?.username || "User" }},</h4>
                         </div>
                       </div>
                     </li>
