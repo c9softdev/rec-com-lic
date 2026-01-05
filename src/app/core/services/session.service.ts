@@ -12,6 +12,7 @@ export interface UserSession {
   editresumechk?: string;
   printresumechk?: string;
   viewresumechk?: string;
+  dtm_expiry?: string;
   [key: string]: any;
 }
 
