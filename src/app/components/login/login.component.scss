@@ -58,20 +58,163 @@
   align-items: center;
   border-top-left-radius: 12px;
   border-bottom-left-radius: 12px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Client logo (top) */
+/* ===========================
+   Premium Ribbon
+=========================== */
+.ribbon {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  position: absolute;
+  z-index: 10;
+}
+
+.ribbon::before,
+.ribbon::after {
+  position: absolute;
+  z-index: -1;
+  content: '';
+  display: block;
+  border: 5px solid #b8941f;
+}
+
+.ribbon span {
+  position: absolute;
+  display: block;
+  width: 225px;
+  padding: 15px 0;
+  background-color: #d4af37;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  font: 700 16px/1 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Responsive ribbon sizing */
+@media (max-width: 991px) {
+  .ribbon {
+    width: 110px;
+    height: 110px;
+  }
+
+  .ribbon::before,
+  .ribbon::after {
+    border-width: 4px;
+  }
+
+  .ribbon span {
+    width: 160px;
+    padding: 10px 0;
+    font: 700 14px/1 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Scale ribbon offsets so edges align nicely at this breakpoint */
+  .ribbon-top-left {
+    top: -8px;
+    left: -8px;
+  }
+
+  .ribbon-top-left span {
+    right: -14px;
+    top: 26px;
+    transform: rotate(-45deg);
+  }
+}
+
+@media (max-width: 575px) {
+  .ribbon {
+    width: 86px;
+    height: 86px;
+  }
+
+  .ribbon::before,
+  .ribbon::after {
+    border-width: 3px;
+  }
+
+  .ribbon span {
+    width: 130px;
+    padding: 8px 0;
+    font: 700 12px/1 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Further reduce offsets to avoid clipped corners on small phones */
+  .ribbon-top-left {
+    top: -6px;
+    left: -6px;
+  }
+
+  .ribbon-top-left span {
+    right: -10px;
+    top: 20px;
+    transform: rotate(-45deg);
+  }
+}
+
+/* Hide ribbon on very small screens where it's still visually awkward */
+@media (max-width: 360px) {
+  .ribbon {
+    display: none;
+  }
+}
+
+/* Top left ribbon */
+.ribbon-top-left {
+  top: -10px;
+  left: -10px;
+}
+
+.ribbon-top-left::before,
+.ribbon-top-left::after {
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+
+.ribbon-top-left::before {
+  top: 0;
+  right: 0;
+}
+
+.ribbon-top-left::after {
+  bottom: 0;
+  left: 0;
+}
+
+.ribbon-top-left span {
+  right: -20px;
+  top: 35px;
+  transform: rotate(-45deg);
+}
+
+/* Client logo (centered middle) */
 .brand-section .client-logo {
-  max-width: 500px;
-  margin-top: 6.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 400px;
+  height: auto;
   object-fit: contain;
+  display: block;
 }
 
-/* Company logo (bottom-right) */
+/* Company logo (bottom-right on desktop; centered on mobile) */
 .brand-section .company-logo {
-  align-self: flex-end;
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
   max-width: 180px;
+  width: auto;
+  height: auto;
   opacity: 0.85;
+  z-index: 5;
 }
 
 /* ===========================
@@ -211,5 +354,37 @@ a:hover {
 
   .form-section {
     padding: 2rem 1.5rem;
+  }
+
+  /* On smaller screens the card stacks — make logo flow normally and stay centered */
+  .brand-section .client-logo {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0 auto 1rem;
+    display: block;
+    width: 60%;
+    max-width: 280px;
+  }
+
+  /* On small screens flow the company logo and center it */
+  .brand-section .company-logo {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin: 0 auto 0.5rem;
+    display: block;
+    width: 40%;
+    max-width: 120px;
+    align-self: center;
+  }
+}
+
+/* Extra small screens — reduce company logo further */
+@media (max-width: 575px) {
+  .brand-section .company-logo {
+    width: 36%;
+    max-width: 96px;
   }
 }
