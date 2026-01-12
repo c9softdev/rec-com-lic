@@ -51,7 +51,7 @@ export const routes: Routes = [
       { path: 'selection-manager', component: ProjectManagerComponent, canActivate: [privilegeGuard() as any], data: { menuId: '26', selectionId: '1' } },
       { path: 'selection-process', component: SelectionProcess, canActivate: [privilegeGuard() as any] },
       { path: 'jobseeker-manager', component: JobseekerManagerComponent, canActivate: [privilegeGuard() as any], data: { menuId: '24' } },
-      { path: 'jobseeker-manager/add', component: JobseekerManagerComponent, canActivate: [privilegeGuard() as any], data: { menuId: '24', showAddForm: true } },
+      { path: 'jobseeker-manager/add', component: JobseekerManagerComponent, canActivate: [privilegeGuard({ menuIds: ['24', '29'] } as any) as any], data: { menuId: '24', showAddForm: true } },
       { path: 'assign-cv-manager', component: JobseekerManagerComponent, canActivate: [privilegeGuard() as any], data: { menuId: '27', assignCvMode: true } },
       { path: 'setting', component: GlobalSettingInner, canActivate: [privilegeGuard() as any], data: { menuId: '3' } },
     ]
