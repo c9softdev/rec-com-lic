@@ -276,6 +276,7 @@ export class DropdownComponent implements OnInit {
           this.addRecdFlg = false;
           this.listRecdFlg = true;
           this.dropdownForm.reset({ drpName: '', cattype: '', status: false });
+          this.updateFloatingLabels();
           this.listDropdowns();
         } else {
           this.sweetAlert.showError(res?.message || 'Failed to update record.');

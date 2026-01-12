@@ -287,6 +287,7 @@ export class QualificationManagerComponent implements OnInit {
           this.addRecdFlg = false;
           this.listRecdFlg = true;
           this.qualificationForm.reset({ quli_title: '', pcat: '', status: false });
+          this.updateFloatingLabels();
           this.listQualifications();
         } else {
           this.sweetAlert.showError(res?.message || 'Failed to update record.');
