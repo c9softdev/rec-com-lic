@@ -108,7 +108,17 @@ export class CommonService {
       if (agePercentage > 0.75 && !this.silentRefreshInProgress) {
         this.silentRefreshCompanySecId();
       }
-      return this.companySecIdRefresh$.asObservable();
+      // Return a single-emission observable of the current cached value to avoid
+      // keeping a long-lived subscription that could retrigger downstream
+      // switchMap/http calls when the BehaviorSubject later emits (silent refresh).
+      return new Observable<string>(observer => {
+        try {
+          observer.next(this.companySecIdCache!.data);
+        } catch (e) {
+          observer.next('');
+        }
+        observer.complete();
+      });
     }
 
     // Cache miss or expired - fetch fresh value
@@ -584,15 +594,15 @@ export class CommonService {
     };
     return new Observable(observer => {
       this.post(payload).subscribe({
-        next: (response) => {
-          if (response?.status === 'success' && response.data?.state) {
+        next: (response: any) => {
+          if ((response as any)?.status === 'success' && response.data?.state) {
             const statesList = Object.entries(response.data.state).map(([stateID, stateName]) => ({
               stateID,
               stateName
             }));
             observer.next(statesList);
           } else {
-            observer.error(response?.message || 'Failed to fetch States.');
+            observer.error((response as any)?.message || 'Failed to fetch States.');
           }
         },
         error: (error) => {

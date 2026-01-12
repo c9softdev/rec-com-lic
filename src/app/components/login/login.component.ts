@@ -280,7 +280,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loading = true;
     const password = this.loginForm.get('password')?.value;
     const companyId = String(this.loginForm.get('companyId')?.value || '');
-    
     this.authService.verifyPassword(password, companyId)
       .pipe(
         first(),

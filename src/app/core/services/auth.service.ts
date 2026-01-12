@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, forkJoin } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, first } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, User } from '../models/auth.model';
 import { SessionService, UserSession } from './session.service';
@@ -112,6 +112,7 @@ export class AuthService {
     return this.commonService.post(request)
       .pipe(
         map(response => {
+          
           if (response.status === 'success') {
             this.empResponse = response.data;
             const mappedEmpType = String(this.empResponse?.chrType || this.empResponse?.empType || '');
@@ -170,9 +171,10 @@ export class AuthService {
    */
   private loadGlobalSettingsInBackground(): void {
     const companyId = this.tempCompanyId || '';
-    this.globalSettingsService.loadGlobalSettings(companyId).subscribe({
-      next: () => { },
-      error: () => { }
+    // Ensure we only subscribe once and auto-complete to avoid lingering subscriptions
+    this.globalSettingsService.loadGlobalSettings(companyId).pipe(first()).subscribe({
+      next: () => { /* background load completed */ },
+      error: (err) => { /* background load failed */ }
     });
   }
 
@@ -208,5 +210,6 @@ export class AuthService {
     // Reset global settings to defaults on logout
     try { this.globalSettingsService.resetToDefaults(); } catch {}
     this.currentUserSubject.next(null);
+    try { this.commonService.clearAllCaches(); } catch {}
   }
 }
