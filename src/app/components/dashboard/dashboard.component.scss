@@ -347,6 +347,14 @@
   border-radius: 6px;
   padding: 8px 10px;
   background: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}
+.report-list .report-item .r-grid .r-stat:hover {
+  background-color: #e9f4ff;
+  border-color: #b6daff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .report-list .report-item .r-grid .r-stat .s-label {
   color: #6c757d;

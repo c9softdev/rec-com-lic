@@ -148,9 +148,10 @@
 
         <!-- Site Name (Right, before Profile) -->
         <div class="site-name-widget" *ngIf="globalSettings?.site_name">
-          <span class="site-name-text">{{
-            globalSettings?.site_name}}, [ Support Expiry:
-            {{ globalSettings?.dtm_expiry | date: 'mediumDate' }} ]</span>
+          <span class="site-name-text"
+            >{{ globalSettings?.site_name }}, [ Support Expiry:
+            {{ globalSettings?.dtm_expiry | date : "mediumDate" }} ]</span
+          >
         </div>
       </div>
       <!-- Right: Topbar/account actions -->
@@ -230,6 +231,7 @@
                       <a
                         class="dropdown-item"
                         (click)="logout(); closeProfileDropdown()"
+                        style="cursor: pointer"
                         >Logout</a
                       >
                     </li>
